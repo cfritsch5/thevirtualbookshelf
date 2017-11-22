@@ -15,7 +15,6 @@ class Book extends React.Component {
 
   componentDidMount(){
     this.book = ReactDOM.findDOMNode(this.refs.book);
-
   }
 
   // rotateBook(e){
@@ -23,7 +22,6 @@ class Book extends React.Component {
   //   let angle = 0;
   //   let percentRight = (1 - (e.clientX - rect.left)/(rect.right - rect.left));
   //   let percentLeft = (1 - (e.clientX - rect.right)/(rect.right - rect.left));
-  //
   //   this.setState({angle: angle});
   // }
 
@@ -51,7 +49,8 @@ class Book extends React.Component {
             <figure className="side back">6</figure>
           </div>
         </div>
-        <input type="range" min="-90" max="90" defaultValue="50" className="slider"
+        <input className="slider"
+          type="range" min="-90" max="90" defaultValue="0"
           onChange={(e)=>this.setState({angle: e.currentTarget.value})}
           />
       </div>

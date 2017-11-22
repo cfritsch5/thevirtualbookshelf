@@ -12919,7 +12919,6 @@ var Book = function (_React$Component) {
     //   let angle = 0;
     //   let percentRight = (1 - (e.clientX - rect.left)/(rect.right - rect.left));
     //   let percentLeft = (1 - (e.clientX - rect.right)/(rect.right - rect.left));
-    //
     //   this.setState({angle: angle});
     // }
 
@@ -12980,7 +12979,8 @@ var Book = function (_React$Component) {
             )
           )
         ),
-        _react2.default.createElement('input', { type: 'range', min: '-90', max: '90', defaultValue: '50', className: 'slider',
+        _react2.default.createElement('input', { className: 'slider',
+          type: 'range', min: '-90', max: '90', defaultValue: '0',
           onChange: function onChange(e) {
             return _this2.setState({ angle: e.currentTarget.value });
           }
