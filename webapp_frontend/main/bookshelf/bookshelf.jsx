@@ -59,13 +59,13 @@ class BookShelf extends React.Component {
     // console.log(user);
     let books = this.state.books;
     return (
-      <div>
-        <div className="header">
+      <div className="bookshelf">
           <h1>BookShelf</h1>
-          {books}
+          <div className="books">
+            {books}
+          </div>
           <button onClick={this.logout}>logout</button>
           <button onClick={this.addBook}>Add Book</button>
-        </div>
       </div>
     );
   }

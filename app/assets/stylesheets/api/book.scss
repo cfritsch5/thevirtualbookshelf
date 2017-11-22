@@ -1,0 +1,106 @@
+// Place all the styles related to the api/books controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+$height: 250px; //200px
+$width: 50px; //300px
+$depth: 20px; //100px
+//
+// $height: 150px; //200px
+// $width: 50px; //300px
+// $depth: 100px; //100px
+// h   _____
+// e  /    /|   p
+// i /____/ |  e
+// g |    | / e
+// h |____|/ d
+// t  width
+//box
+/*
+front(spine),back(page edge) 50 x 200
+top, bottom 50 x 150
+right(cover), left(backcover) 150 x 200
+      ____
+^    /   /|
+h   /___/ |
+i   |   | |    h
+e   |   | |   t
+g   |   | |  p
+h   |   | / e
+t   |___|/ d
+    width
+
+*/
+.books {
+  // width: $width;
+  // height: $height;
+  perspective: 600px;
+  display: flex;
+justify-content: center;
+align-items: center;
+}
+.container {
+  width: $width;
+  height: $height;
+  // position: relative;
+  transform-style: preserve-3d;
+
+}
+
+.box {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.box figure {
+  margin: 0;
+  display: block;
+  position: absolute;
+  // border: 2px solid black;
+  background: white;
+}
+
+.box .front,
+.box .back {
+  width: $width;
+  height: $height;
+  background-image: url('/assets/TheHobbit_spine.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.box .right,
+.box .left {
+  width: $depth;
+  height: $height;
+  // left: $depth/2;
+  background-image: url('/assets/TheHobbit_cover.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.box .top,
+.box .bottom {
+  width: $width;
+  height: $depth;
+  // top: $depth/2;
+}
+
+.box .front  { transform: rotateY(   0deg ) translateZ(  $depth/2 ); }
+.box .back   { transform: rotateX( 180deg ) translateZ(  $depth/2  ); }
+.box .right  { transform: rotateY(  90deg ) translateZ( $width/2  ); }
+.box .left   { transform: rotateY( -90deg ) translateZ( $width/2 ); }
+.box .top    { transform: rotateX(  90deg ) translateZ( $height/2 ); }
+.box .bottom { transform: rotateX( -90deg ) translateZ( $height/2 ); }
+// .box .front  { transform: rotateY(   0deg ) translateZ(  50px ); }
+// .box .back   { transform: rotateX( 180deg ) translateZ(  50px ); }
+// .box .right  { transform: rotateY(  90deg ) translateZ( -50px ); }
+// .box .left   { transform: rotateY( -90deg ) translateZ( 100px ); }
+// .box .top    { transform: rotateX(  90deg ) translateZ( 100px ); }
+// .box .bottom { transform: rotateX( -90deg ) translateZ( 100px ); }

@@ -12898,23 +12898,85 @@ var Book = function (_React$Component) {
   function Book(props) {
     _classCallCheck(this, Book);
 
-    return _possibleConstructorReturn(this, (Book.__proto__ || Object.getPrototypeOf(Book)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Book.__proto__ || Object.getPrototypeOf(Book)).call(this, props));
+
+    _this.rotateBook = _this.rotateBook.bind(_this);
+
+    _this.state = {
+      angle: 0
+    };
+    return _this;
   }
 
   _createClass(Book, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.book = _reactDom2.default.findDOMNode(this.refs.book);
+    }
+  }, {
+    key: 'rotateBook',
+    value: function rotateBook(e) {
+      var rect = this.book.getBoundingClientRect();
+      var angle = -90 * (1 - (e.clientX - rect.left) / (rect.right - rect.left));
+      // console.log('x:' ,e.clientX);
+      // console.log('rect left:' , rect.left);
+      // console.log( 'x -left',e.clientX - rect.left);
+      // console.log( 'right-left',rect.right - rect.left);
+      // console.log( 'x-l/r-l',(e.clientX - rect.left)/(rect.right - rect.left));
+      // console.log( 'nagle',angle);
+      this.setState({ angle: angle });
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var style = {
+        transform: 'rotateY(' + this.state.angle + 'deg)'
+      };
+      // console.log(style);
       return _react2.default.createElement(
         'div',
-        null,
-        _react2.default.createElement('img', { src: 'assets/TheHobbit_spine.jpg',
-          style: {
-            "transform": 'perspective(' + 600 + 'px) rotateY(-45deg) translateX(27px)'
-          } }),
-        _react2.default.createElement('img', { src: 'assets/TheHobbit_cover.jpg',
-          style: {
-            "transform": 'perspective(' + 600 + 'px) rotateY(-45deg) translateX(27px)'
-          } })
+        { className: 'container', ref: 'book' },
+        _react2.default.createElement(
+          _reactDraggable2.default,
+          { ref: 'book_' + this.props.book.id },
+          _react2.default.createElement(
+            'div',
+            { className: 'box',
+              style: style,
+              onMouseMove: this.rotateBook
+            },
+            _react2.default.createElement(
+              'figure',
+              { className: 'side front' },
+              '1'
+            ),
+            _react2.default.createElement(
+              'figure',
+              { className: 'side right' },
+              '2'
+            ),
+            _react2.default.createElement(
+              'figure',
+              { className: 'side left' },
+              '3'
+            ),
+            _react2.default.createElement(
+              'figure',
+              { className: 'side top' },
+              '4'
+            ),
+            _react2.default.createElement(
+              'figure',
+              { className: 'side bottom' },
+              '5'
+            ),
+            _react2.default.createElement(
+              'figure',
+              { className: 'side back' },
+              '6'
+            )
+          )
+        )
       );
     }
   }]);
@@ -48032,13 +48094,13 @@ var App = function App() {
             'Virtual Book Shelf'
           )
         )
-      ),
-      _react2.default.createElement(
-        _reactRouterDom.Switch,
-        null,
-        _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _home_container2.default }),
-        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/login', component: _session_form_container2.default })
       )
+    ),
+    _react2.default.createElement(
+      _reactRouterDom.Switch,
+      null,
+      _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _home_container2.default }),
+      _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/login', component: _session_form_container2.default })
     )
   );
 };
@@ -49364,26 +49426,26 @@ var BookShelf = function (_React$Component) {
       var books = this.state.books;
       return _react2.default.createElement(
         'div',
-        null,
+        { className: 'bookshelf' },
+        _react2.default.createElement(
+          'h1',
+          null,
+          'BookShelf'
+        ),
         _react2.default.createElement(
           'div',
-          { className: 'header' },
-          _react2.default.createElement(
-            'h1',
-            null,
-            'BookShelf'
-          ),
-          books,
-          _react2.default.createElement(
-            'button',
-            { onClick: this.logout },
-            'logout'
-          ),
-          _react2.default.createElement(
-            'button',
-            { onClick: this.addBook },
-            'Add Book'
-          )
+          { className: 'books' },
+          books
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: this.logout },
+          'logout'
+        ),
+        _react2.default.createElement(
+          'button',
+          { onClick: this.addBook },
+          'Add Book'
         )
       );
     }

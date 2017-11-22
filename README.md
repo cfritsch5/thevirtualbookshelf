@@ -22,3 +22,9 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+#### Resources
+* create css cube/prism for books
+https://desandro.github.io/3dtransforms/docs/rectangular-prism.html
+* depends on react-draggable
+https://github.com/mzabriskie/react-draggable
