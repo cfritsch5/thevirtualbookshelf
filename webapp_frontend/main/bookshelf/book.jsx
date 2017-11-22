@@ -6,7 +6,7 @@ class Book extends React.Component {
   constructor(props){
     super(props);
 
-    this.rotateBook = this.rotateBook.bind(this);
+    // this.rotateBook = this.rotateBook.bind(this);
 
     this.state = {
       angle: 0,
@@ -18,40 +18,45 @@ class Book extends React.Component {
 
   }
 
-  rotateBook(e){
-    let rect = this.book.getBoundingClientRect();
-    let angle = -90 * (1 - (e.clientX - rect.left)/(rect.right - rect.left));
-    // console.log('x:' ,e.clientX);
-    // console.log('rect left:' , rect.left);
-    // console.log( 'x -left',e.clientX - rect.left);
-    // console.log( 'right-left',rect.right - rect.left);
-    // console.log( 'x-l/r-l',(e.clientX - rect.left)/(rect.right - rect.left));
-    // console.log( 'nagle',angle);
-    this.setState({angle: angle});
-  }
+  // rotateBook(e){
+  //   let rect = this.book.getBoundingClientRect();
+  //   let angle = 0;
+  //   let percentRight = (1 - (e.clientX - rect.left)/(rect.right - rect.left));
+  //   let percentLeft = (1 - (e.clientX - rect.right)/(rect.right - rect.left));
+  //
+  //   this.setState({angle: angle});
+  // }
 
   render(){
     let style = {
-      transform: `rotateY(${this.state.angle}deg)`,
+      'transformOrigin':` center center -100px`,
+      'transform': `rotateY(${this.state.angle}deg)`,
     };
+
     // console.log(style);
+    // <Draggable ref={`book_${this.props.book.id}`} >
+    // onMouseMove={this.rotateBook}
+    // <div className="container" ref="book" draggable="false" onDrag={(e)=> console.log(e)}>
     return (
-      <div className="container" ref="book">
-        <Draggable ref={`book_${this.props.book.id}`} >
-        <div className="box"
-          style={style}
-          onMouseMove={this.rotateBook}
-          >
-          <figure className="side front">1</figure>
-          <figure className="side right">2</figure>
-          <figure className="side left">3</figure>
-          <figure className="side top">4</figure>
-          <figure className="side bottom">5</figure>
-          <figure className="side back">6</figure>
+      <div className="book">
+        <div className="container" ref="book">
+          <div className="box"
+            style={style}
+            >
+            <figure className="side front">1</figure>
+            <figure className="side right">2</figure>
+            <figure className="side left">3</figure>
+            <figure className="side top">4</figure>
+            <figure className="side bottom">5</figure>
+            <figure className="side back">6</figure>
+          </div>
         </div>
-      </Draggable>
+        <input type="range" min="-90" max="90" defaultValue="50" className="slider"
+          onChange={(e)=>this.setState({angle: e.currentTarget.value})}
+          />
       </div>
     );
+  // </Draggable>
   }
 }
 export default Book;

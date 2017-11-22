@@ -12898,9 +12898,9 @@ var Book = function (_React$Component) {
   function Book(props) {
     _classCallCheck(this, Book);
 
-    var _this = _possibleConstructorReturn(this, (Book.__proto__ || Object.getPrototypeOf(Book)).call(this, props));
+    // this.rotateBook = this.rotateBook.bind(this);
 
-    _this.rotateBook = _this.rotateBook.bind(_this);
+    var _this = _possibleConstructorReturn(this, (Book.__proto__ || Object.getPrototypeOf(Book)).call(this, props));
 
     _this.state = {
       angle: 0
@@ -12913,37 +12913,40 @@ var Book = function (_React$Component) {
     value: function componentDidMount() {
       this.book = _reactDom2.default.findDOMNode(this.refs.book);
     }
-  }, {
-    key: 'rotateBook',
-    value: function rotateBook(e) {
-      var rect = this.book.getBoundingClientRect();
-      var angle = -90 * (1 - (e.clientX - rect.left) / (rect.right - rect.left));
-      // console.log('x:' ,e.clientX);
-      // console.log('rect left:' , rect.left);
-      // console.log( 'x -left',e.clientX - rect.left);
-      // console.log( 'right-left',rect.right - rect.left);
-      // console.log( 'x-l/r-l',(e.clientX - rect.left)/(rect.right - rect.left));
-      // console.log( 'nagle',angle);
-      this.setState({ angle: angle });
-    }
+
+    // rotateBook(e){
+    //   let rect = this.book.getBoundingClientRect();
+    //   let angle = 0;
+    //   let percentRight = (1 - (e.clientX - rect.left)/(rect.right - rect.left));
+    //   let percentLeft = (1 - (e.clientX - rect.right)/(rect.right - rect.left));
+    //
+    //   this.setState({angle: angle});
+    // }
+
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var style = {
-        transform: 'rotateY(' + this.state.angle + 'deg)'
+        'transformOrigin': ' center center -100px',
+        'transform': 'rotateY(' + this.state.angle + 'deg)'
       };
+
       // console.log(style);
+      // <Draggable ref={`book_${this.props.book.id}`} >
+      // onMouseMove={this.rotateBook}
+      // <div className="container" ref="book" draggable="false" onDrag={(e)=> console.log(e)}>
       return _react2.default.createElement(
         'div',
-        { className: 'container', ref: 'book' },
+        { className: 'book' },
         _react2.default.createElement(
-          _reactDraggable2.default,
-          { ref: 'book_' + this.props.book.id },
+          'div',
+          { className: 'container', ref: 'book' },
           _react2.default.createElement(
             'div',
             { className: 'box',
-              style: style,
-              onMouseMove: this.rotateBook
+              style: style
             },
             _react2.default.createElement(
               'figure',
@@ -12976,8 +12979,14 @@ var Book = function (_React$Component) {
               '6'
             )
           )
-        )
+        ),
+        _react2.default.createElement('input', { type: 'range', min: '-90', max: '90', defaultValue: '50', className: 'slider',
+          onChange: function onChange(e) {
+            return _this2.setState({ angle: e.currentTarget.value });
+          }
+        })
       );
+      // </Draggable>
     }
   }]);
 

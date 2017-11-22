@@ -2,9 +2,9 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-$height: 250px; //200px
-$width: 50px; //300px
-$depth: 20px; //100px
+$height: 200px; //200px
+$width: 35px; //300px
+$depth: 150px; //100px
 //
 // $height: 150px; //200px
 // $width: 50px; //300px
@@ -79,11 +79,22 @@ align-items: center;
   width: $depth;
   height: $height;
   // left: $depth/2;
+}
+
+.box .right {
   background-image: url('/assets/TheHobbit_cover.jpg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+.box .left {
+  background-image: url('/assets/TheHobbit_backcover.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 
 .box .top,
 .box .bottom {
@@ -93,7 +104,7 @@ align-items: center;
 }
 
 .box .front  { transform: rotateY(   0deg ) translateZ(  $depth/2 ); }
-.box .back   { transform: rotateX( 180deg ) translateZ(  $depth/2  ); }
+.box .back   { transform: rotateX( 180deg ) translateZ(  $depth/2 ) rotateZ(180deg);}
 .box .right  { transform: rotateY(  90deg ) translateZ( $width/2  ); }
 .box .left   { transform: rotateY( -90deg ) translateZ( $width/2 ); }
 .box .top    { transform: rotateX(  90deg ) translateZ( $height/2 ); }
@@ -104,3 +115,33 @@ align-items: center;
 // .box .left   { transform: rotateY( -90deg ) translateZ( 100px ); }
 // .box .top    { transform: rotateX(  90deg ) translateZ( 100px ); }
 // .box .bottom { transform: rotateX( -90deg ) translateZ( 100px ); }
+
+.book {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slider {
+  padding: 0;
+  margin: 0;
+  z-index: 50;
+  width: 325px;
+  height: 200px;
+  position: absolute;
+  color: transparent;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1px;
+  height: 1px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
