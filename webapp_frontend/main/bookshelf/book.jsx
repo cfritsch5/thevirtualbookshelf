@@ -14,7 +14,7 @@ class Book extends React.Component {
   }
 
   componentDidMount(){
-    this.book = ReactDOM.findDOMNode(this.refs.book);
+    // this.book = ReactDOM.findDOMNode(this.refs.book);
   }
 
   // rotateBook(e){
@@ -24,22 +24,30 @@ class Book extends React.Component {
   //   let percentLeft = (1 - (e.clientX - rect.right)/(rect.right - rect.left));
   //   this.setState({angle: angle});
   // }
-
+  // position(){
+  //   return({x: this.props.position});
+  // }
   render(){
-    let style = {
-      'transformOrigin':` center center -100px`,
-      'transform': `rotateY(${this.state.angle}deg)`,
-    };
+    // let style = {
+    //   'transformOrigin':` center center -100px`,
+    // };
+    // 'transform': `rotateY(${this.state.angle}deg)`,
 
     // console.log(style);
-    // <Draggable ref={`book_${this.props.book.id}`} >
     // onMouseMove={this.rotateBook}
+    // <Draggable
     // <div className="container" ref="book" draggable="false" onDrag={(e)=> console.log(e)}>
+    //   ref={`book_${this.props.book.id}`}
+    //   axis="x"
+    //   defaultPosition={{x: 0, y: 0}}
+    //   bounds={{left: 50, right: 50,}}
+    //   >
+    // style={style}
+
     return (
       <div className="book">
         <div className="container" ref="book">
           <div className="box"
-            style={style}
             >
             <figure className="side front">1</figure>
             <figure className="side right">2</figure>
@@ -49,13 +57,13 @@ class Book extends React.Component {
             <figure className="side back">6</figure>
           </div>
         </div>
-        <input className="slider"
-          type="range" min="-90" max="90" defaultValue="0"
-          onChange={(e)=>this.setState({angle: e.currentTarget.value})}
-          />
       </div>
     );
   // </Draggable>
+    // <input className="slider"
+    //   type="range" min="-90" max="90" defaultValue="0"
+    //   onChange={(e)=>this.setState({angle: e.currentTarget.value})}
+    //   />
   }
 }
 export default Book;

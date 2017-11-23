@@ -3,12 +3,14 @@ import Book from './book';
 import BookContainer from './book_container';
 import Draggable from 'react-draggable';
 import ReactDOM from 'react-dom';
+import ReactGridLayout from 'react-grid-layout';
 
 class BookShelf extends React.Component {
   constructor(props){
     super(props);
     this.state ={
-      books: []
+      books: [],
+      layout: [],
     };
 
     this.logout = this.logout.bind(this);
@@ -29,21 +31,24 @@ class BookShelf extends React.Component {
 
   componentWillMount(){
     let books = [];
+    let layout = [];
     this.props.fetchbooks().then((b)=>{
       let i = 0;
-      let defaultWidth = 35;
+      let defaultWidth = 50;
       b.books.forEach((book)=>{
-        console.log(book);
+        // console.log(book);
+        layout.push({i:`${i}`, x: i, y: 0, w: 1, h: 2});
         books.push(
           // <Draggable i={`book_${book.i}`} key={i}>
-            // <div>
-              <Book book={book} key={i} position={35*i}/>
-            // </div>
+            <div key={i}>
+              <Book book={book} key={i}/>
+            </div>
           // </Draggable>
         );
         i = i + 1;
       });
-      this.setState({books: books});
+      console.log(layout);
+      this.setState({books: books, layout: layout});
     });
   }
   //
@@ -56,14 +61,28 @@ class BookShelf extends React.Component {
   // }
 
   render() {
-    let user = this.props.currentUser;
-    // console.log(user);
-    let books = this.state.books;
+    // let user = this.props.currentUser;
+    // // console.log(user);
+    // let books = this.state.books;
+    // let layout = [
+    //     {i: 'a', x: 0, y: 0, w: 1, h: 2},
+    //     {i: 'b', x: 1, y: 0, w: 3, h: 2},
+    //     {i: 'c', x: 4, y: 0, w: 1, h: 2},
+    //     {i: 'd', x: 4, y: 0, w: 1, h: 2},
+    //   ];
+    //   layout = this.state.layout;
+    //   console.log(layout);
     return (
       <div className="bookshelf">
           <h1>BookShelf</h1>
           <div className="books">
-            {books}
+            <ReactGridLayout className="layout"
+              layout={this.state.layout}
+              isResizable={false}
+              cols={10}
+              rowHeight={100} width={500}>
+              {this.state.books}
+            </ReactGridLayout>
           </div>
           <button onClick={this.logout}>logout</button>
           <button onClick={this.addBook}>Add Book</button>

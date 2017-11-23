@@ -35,16 +35,20 @@ t   |___|/ d
   // width: $width;
   // height: $height;
   perspective: 600px;
-  display: flex;
-justify-content: center;
-align-items: center;
+  margin: 50px;
+  // display: flex;
+// justify-content: center;
+// align-items: center;
 }
 .container {
   width: $width;
   height: $height;
   // position: relative;
   transform-style: preserve-3d;
+}
 
+.react-grid-layout, .react-grid-item {
+  transform-style: preserve-3d;
 }
 
 .box {
@@ -116,11 +120,11 @@ align-items: center;
 // .box .top    { transform: rotateX(  90deg ) translateZ( 100px ); }
 // .box .bottom { transform: rotateX( -90deg ) translateZ( 100px ); }
 
-.book {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+// .book {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// }
 
 .slider {
   padding: 0;
