@@ -17,7 +17,6 @@ class BookShelf extends React.Component {
   }
 
   logout(e){
-    console.log(e);
     let user = this.props.currentUser;
     this.props.logout({user});
   }
@@ -31,16 +30,18 @@ class BookShelf extends React.Component {
   componentWillMount(){
     let books = [];
     this.props.fetchbooks().then((b)=>{
-      let id = 0;
+      let i = 0;
+      let defaultWidth = 35;
       b.books.forEach((book)=>{
+        console.log(book);
         books.push(
-          // <Draggable id={`book_${book.id}`} key={id}>
+          // <Draggable i={`book_${book.i}`} key={i}>
             // <div>
-              <Book book={book} key={id}/>
+              <Book book={book} key={i} position={35*i}/>
             // </div>
           // </Draggable>
         );
-        id = id + 1;
+        i = i + 1;
       });
       this.setState({books: books});
     });

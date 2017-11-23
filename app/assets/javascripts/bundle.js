@@ -48106,10 +48106,14 @@ var App = function App() {
       )
     ),
     _react2.default.createElement(
-      _reactRouterDom.Switch,
-      null,
-      _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _home_container2.default }),
-      _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/login', component: _session_form_container2.default })
+      'div',
+      { className: 'content' },
+      _react2.default.createElement(
+        _reactRouterDom.Switch,
+        null,
+        _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _home_container2.default }),
+        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/login', component: _session_form_container2.default })
+      )
     )
   );
 };
@@ -49386,7 +49390,6 @@ var BookShelf = function (_React$Component) {
   _createClass(BookShelf, [{
     key: 'logout',
     value: function logout(e) {
-      console.log(e);
       var user = this.props.currentUser;
       this.props.logout({ user: user });
     }
@@ -49404,16 +49407,18 @@ var BookShelf = function (_React$Component) {
 
       var books = [];
       this.props.fetchbooks().then(function (b) {
-        var id = 0;
+        var i = 0;
+        var defaultWidth = 35;
         b.books.forEach(function (book) {
+          console.log(book);
           books.push(
-          // <Draggable id={`book_${book.id}`} key={id}>
+          // <Draggable i={`book_${book.i}`} key={i}>
           // <div>
-          _react2.default.createElement(_book2.default, { book: book, key: id })
+          _react2.default.createElement(_book2.default, { book: book, key: i, position: 35 * i })
           // </div>
           // </Draggable>
           );
-          id = id + 1;
+          i = i + 1;
         });
         _this2.setState({ books: books });
       });
@@ -49943,6 +49948,8 @@ var BookReducer = function BookReducer() {
     case 'RECEIVE_BOOKS':
       // console.log(" in reducer:",action.books);
       return (0, _lodash.merge)({}, action.books);
+    case 'SET_POSITIONS':
+      return state;
     default:
       return state;
   }

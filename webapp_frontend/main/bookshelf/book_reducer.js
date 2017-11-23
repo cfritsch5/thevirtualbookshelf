@@ -5,6 +5,8 @@ const BookReducer = (state = {}, action) => {
     case 'RECEIVE_BOOKS':
     // console.log(" in reducer:",action.books);
       return merge({}, action.books);
+    case 'SET_POSITIONS':
+    return state;
     default:
       return state;
   }

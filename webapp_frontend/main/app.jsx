@@ -21,11 +21,12 @@ const App = () => (
         </div>
       </Link>
     </header>
-    
+    <div className="content">
       <Switch>
         <Route path="/" component={HomeContainer} />
         <Route exact path="/login" component={SessionFormContainer} />
       </Switch>
+    </div>
   </div>
 );
 
