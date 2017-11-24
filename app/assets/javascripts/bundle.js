@@ -12902,11 +12902,9 @@ var Book = function (_React$Component) {
   function Book(props) {
     _classCallCheck(this, Book);
 
-    // this.rotateBook = this.rotateBook.bind(this);
     var _this = _possibleConstructorReturn(this, (Book.__proto__ || Object.getPrototypeOf(Book)).call(this, props));
 
-    _this.getDisplayWidth = _this.getDisplayWidth.bind(_this);
-
+    _this.shortcode = _this.shortcode.bind(_this);
     _this.state = {
       angle: 0,
       book: _this.props.book
@@ -12932,64 +12930,35 @@ var Book = function (_React$Component) {
       // this.getDisplayWidth(this);
       // this.test = "TESTING";
     }
-
-    // rotateBook(e){
-    //   let rect = this.book.getBoundingClientRect();
-    //   let angle = 0;
-    //   let percentRight = (1 - (e.clientX - rect.left)/(rect.right - rect.left));
-    //   let percentLeft = (1 - (e.clientX - rect.right)/(rect.right - rect.left));
-    //   this.setState({angle: angle});
-    // }
-    // position(){
-    //   return({x: this.props.position});
-    // }
-
   }, {
-    key: 'getDisplayWidth',
-    value: function getDisplayWidth(e) {
-      // console.log(e);
-      // console.log(this.right.getBoundingClientRect());
+    key: 'shortcode',
+    value: function shortcode() {
+      // TODO: make shortcode util that will ensure uniqeness
+      var title = this.props.book.title;
+      title = title.replace(/the|of|and|in|to|on|by/gi, '');
+      title = title.match(/\b\w/gi).join("");
+      return title;
     }
   }, {
     key: 'render',
     value: function render() {
-      // this.getDisplayWidth();
-      // let style = {
-      //   'transformOrigin':` center center -100px`,
-      // };
-      // 'transform': `rotateY(${this.state.angle}deg)`,
-
-      // console.log(style);
-      // onMouseMove={this.rotateBook}
-      // <div className="container" ref="book" draggable="false" onDrag={(e)=> console.log(e)}>
-      //   ref={`book_${this.props.book.id}`}
-      //   axis="x"
-      //   defaultPosition={{x: 0, y: 0}}
-      //   bounds={{left: 50, right: 50,}}
-      //   >
 
       var height = this.props.book.height || 200; //px
       var width = 35; //px
       var depth = 150; //px
-      var title = this.props.book.title.replace(/\s/g, '-');
-      //  util shortcode - remove the and etc
-      //  and abbreviate so Harry Potter and The Chamber of Secrets
-      //  goes to HPCS
-      //  maybe us redux to manage shortcodes and make sure there are no duplicates
-
-      console.log(title);
+      var title = this.shortcode();
       return _react2.default.createElement(
         'div',
-        { className: 'book ' + this.props.book.title, onClick: function onClick(e) {
+        { className: 'book ' + title, onClick: function onClick(e) {
             return console.log('bookClick', e);
           } },
         _react2.default.createElement(_bookCSS2.default, { title: title, width: width, height: height, depth: depth }),
         _react2.default.createElement(
           'div',
-          { className: 'container', ref: 'book' },
+          { className: 'container ' + title + '-container', ref: 'book' },
           _react2.default.createElement(
             'div',
-            { className: 'box' },
+            { className: 'box ' + title + '-box' },
             _react2.default.createElement('figure', { ref: 'front', className: 'side front' }),
             _react2.default.createElement('figure', { ref: 'right', className: 'side right' }),
             _react2.default.createElement('figure', { ref: 'left', className: 'side left' }),
@@ -12999,10 +12968,6 @@ var Book = function (_React$Component) {
           )
         )
       );
-      // <input className="slider"
-      //   type="range" min="-90" max="90" defaultValue="0"
-      //   onChange={(e)=>this.setState({angle: e.currentTarget.value})}
-      //   />
     }
   }]);
 
@@ -50064,7 +50029,7 @@ var BookCSS = function BookCSS(_ref) {
   return _react2.default.createElement(
     "style",
     { type: "text/css", scoped: true },
-    "\n    ." + title + " {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n    .container {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n\n    .box .front {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n\n    .box .back {\n      width: " + width + "px;\n      height: " + (height - 5) + "px;\n    }\n\n    .box .front {\n      background-image: url('/assets/TheHobbit_spine.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    .box .right,\n    .box .left {\n      width: " + depth + "px;\n      height: " + height + "px;\n    }\n\n    .box .right {\n      background-image: url('/assets/TheHobbit_cover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    .box .left {\n      background-image: url('/assets/TheHobbit_backcover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    .box .top,\n    .box .bottom {\n      width: " + width + "px;\n      height: " + depth + "px;\n    }\n\n    .box .front  { transform: rotateY(   0deg ) translateZ(  " + depth / 2 + "px ); }\n    .box .back   { transform: rotateX( 180deg ) translateZ(  " + (depth / 2 - 5) + "px ) rotateZ(180deg);}\n    .box .right  { transform: rotateY(  90deg ) translateZ( " + width / 2 + "px  ); }\n    .box .left   { transform: rotateY( -90deg ) translateZ( " + width / 2 + "px ); }\n    .box .top    { transform: rotateX(  90deg ) translateZ( " + (height / 2 - 5) + "px ); }\n    .box .bottom { transform: rotateX( -90deg ) translateZ( " + (height / 2 - 5) + "px ); }\n    "
+    "\n    ." + title + " {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n    ." + title + "-container {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n\n    ." + title + "-box .front {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n\n    ." + title + "-box .back {\n      width: " + width + "px;\n      height: " + (height - 5) + "px;\n    }\n\n    ." + title + "-box .front {\n      background-image: url('/assets/TheHobbit_spine.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + title + "-box .right,\n    ." + title + "-box .left {\n      width: " + depth + "px;\n      height: " + height + "px;\n    }\n\n    ." + title + "-box .right {\n      background-image: url('/assets/TheHobbit_cover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + title + "-box .left {\n      background-image: url('/assets/TheHobbit_backcover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + title + "-box .top,\n    ." + title + "-box .bottom {\n      width: " + width + "px;\n      height: " + depth + "px;\n    }\n\n    ." + title + "-box .front  { transform: rotateY(   0deg ) translateZ(  " + depth / 2 + "px ); }\n    ." + title + "-box .back   { transform: rotateX( 180deg ) translateZ(  " + (depth / 2 - 5) + "px ) rotateZ(180deg);}\n    ." + title + "-box .right  { transform: rotateY(  90deg ) translateZ( " + width / 2 + "px  ); }\n    ." + title + "-box .left   { transform: rotateY( -90deg ) translateZ( " + width / 2 + "px ); }\n    ." + title + "-box .top    { transform: rotateX(  90deg ) translateZ( " + (height / 2 - 5) + "px ); }\n    ." + title + "-box .bottom { transform: rotateX( -90deg ) translateZ( " + (height / 2 - 5) + "px ); }\n    "
   );
 };
 
