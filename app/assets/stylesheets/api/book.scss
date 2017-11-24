@@ -31,11 +31,18 @@ t   |___|/ d
     width
 
 */
-.books {
+.bookshelf {
   // width: $width;
   // height: $height;
   perspective: 600px;
   margin: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.shelf {
+  transform-style: preserve-3d;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -46,13 +53,6 @@ t   |___|/ d
   justify-content: center;
   align-items: center;
   transform-style: preserve-3d;
-}
-
-.shelf {
-  transform-style: preserve-3d;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .container {
@@ -75,6 +75,7 @@ t   |___|/ d
   justify-content: center;
   align-items: center;
 }
+
 .box figure {
   margin: 0;
   display: block;
@@ -99,21 +100,24 @@ t   |___|/ d
   height: $height;
   // left: $depth/2;
 }
+//
+// .box .right {
+//   background-image: url('/assets/TheHobbit_cover.jpg');
+//   background-position: center;
+//   background-repeat: no-repeat;
+//   background-size: cover;
+// }
+//
+// .box .left {
+//   background-image: url('/assets/TheHobbit_backcover.jpg');
+//   background-position: center;
+//   background-repeat: no-repeat;
+//   background-size: cover;
+// }
 
-.box .right {
-  background-image: url('/assets/TheHobbit_cover.jpg');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+.box .top, .box .bottom, .box .back {
+  background: lightgrey;
 }
-
-.box .left {
-  background-image: url('/assets/TheHobbit_backcover.jpg');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
 
 .box .top,
 .box .bottom {
@@ -125,8 +129,8 @@ t   |___|/ d
 .box .back   { transform: rotateX( 180deg ) translateZ(  $depth/2 ) rotateZ(180deg);}
 .box .right  { transform: rotateY(  90deg ) translateZ( $width/2  ); }
 .box .left   { transform: rotateY( -90deg ) translateZ( $width/2 ); }
-.box .top    { transform: rotateX(  90deg ) translateZ( $height/2 ); }
-.box .bottom { transform: rotateX( -90deg ) translateZ( $height/2 ); }
+.box .top    { transform: rotateX(  90deg ) translateZ( $height/2 - 5); }
+.box .bottom { transform: rotateX( -90deg ) translateZ( $height/2 - 5); }
 
 
 

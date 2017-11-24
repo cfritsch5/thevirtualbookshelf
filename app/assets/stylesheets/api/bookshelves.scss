@@ -28,6 +28,9 @@
 .react-draggable-dragging .book {
   // transform: translateZ(150px) rotate(-90deg);
   transform: translateZ(150px);
+  // translateZ to simulate pulling the book out of the shelf 
+  // translated to default depth of book currently
+  // ideally would be programatically set - either by max depth or per book
   transform-style: preserve-3d;
   transition-duration: 100ms;
   z-index: 100;

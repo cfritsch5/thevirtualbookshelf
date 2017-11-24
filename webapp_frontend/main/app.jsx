@@ -7,23 +7,14 @@ import {
   Link,
   HashRouter
 } from 'react-router-dom';
+import HeaderContainer from './header/header_container';
 import HomeContainer from './session/home_container';
 import SessionFormContainer from'./session/session_form_container';
 import BookShelfContainer from './bookshelf/bookshelf_container';
+
 const App = () => (
-  <div
-    onKeyPress={(e)=>console.log('press',e)}
-    onKeyDown={(e)=>console.log('down',e)}
-    onKeyUp={(e)=>console.log('up',e)}>
-
-    <header>
-
-      <Link to="/" className="header-link">
-        <div className="header-title">
-          <h1>Virtual Book Shelf</h1>
-        </div>
-      </Link>
-    </header>
+  <div>
+    <HeaderContainer/>
     <div className="content">
       <Switch>
         <Route path="/" component={HomeContainer} />

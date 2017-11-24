@@ -48086,6 +48086,10 @@ var _reactRedux = __webpack_require__(25);
 
 var _reactRouterDom = __webpack_require__(20);
 
+var _header_container = __webpack_require__(307);
+
+var _header_container2 = _interopRequireDefault(_header_container);
+
 var _home_container = __webpack_require__(278);
 
 var _home_container2 = _interopRequireDefault(_home_container);
@@ -48103,33 +48107,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var App = function App() {
   return _react2.default.createElement(
     'div',
-    {
-      onKeyPress: function onKeyPress(e) {
-        return console.log('press', e);
-      },
-      onKeyDown: function onKeyDown(e) {
-        return console.log('down', e);
-      },
-      onKeyUp: function onKeyUp(e) {
-        return console.log('up', e);
-      } },
-    _react2.default.createElement(
-      'header',
-      null,
-      _react2.default.createElement(
-        _reactRouterDom.Link,
-        { to: '/', className: 'header-link' },
-        _react2.default.createElement(
-          'div',
-          { className: 'header-title' },
-          _react2.default.createElement(
-            'h1',
-            null,
-            'Virtual Book Shelf'
-          )
-        )
-      )
-    ),
+    null,
+    _react2.default.createElement(_header_container2.default, null),
     _react2.default.createElement(
       'div',
       { className: 'content' },
@@ -49398,8 +49377,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// import ReactGridLayout from 'react-grid-layout';
-
 var BookShelf = function (_React$Component) {
   _inherits(BookShelf, _React$Component);
 
@@ -49409,23 +49386,15 @@ var BookShelf = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (BookShelf.__proto__ || Object.getPrototypeOf(BookShelf)).call(this, props));
 
     _this.state = {
-      books: [],
-      layout: []
+      books: []
     };
 
-    _this.logout = _this.logout.bind(_this);
     _this.addBook = _this.addBook.bind(_this);
     // this.gofetchbooks = this.gofetchbooks.bind(this);
     return _this;
   }
 
   _createClass(BookShelf, [{
-    key: 'logout',
-    value: function logout(e) {
-      var user = this.props.currentUser;
-      this.props.logout({ user: user });
-    }
-  }, {
     key: 'addBook',
     value: function addBook(book) {
       var books = this.state.books;
@@ -49438,85 +49407,34 @@ var BookShelf = function (_React$Component) {
       var _this2 = this;
 
       var books = [];
-      var layout = [];
       this.props.fetchbooks().then(function (b) {
         var i = 0;
-        var defaultWidth = 50;
         b.books.forEach(function (book) {
-          // console.log(book);
-          layout.push({ i: '' + i, x: i, y: 0, w: 1, h: 2 });
-          books.push(
-          // <Draggable i={`book_${book.i}`} key={i}>
-          _react2.default.createElement(
+          // extra div is used by draggable inside shelf class
+          books.push(_react2.default.createElement(
             'div',
             { key: i },
             _react2.default.createElement(_book2.default, { book: book, key: i })
-          )
-          // </Draggable>
-          );
+          ));
           i = i + 1;
         });
-        console.log(layout);
-        _this2.setState({ books: books, layout: layout });
+        _this2.setState({ books: books });
       });
     }
-    //
-    // gofetchbooks(e){
-    //   e.preventDefault();
-    // }
-    //
-    // reftest(e){
-    //   ReactDOM.findDOMNode(this.ref.book_1);
-    // }
-
   }, {
     key: 'render',
     value: function render() {
-      // let user = this.props.currentUser;
-      // // console.log(user);
-      // let books = this.state.books;
-      // let layout = [
-      //     {i: 'a', x: 0, y: 0, w: 1, h: 2},
-      //     {i: 'b', x: 1, y: 0, w: 3, h: 2},
-      //     {i: 'c', x: 4, y: 0, w: 1, h: 2},
-      //     {i: 'd', x: 4, y: 0, w: 1, h: 2},
-      //   ];
-      //   layout = this.state.layout;
-      //   console.log(layout);
-      //   {this.state.books}
-      // let testStyle={background:'red', height: '50px', width: '50px'};
-      // <div className="B" style={testStyle}>B</div>
-      // <button onClick={this.logout}>logout</button>
+
       // <button onClick={this.addBook}>Add Book</button>
       return _react2.default.createElement(
         'div',
         { className: 'bookshelf' },
         _react2.default.createElement(
-          'div',
-          { className: 'books' },
-          _react2.default.createElement(
-            _shelf2.default,
-            null,
-            this.state.books
-          )
+          _shelf2.default,
+          null,
+          this.state.books
         )
       );
-      // return (
-      //   <div className="bookshelf">
-      //       <h1>BookShelf</h1>
-      //       <div className="books">
-      //         <ReactGridLayout className="layout"
-      //           layout={this.state.layout}
-      //           isResizable={false}
-      //           cols={1}
-      //           rowHeight={10} width={100}>
-      //           {this.state.books}
-      //         </ReactGridLayout>
-      //       </div>
-      //       <button onClick={this.logout}>logout</button>
-      //       <button onClick={this.addBook}>Add Book</button>
-      //   </div>
-      // );
     }
   }]);
 
@@ -50066,20 +49984,50 @@ var Shelf = function (_React$Component) {
   function Shelf(props) {
     _classCallCheck(this, Shelf);
 
-    return _possibleConstructorReturn(this, (Shelf.__proto__ || Object.getPrototypeOf(Shelf)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Shelf.__proto__ || Object.getPrototypeOf(Shelf)).call(this, props));
+
+    _this.onStart = _this.onStart.bind(_this);
+    _this.onDrag = _this.onDrag.bind(_this);
+    _this.onStop = _this.onStop.bind(_this);
+    return _this;
   }
 
   _createClass(Shelf, [{
+    key: 'onStart',
+    value: function onStart(e) {
+      console.log(e);
+    }
+  }, {
+    key: 'onDrag',
+    value: function onDrag(e) {
+      console.log(e);
+    }
+  }, {
+    key: 'onStop',
+    value: function onStop(e) {
+      console.log(e);
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       return _react2.default.createElement(
         'div',
         { className: 'shelf' },
         _react2.default.Children.map(this.props.children, function (child) {
           return _react2.default.createElement(
-            _reactDraggable2.default,
-            { axis: 'x' },
-            child
+            'div',
+            { className: 'bookPosition' },
+            _react2.default.createElement(
+              _reactDraggable2.default,
+              {
+                onStart: _this2.onStart,
+                onDrag: _this2.onDrag,
+                onStop: _this2.onStop
+              },
+              child
+            )
           );
         })
       );
@@ -50116,11 +50064,99 @@ var BookCSS = function BookCSS(_ref) {
   return _react2.default.createElement(
     "style",
     { type: "text/css", scoped: true },
-    "\n    ." + title + " {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n    .container {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n\n    .box .front,\n    .box .back {\n      width: " + width + "px;\n      height: " + height + "px;\n      background-image: url('/assets/TheHobbit_spine.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    .box .right,\n    .box .left {\n      width: " + depth + "px;\n      height: " + height + "px;\n    }\n\n    .box .right {\n      background-image: url('/assets/TheHobbit_cover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    .box .left {\n      background-image: url('/assets/TheHobbit_backcover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    .box .top,\n    .box .bottom {\n      width: " + width + "px;\n      height: " + depth + "px;\n    }\n\n    .box .front  { transform: rotateY(   0deg ) translateZ(  " + depth / 2 + "px ); }\n    .box .back   { transform: rotateX( 180deg ) translateZ(  " + depth / 2 + "px ) rotateZ(180deg);}\n    .box .right  { transform: rotateY(  90deg ) translateZ( " + width / 2 + "px  ); }\n    .box .left   { transform: rotateY( -90deg ) translateZ( " + width / 2 + "px ); }\n    .box .top    { transform: rotateX(  90deg ) translateZ( " + height / 2 + "px ); }\n    .box .bottom { transform: rotateX( -90deg ) translateZ( " + height / 2 + "px ); }\n    "
+    "\n    ." + title + " {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n    .container {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n\n    .box .front {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n\n    .box .back {\n      width: " + width + "px;\n      height: " + (height - 5) + "px;\n    }\n\n    .box .front {\n      background-image: url('/assets/TheHobbit_spine.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    .box .right,\n    .box .left {\n      width: " + depth + "px;\n      height: " + height + "px;\n    }\n\n    .box .right {\n      background-image: url('/assets/TheHobbit_cover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    .box .left {\n      background-image: url('/assets/TheHobbit_backcover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    .box .top,\n    .box .bottom {\n      width: " + width + "px;\n      height: " + depth + "px;\n    }\n\n    .box .front  { transform: rotateY(   0deg ) translateZ(  " + depth / 2 + "px ); }\n    .box .back   { transform: rotateX( 180deg ) translateZ(  " + (depth / 2 - 5) + "px ) rotateZ(180deg);}\n    .box .right  { transform: rotateY(  90deg ) translateZ( " + width / 2 + "px  ); }\n    .box .left   { transform: rotateY( -90deg ) translateZ( " + width / 2 + "px ); }\n    .box .top    { transform: rotateX(  90deg ) translateZ( " + (height / 2 - 5) + "px ); }\n    .box .bottom { transform: rotateX( -90deg ) translateZ( " + (height / 2 - 5) + "px ); }\n    "
   );
 };
 
 exports.default = BookCSS;
+
+/***/ }),
+/* 307 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _reactRedux = __webpack_require__(25);
+
+var _header = __webpack_require__(308);
+
+var _header2 = _interopRequireDefault(_header);
+
+var _session_actions = __webpack_require__(70);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var mapStateToProps = function mapStateToProps(_ref) {
+  var session = _ref.session;
+  return {
+    currentUser: session.currentUser
+  };
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {
+    logout: function logout(user) {
+      return dispatch((0, _session_actions.logout)(user));
+    }
+  };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_header2.default);
+
+/***/ }),
+/* 308 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(4);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = __webpack_require__(20);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Header = function Header(_ref) {
+  var currentUser = _ref.currentUser,
+      logout = _ref.logout;
+  return _react2.default.createElement(
+    'header',
+    null,
+    _react2.default.createElement(
+      _reactRouterDom.Link,
+      { to: '/', className: 'header-link' },
+      _react2.default.createElement(
+        'div',
+        { className: 'header-title' },
+        _react2.default.createElement(
+          'h1',
+          null,
+          'Virtual Book Shelf'
+        )
+      )
+    ),
+    _react2.default.createElement(
+      'button',
+      { onClick: function onClick() {
+          return logout(currentUser);
+        } },
+      'logout'
+    )
+  );
+};
+
+exports.default = Header;
 
 /***/ })
 /******/ ]);

@@ -12,10 +12,17 @@ const BookCSS = ({title, width, height, depth}) => (
       height: ${height}px;
     }
 
-    .box .front,
-    .box .back {
+    .box .front {
       width: ${width}px;
       height: ${height}px;
+    }
+
+    .box .back {
+      width: ${width}px;
+      height: ${height - 5}px;
+    }
+
+    .box .front {
       background-image: url('/assets/TheHobbit_spine.jpg');
       background-position: center;
       background-repeat: no-repeat;
@@ -49,11 +56,11 @@ const BookCSS = ({title, width, height, depth}) => (
     }
 
     .box .front  { transform: rotateY(   0deg ) translateZ(  ${depth/2}px ); }
-    .box .back   { transform: rotateX( 180deg ) translateZ(  ${depth/2}px ) rotateZ(180deg);}
+    .box .back   { transform: rotateX( 180deg ) translateZ(  ${depth/2 - 5}px ) rotateZ(180deg);}
     .box .right  { transform: rotateY(  90deg ) translateZ( ${width/2}px  ); }
     .box .left   { transform: rotateY( -90deg ) translateZ( ${width/2}px ); }
-    .box .top    { transform: rotateX(  90deg ) translateZ( ${height/2}px ); }
-    .box .bottom { transform: rotateX( -90deg ) translateZ( ${height/2}px ); }
+    .box .top    { transform: rotateX(  90deg ) translateZ( ${height/2 - 5}px ); }
+    .box .bottom { transform: rotateX( -90deg ) translateZ( ${height/2 - 5}px ); }
     `}
   </style>
 );
