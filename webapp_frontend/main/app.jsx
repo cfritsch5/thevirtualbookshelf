@@ -11,7 +11,10 @@ import HomeContainer from './session/home_container';
 import SessionFormContainer from'./session/session_form_container';
 import BookShelfContainer from './bookshelf/bookshelf_container';
 const App = () => (
-  <div>
+  <div
+    onKeyPress={(e)=>console.log('press',e)}
+    onKeyDown={(e)=>console.log('down',e)}
+    onKeyUp={(e)=>console.log('up',e)}>
 
     <header>
 

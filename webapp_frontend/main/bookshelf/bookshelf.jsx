@@ -3,7 +3,8 @@ import Book from './book';
 import BookContainer from './book_container';
 import Draggable from 'react-draggable';
 import ReactDOM from 'react-dom';
-import ReactGridLayout from 'react-grid-layout';
+import Shelf from './shelf';
+// import ReactGridLayout from 'react-grid-layout';
 
 class BookShelf extends React.Component {
   constructor(props){
@@ -72,22 +73,36 @@ class BookShelf extends React.Component {
     //   ];
     //   layout = this.state.layout;
     //   console.log(layout);
+    //   {this.state.books}
+    // let testStyle={background:'red', height: '50px', width: '50px'};
+    // <div className="B" style={testStyle}>B</div>
+    // <button onClick={this.logout}>logout</button>
+    // <button onClick={this.addBook}>Add Book</button>
     return (
       <div className="bookshelf">
-          <h1>BookShelf</h1>
           <div className="books">
-            <ReactGridLayout className="layout"
-              layout={this.state.layout}
-              isResizable={false}
-              cols={10}
-              rowHeight={100} width={500}>
+            <Shelf>
               {this.state.books}
-            </ReactGridLayout>
+            </Shelf>
           </div>
-          <button onClick={this.logout}>logout</button>
-          <button onClick={this.addBook}>Add Book</button>
       </div>
     );
+    // return (
+    //   <div className="bookshelf">
+    //       <h1>BookShelf</h1>
+    //       <div className="books">
+    //         <ReactGridLayout className="layout"
+    //           layout={this.state.layout}
+    //           isResizable={false}
+    //           cols={1}
+    //           rowHeight={10} width={100}>
+    //           {this.state.books}
+    //         </ReactGridLayout>
+    //       </div>
+    //       <button onClick={this.logout}>logout</button>
+    //       <button onClick={this.addBook}>Add Book</button>
+    //   </div>
+    // );
   }
 }
 export default BookShelf;

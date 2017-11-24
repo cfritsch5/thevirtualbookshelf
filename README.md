@@ -28,3 +28,10 @@ Things you may want to cover:
 https://desandro.github.io/3dtransforms/docs/rectangular-prism.html
 * depends on react-draggable
 https://github.com/mzabriskie/react-draggable
+* test regex
+http://www.pagecolumn.com/tool/regtest.htm
+
+
+#### Referenced
+https://medium.learnreact.com/the-style-tag-and-react-24d6dd3ca974
+https://stackoverflow.com/questions/2830296/using-style-tags-in-the-body-with-other-html

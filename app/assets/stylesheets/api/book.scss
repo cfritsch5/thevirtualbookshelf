@@ -36,20 +36,35 @@ t   |___|/ d
   // height: $height;
   perspective: 600px;
   margin: 50px;
-  // display: flex;
-// justify-content: center;
-// align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.container {
-  width: $width;
-  height: $height;
-  // position: relative;
+
+.book {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   transform-style: preserve-3d;
 }
 
-.react-grid-layout, .react-grid-item {
+.shelf {
+  transform-style: preserve-3d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  width: $width;
+  height: $height;
+  position: relative;
   transform-style: preserve-3d;
 }
+//
+// .react-grid-layout, .react-grid-item {
+//   transform-style: preserve-3d;
+// }
 
 .box {
   width: 100%;
@@ -72,10 +87,10 @@ t   |___|/ d
 .box .back {
   width: $width;
   height: $height;
-  background-image: url('/assets/TheHobbit_spine.jpg');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  // background-image: url('/assets/TheHobbit_spine.jpg');
+  // background-position: center;
+  // background-repeat: no-repeat;
+  // background-size: cover;
 }
 
 .box .right,
@@ -104,7 +119,6 @@ t   |___|/ d
 .box .bottom {
   width: $width;
   height: $depth;
-  // top: $depth/2;
 }
 
 .box .front  { transform: rotateY(   0deg ) translateZ(  $depth/2 ); }
@@ -113,39 +127,29 @@ t   |___|/ d
 .box .left   { transform: rotateY( -90deg ) translateZ( $width/2 ); }
 .box .top    { transform: rotateX(  90deg ) translateZ( $height/2 ); }
 .box .bottom { transform: rotateX( -90deg ) translateZ( $height/2 ); }
-// .box .front  { transform: rotateY(   0deg ) translateZ(  50px ); }
-// .box .back   { transform: rotateX( 180deg ) translateZ(  50px ); }
-// .box .right  { transform: rotateY(  90deg ) translateZ( -50px ); }
-// .box .left   { transform: rotateY( -90deg ) translateZ( 100px ); }
-// .box .top    { transform: rotateX(  90deg ) translateZ( 100px ); }
-// .box .bottom { transform: rotateX( -90deg ) translateZ( 100px ); }
 
-// .book {
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
+
+
+// .slider {
+//   padding: 0;
+//   margin: 0;
+//   z-index: 50;
+//   width: 325px;
+//   height: 200px;
+//   position: absolute;
+//   color: transparent;
+//   background: transparent;
+//   -webkit-appearance: none;
+//   appearance: none;
+//   border: none;
 // }
-
-.slider {
-  padding: 0;
-  margin: 0;
-  z-index: 50;
-  width: 325px;
-  height: 200px;
-  position: absolute;
-  color: transparent;
-  background: transparent;
-  -webkit-appearance: none;
-  appearance: none;
-  border: none;
-}
-
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 1px;
-  height: 1px;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-}
+//
+// .slider::-webkit-slider-thumb {
+//   -webkit-appearance: none;
+//   appearance: none;
+//   width: 1px;
+//   height: 1px;
+//   border: 0;
+//   background: transparent;
+//   cursor: pointer;
+// }
