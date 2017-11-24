@@ -15593,10 +15593,12 @@ var Book = function (_React$Component) {
     _this.rotate = _this.rotate.bind(_this);
     _this.start = _this.start.bind(_this);
     _this.state = {
+      title: "",
       depth: 150,
       angle: 0,
       lastX: 0,
-      book: _this.props.book
+      book: _this.props.book,
+      node: null
     };
     return _this;
   }
@@ -15605,14 +15607,16 @@ var Book = function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       this.depth = 150; //px
-
-      this.book = _reactDom2.default.findDOMNode(this.refs.book);
-      this.front = _reactDom2.default.findDOMNode(this.refs.front);
-      this.right = _reactDom2.default.findDOMNode(this.refs.right);
-      this.left = _reactDom2.default.findDOMNode(this.refs.left);
-      this.top = _reactDom2.default.findDOMNode(this.refs.top);
-      this.bottom = _reactDom2.default.findDOMNode(this.refs.bottom);
-      this.back = _reactDom2.default.findDOMNode(this.refs.back);
+      var node = this.refs[this.state.title];
+      this.setState({ node: node });
+      //
+      // this.book = ReactDOM.findDOMNode(this.refs.book);
+      // this.front = ReactDOM.findDOMNode(this.refs.front);
+      // this.right = ReactDOM.findDOMNode(this.refs.right);
+      // this.left = ReactDOM.findDOMNode(this.refs.left);
+      // this.top = ReactDOM.findDOMNode(this.refs.top);
+      // this.bottom = ReactDOM.findDOMNode(this.refs.bottom);
+      // this.back = ReactDOM.findDOMNode(this.refs.back);
       // console.log('right',this.right.getBoundingClientRect());
       // console.log('front',this.front.getBoundingClientRect());
       // refs get Bounding Client allows me to find out what the actual display
@@ -15620,6 +15624,8 @@ var Book = function (_React$Component) {
       // console.log(this);
       // this.getDisplayWidth(this);
       // this.test = "TESTING";
+      var title = this.shortcode();
+      this.setState({ title: title });
     }
   }, {
     key: 'shortcode',
@@ -15640,14 +15646,18 @@ var Book = function (_React$Component) {
     value: function rotate(e) {
       // console.log('drag',e.clientX);
       var delta = e.clientX - this.state.lastX;
-      var angle = Math.asin(delta / this.state.depth) * 180 / Math.PI;
+      var angle = 2 * Math.asin(delta / this.state.depth) * 180 / Math.PI;
       // console.log("delta, pi, angle",delta, Math.asin(delta/this.state.depth)*180/Math.PI,this.state.angle);
       //
       // console.log(angle,delta);
       if (isNaN(angle)) {
         angle = 0;
       }
-      this.setState({ angle: angle });
+      // this.book = this.refs[this.state.title];
+      // console.log(this.state.node.style);
+      this.state.node.style = 'transform: rotateY(' + angle + 'deg);';
+
+      // this.setState({angle: angle});
     }
   }, {
     key: 'render',
@@ -15656,14 +15666,14 @@ var Book = function (_React$Component) {
       var depth = this.state.depth; //px
       var height = this.props.book.height || 200; //px
       var width = 35; //px
-      var title = this.shortcode();
+      var title = this.state.title;
       return _react2.default.createElement(
         'div',
-        { className: 'book ' + title, draggable: true, onDragStart: this.start, onDrag: this.rotate },
+        { className: 'book ' + title, ref: '' + title, draggable: true, onDragStart: this.start, onDrag: this.rotate },
         _react2.default.createElement(_bookCSS2.default, { title: title, width: width, height: height, depth: depth, angle: this.state.angle }),
         _react2.default.createElement(
           'div',
-          { className: 'container ' + title + '-container', ref: 'book' },
+          { className: 'container ' + title + '-container' },
           _react2.default.createElement(
             'div',
             { className: 'box ' + title + '-box' },
