@@ -12,15 +12,15 @@ class Shelf extends React.Component {
   }
 
   onStart(e){
-    console.log(e);
+    // console.log(e);
   }
 
   onDrag(e){
-    console.log(e);
+    // console.log(e);
   }
 
   onStop(e){
-    console.log(e);
+    // console.log(e);
   }
 
   render(){
@@ -29,6 +29,7 @@ class Shelf extends React.Component {
         {React.Children.map(this.props.children, (child)=> (
           <div className="bookPosition">
             <Draggable
+              disabled={this.props.draggable}
               onStart={this.onStart}
               onDrag={this.onDrag}
               onStop={this.onStop}

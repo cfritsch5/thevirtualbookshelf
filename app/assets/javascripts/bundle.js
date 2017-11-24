@@ -12905,8 +12905,12 @@ var Book = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Book.__proto__ || Object.getPrototypeOf(Book)).call(this, props));
 
     _this.shortcode = _this.shortcode.bind(_this);
+    _this.rotate = _this.rotate.bind(_this);
+    _this.start = _this.start.bind(_this);
     _this.state = {
+      depth: 150,
       angle: 0,
+      lastX: 0,
       book: _this.props.book
     };
     return _this;
@@ -12915,6 +12919,8 @@ var Book = function (_React$Component) {
   _createClass(Book, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      this.depth = 150; //px
+
       this.book = _reactDom2.default.findDOMNode(this.refs.book);
       this.front = _reactDom2.default.findDOMNode(this.refs.front);
       this.right = _reactDom2.default.findDOMNode(this.refs.right);
@@ -12940,19 +12946,35 @@ var Book = function (_React$Component) {
       return title;
     }
   }, {
+    key: 'start',
+    value: function start(e) {
+      this.setState({ lastX: e.clientX });
+    }
+  }, {
+    key: 'rotate',
+    value: function rotate(e) {
+      console.log('drag', e.clientX);
+      var delta = e.clientX - this.state.lastX;
+      var angle = Math.asin(delta / this.state.depth) * 180 / Math.PI;
+      console.log("delta, pi, angle", delta, Math.asin(delta / this.state.depth) * 180 / Math.PI, this.state.angle);
+      //
+      console.log(angle, delta);
+      if (isNaN(angle)) {
+        angle = 0;
+      }
+      this.setState({ angle: angle });
+    }
+  }, {
     key: 'render',
     value: function render() {
-
+      var depth = this.state.depth; //px
       var height = this.props.book.height || 200; //px
       var width = 35; //px
-      var depth = 150; //px
       var title = this.shortcode();
       return _react2.default.createElement(
         'div',
-        { className: 'book ' + title, onClick: function onClick(e) {
-            return console.log('bookClick', e);
-          } },
-        _react2.default.createElement(_bookCSS2.default, { title: title, width: width, height: height, depth: depth }),
+        { className: 'book ' + title, draggable: true, onDragStart: this.start, onDrag: this.rotate },
+        _react2.default.createElement(_bookCSS2.default, { title: title, width: width, height: height, depth: depth, angle: this.state.angle }),
         _react2.default.createElement(
           'div',
           { className: 'container ' + title + '-container', ref: 'book' },
@@ -49351,10 +49373,12 @@ var BookShelf = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (BookShelf.__proto__ || Object.getPrototypeOf(BookShelf)).call(this, props));
 
     _this.state = {
-      books: []
+      books: [],
+      draggable: true
     };
 
     _this.addBook = _this.addBook.bind(_this);
+    _this.toggleMode = _this.toggleMode.bind(_this);
     // this.gofetchbooks = this.gofetchbooks.bind(this);
     return _this;
   }
@@ -49387,6 +49411,11 @@ var BookShelf = function (_React$Component) {
       });
     }
   }, {
+    key: 'toggleMode',
+    value: function toggleMode() {
+      this.setState({ draggable: !this.state.draggable });
+    }
+  }, {
     key: 'render',
     value: function render() {
 
@@ -49395,8 +49424,14 @@ var BookShelf = function (_React$Component) {
         'div',
         { className: 'bookshelf' },
         _react2.default.createElement(
-          _shelf2.default,
+          'label',
           null,
+          'Reorganize Books',
+          _react2.default.createElement('input', { type: 'checkbox', name: 'draggable', onChange: this.toggleMode })
+        ),
+        _react2.default.createElement(
+          _shelf2.default,
+          { draggable: this.state.draggable },
           this.state.books
         )
       );
@@ -49960,17 +49995,17 @@ var Shelf = function (_React$Component) {
   _createClass(Shelf, [{
     key: 'onStart',
     value: function onStart(e) {
-      console.log(e);
+      // console.log(e);
     }
   }, {
     key: 'onDrag',
     value: function onDrag(e) {
-      console.log(e);
+      // console.log(e);
     }
   }, {
     key: 'onStop',
     value: function onStop(e) {
-      console.log(e);
+      // console.log(e);
     }
   }, {
     key: 'render',
@@ -49987,6 +50022,7 @@ var Shelf = function (_React$Component) {
             _react2.default.createElement(
               _reactDraggable2.default,
               {
+                disabled: _this2.props.draggable,
                 onStart: _this2.onStart,
                 onDrag: _this2.onDrag,
                 onStop: _this2.onStop
@@ -50025,11 +50061,12 @@ var BookCSS = function BookCSS(_ref) {
   var title = _ref.title,
       width = _ref.width,
       height = _ref.height,
-      depth = _ref.depth;
+      depth = _ref.depth,
+      angle = _ref.angle;
   return _react2.default.createElement(
     "style",
     { type: "text/css", scoped: true },
-    "\n    ." + title + " {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n    ." + title + "-container {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n\n    ." + title + "-box .front {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n\n    ." + title + "-box .back {\n      width: " + width + "px;\n      height: " + (height - 5) + "px;\n    }\n\n    ." + title + "-box .front {\n      background-image: url('/assets/TheHobbit_spine.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + title + "-box .right,\n    ." + title + "-box .left {\n      width: " + depth + "px;\n      height: " + height + "px;\n    }\n\n    ." + title + "-box .right {\n      background-image: url('/assets/TheHobbit_cover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + title + "-box .left {\n      background-image: url('/assets/TheHobbit_backcover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + title + "-box .top,\n    ." + title + "-box .bottom {\n      width: " + width + "px;\n      height: " + depth + "px;\n    }\n\n    ." + title + "-box .front  { transform: rotateY(   0deg ) translateZ(  " + depth / 2 + "px ); }\n    ." + title + "-box .back   { transform: rotateX( 180deg ) translateZ(  " + (depth / 2 - 5) + "px ) rotateZ(180deg);}\n    ." + title + "-box .right  { transform: rotateY(  90deg ) translateZ( " + width / 2 + "px  ); }\n    ." + title + "-box .left   { transform: rotateY( -90deg ) translateZ( " + width / 2 + "px ); }\n    ." + title + "-box .top    { transform: rotateX(  90deg ) translateZ( " + (height / 2 - 5) + "px ); }\n    ." + title + "-box .bottom { transform: rotateX( -90deg ) translateZ( " + (height / 2 - 5) + "px ); }\n    "
+    "\n    ." + title + " {\n      width: " + width + "px;\n      height: " + height + "px;\n      transform: rotateY(" + angle + "deg);\n    }\n\n    ." + title + "-container {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n\n    ." + title + "-box .front {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n\n    ." + title + "-box .back {\n      width: " + width + "px;\n      height: " + (height - 5) + "px;\n    }\n\n    ." + title + "-box .front {\n      background-image: url('/assets/TheHobbit_spine.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + title + "-box .right,\n    ." + title + "-box .left {\n      width: " + depth + "px;\n      height: " + height + "px;\n    }\n\n    ." + title + "-box .right {\n      background-image: url('/assets/TheHobbit_cover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + title + "-box .left {\n      background-image: url('/assets/TheHobbit_backcover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + title + "-box .top,\n    ." + title + "-box .bottom {\n      width: " + width + "px;\n      height: " + depth + "px;\n    }\n\n    ." + title + "-box .front  { transform: rotateY(   0deg ) translateZ(  " + depth / 2 + "px ); }\n    ." + title + "-box .back   { transform: rotateX( 180deg ) translateZ(  " + (depth / 2 - 5) + "px ) rotateZ(180deg);}\n    ." + title + "-box .right  { transform: rotateY(  90deg ) translateZ( " + width / 2 + "px  ); }\n    ." + title + "-box .left   { transform: rotateY( -90deg ) translateZ( " + width / 2 + "px ); }\n    ." + title + "-box .top    { transform: rotateX(  90deg ) translateZ( " + (height / 2 - 5) + "px ); }\n    ." + title + "-box .bottom { transform: rotateX( -90deg ) translateZ( " + (height / 2 - 5) + "px ); }\n    "
   );
 };
 

@@ -1,12 +1,14 @@
 import React from 'react';
 
-const BookCSS = ({title, width, height, depth}) => (
+const BookCSS = ({title, width, height, depth, angle}) => (
   <style type="text/css" scoped>
     { `
     .${title} {
       width: ${width}px;
       height: ${height}px;
+      transform: rotateY(${angle}deg);
     }
+
     .${title}-container {
       width: ${width}px;
       height: ${height}px;

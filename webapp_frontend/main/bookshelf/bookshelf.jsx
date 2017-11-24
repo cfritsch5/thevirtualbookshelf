@@ -10,9 +10,11 @@ class BookShelf extends React.Component {
     super(props);
     this.state ={
       books: [],
+      draggable: true
     };
 
     this.addBook = this.addBook.bind(this);
+    this.toggleMode = this.toggleMode.bind(this);
     // this.gofetchbooks = this.gofetchbooks.bind(this);
   }
 
@@ -39,12 +41,20 @@ class BookShelf extends React.Component {
     });
   }
 
+  toggleMode(){
+    this.setState({draggable: !this.state.draggable});
+  }
+
   render() {
 
     // <button onClick={this.addBook}>Add Book</button>
     return (
       <div className="bookshelf">
-          <Shelf>
+        <label>
+          Reorganize Books
+          <input type="checkbox" name="draggable" onChange={this.toggleMode}/>
+        </label>
+          <Shelf draggable={this.state.draggable}>
             {this.state.books}
           </Shelf>
       </div>
