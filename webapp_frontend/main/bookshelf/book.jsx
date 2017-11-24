@@ -48,18 +48,19 @@ class Book extends React.Component {
   }
 
   rotate(e){
-    console.log('drag',e.clientX);
+    // console.log('drag',e.clientX);
     let delta = e.clientX - this.state.lastX;
     let angle = Math.asin(delta/this.state.depth)*180/Math.PI;
-    console.log("delta, pi, angle",delta, Math.asin(delta/this.state.depth)*180/Math.PI,this.state.angle);
+    // console.log("delta, pi, angle",delta, Math.asin(delta/this.state.depth)*180/Math.PI,this.state.angle);
      //
-    console.log(angle,delta);
+    // console.log(angle,delta);
     if(isNaN(angle)){
       angle = 0;
     }
     this.setState({angle: angle});
   }
   render(){
+    console.log("render book");
     let depth = this.state.depth; //px
     let height = this.props.book.height || 200; //px
     let width = 35; //px

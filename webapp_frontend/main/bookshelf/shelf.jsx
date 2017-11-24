@@ -1,6 +1,7 @@
 import React from 'react';
 import Draggable from 'react-draggable';
 import ReactDOM from 'react-dom';
+import Book from './book';
 
 class Shelf extends React.Component {
   constructor(props){
@@ -9,6 +10,27 @@ class Shelf extends React.Component {
     this.onStart = this.onStart.bind(this);
     this.onDrag = this.onDrag.bind(this);
     this.onStop = this.onStop.bind(this);
+    this.state = {
+      books: [],
+    };
+  }
+
+  componentWillMount(){
+    console.log(this.props);
+    let books = [];
+    this.props.fetchbooks().then((b)=>{
+      let i = 0;
+      b.books.forEach((book)=>{
+        // extra div is used by draggable inside shelf class
+        books.push(
+            <div key={i}>
+              <Book book={book} key={i}/>
+            </div>
+        );
+        i = i + 1;
+      });
+      this.setState({books: books});
+    });
   }
 
   onStart(e){
@@ -24,9 +46,10 @@ class Shelf extends React.Component {
   }
 
   render(){
+    console.log('rendershelf');
     return (
       <div className="shelf">
-        {React.Children.map(this.props.children, (child)=> (
+        {this.state.books.map( (book)=> (
           <div className="bookPosition">
             <Draggable
               disabled={this.props.draggable}
@@ -34,7 +57,7 @@ class Shelf extends React.Component {
               onDrag={this.onDrag}
               onStop={this.onStop}
               >
-              {child}
+              {book}
             </Draggable>
           </div>
         ))}

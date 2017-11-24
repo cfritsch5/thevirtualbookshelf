@@ -1,21 +1,23 @@
 import { connect } from 'react-redux';
 import { Route, Redirect, withRouter } from 'react-router-dom';
-import BookShelf from './bookshelf';
+import Shelf from './shelf';
 import {logout } from '../session/session_actions';
 import {fetchbooks} from './book_actions';
 
-const mapStateToProps = ({ session, books }) => ({
-  currentUser: session.currentUser,
-  books: books
-});
+const mapStateToProps = ({session},{draggable}) => {
+  return {
+    currentUser: session.currentUser,
+    draggable,
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return ({
-    logout: user => dispatch(logout(user))
+    fetchbooks: () => dispatch(fetchbooks())
   });
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(BookShelf);
+)(Shelf);
