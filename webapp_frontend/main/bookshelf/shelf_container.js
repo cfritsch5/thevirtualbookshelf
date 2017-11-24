@@ -4,10 +4,11 @@ import Shelf from './shelf';
 import {logout } from '../session/session_actions';
 import {fetchbooks} from './book_actions';
 
-const mapStateToProps = ({session},{draggable}) => {
+const mapStateToProps = ({session, books},{draggable}) => {
   return {
     currentUser: session.currentUser,
     draggable,
+    books,
   };
 };
 

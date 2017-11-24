@@ -17,6 +17,7 @@ class Book extends React.Component {
       lastX: 0,
       book: this.props.book,
       node: null,
+      draggable: this.props.draggable,
     };
   }
 
@@ -73,12 +74,19 @@ class Book extends React.Component {
   }
   render(){
     console.log("render book");
+    console.log("draggable-book", this.props.draggable);
     let depth = this.state.depth; //px
     let height = this.props.book.height || 200; //px
     let width = 35; //px
     let title = this.state.title;
+    // <div className={`book ${title}`} ref={`${title}`}>
     return (
-      <div className={`book ${title}`} ref={`${title}`}draggable={true} onDragStart={this.start} onDrag={this.rotate}>
+      <div className={`book ${title}`}
+        ref={`${title}`}
+        draggable={this.props.draggable}
+        onDragStart={this.start}
+        onDrag={this.rotate}
+        >
         <BookCSS title={title} width={width} height={height} depth={depth} angle={this.state.angle}/>
         <div className={`container ${title}-container`}>
           <div className={`box ${title}-box`}>

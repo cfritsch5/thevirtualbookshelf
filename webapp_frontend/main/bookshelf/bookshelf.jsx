@@ -13,23 +13,23 @@ class BookShelf extends React.Component {
       draggable: true
     };
 
-    this.addBook = this.addBook.bind(this);
+    // this.addBook = this.addBook.bind(this);
     this.toggleMode = this.toggleMode.bind(this);
     // this.gofetchbooks = this.gofetchbooks.bind(this);
   }
-
-  addBook(book){
-    let books = this.state.books;
-    let id = books.length;
-    this.setState({books: books.concat([<Book key={id}/>])});
-  }
+  //
+  // addBook(book){
+  //   let books = this.state.books;
+  //   let id = books.length;
+  //   this.setState({books: books.concat([<Book key={id}/>])});
+  // }
 
   toggleMode(){
     this.setState({draggable: !this.state.draggable});
   }
 
   render() {
-
+    console.log('render BookShelf');
     // <button onClick={this.addBook}>Add Book</button>
     return (
       <div className="bookshelf">

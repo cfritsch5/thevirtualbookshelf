@@ -15598,7 +15598,8 @@ var Book = function (_React$Component) {
       angle: 0,
       lastX: 0,
       book: _this.props.book,
-      node: null
+      node: null,
+      draggable: _this.props.draggable
     };
     return _this;
   }
@@ -15663,13 +15664,20 @@ var Book = function (_React$Component) {
     key: 'render',
     value: function render() {
       console.log("render book");
+      console.log("draggable-book", this.props.draggable);
       var depth = this.state.depth; //px
       var height = this.props.book.height || 200; //px
       var width = 35; //px
       var title = this.state.title;
+      // <div className={`book ${title}`} ref={`${title}`}>
       return _react2.default.createElement(
         'div',
-        { className: 'book ' + title, ref: '' + title, draggable: true, onDragStart: this.start, onDrag: this.rotate },
+        { className: 'book ' + title,
+          ref: '' + title,
+          draggable: this.props.draggable,
+          onDragStart: this.start,
+          onDrag: this.rotate
+        },
         _react2.default.createElement(_bookCSS2.default, { title: title, width: width, height: height, depth: depth, angle: this.state.angle }),
         _react2.default.createElement(
           'div',
@@ -49486,20 +49494,19 @@ var BookShelf = function (_React$Component) {
       draggable: true
     };
 
-    _this.addBook = _this.addBook.bind(_this);
+    // this.addBook = this.addBook.bind(this);
     _this.toggleMode = _this.toggleMode.bind(_this);
     // this.gofetchbooks = this.gofetchbooks.bind(this);
     return _this;
   }
+  //
+  // addBook(book){
+  //   let books = this.state.books;
+  //   let id = books.length;
+  //   this.setState({books: books.concat([<Book key={id}/>])});
+  // }
 
   _createClass(BookShelf, [{
-    key: 'addBook',
-    value: function addBook(book) {
-      var books = this.state.books;
-      var id = books.length;
-      this.setState({ books: books.concat([_react2.default.createElement(_book2.default, { key: id })]) });
-    }
-  }, {
     key: 'toggleMode',
     value: function toggleMode() {
       this.setState({ draggable: !this.state.draggable });
@@ -49507,7 +49514,7 @@ var BookShelf = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-
+      console.log('render BookShelf');
       // <button onClick={this.addBook}>Add Book</button>
       return _react2.default.createElement(
         'div',
@@ -49620,12 +49627,14 @@ var _book_actions = __webpack_require__(124);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mapStateToProps = function mapStateToProps(_ref, _ref2) {
-  var session = _ref.session;
+  var session = _ref.session,
+      books = _ref.books;
   var draggable = _ref2.draggable;
 
   return {
     currentUser: session.currentUser,
-    draggable: draggable
+    draggable: draggable,
+    books: books
   };
 };
 
@@ -49687,37 +49696,36 @@ var Shelf = function (_React$Component) {
     _this.onStart = _this.onStart.bind(_this);
     _this.onDrag = _this.onDrag.bind(_this);
     _this.onStop = _this.onStop.bind(_this);
-    _this.state = {
-      books: []
-    };
+    // this.state = {
+    //   books: [],
+    // };
     return _this;
   }
 
   _createClass(Shelf, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
-      var _this2 = this;
-
       console.log(this.props);
       var books = [];
-      this.props.fetchbooks().then(function (b) {
-        var i = 0;
-        b.books.forEach(function (book) {
-          // extra div is used by draggable inside shelf class
-          books.push(_react2.default.createElement(
-            'div',
-            { key: i },
-            _react2.default.createElement(_book2.default, { book: book, key: i })
-          ));
-          i = i + 1;
-        });
-        _this2.setState({ books: books });
-      });
+      this.props.fetchbooks();
+      // .then((b)=>{
+      //   let i = 0;
+      //   b.books.forEach((book)=>{
+      //     // extra div is used by draggable inside shelf class
+      //     books.push(
+      //         <div key={i}>
+      //           <Book book={book} key={i} draggable={this.props.draggable}/>
+      //         </div>
+      //     );
+      //     i = i + 1;
+      //   });
+      //   this.setState({books: books});
+      // });
     }
   }, {
     key: 'onStart',
     value: function onStart(e) {
-      // console.log(e);
+      console.log("start drag");
     }
   }, {
     key: 'onDrag',
@@ -49727,7 +49735,26 @@ var Shelf = function (_React$Component) {
   }, {
     key: 'onStop',
     value: function onStop(e) {
-      // console.log(e);
+      console.log("stop drag");
+    }
+  }, {
+    key: 'setdraggable',
+    value: function setdraggable(draggable) {
+      var _this2 = this;
+
+      // let i = 0;
+      var books = [];
+      Object.keys(this.props.books).forEach(function (i) {
+        // extra div is used by draggable to insert style classes
+        books.push(_react2.default.createElement(
+          'div',
+          { key: i },
+          _react2.default.createElement(_book2.default, { book: _this2.props.books[i], key: i, draggable: draggable })
+        ));
+        i = i + 1;
+      });
+      return books;
+      // this.setState({books: books});
     }
   }, {
     key: 'render',
@@ -49735,10 +49762,11 @@ var Shelf = function (_React$Component) {
       var _this3 = this;
 
       console.log('rendershelf');
+      var books = this.setdraggable(this.props.draggable);
       return _react2.default.createElement(
         'div',
         { className: 'shelf' },
-        this.state.books.map(function (book) {
+        books.map(function (book) {
           return _react2.default.createElement(
             'div',
             { className: 'bookPosition' },
