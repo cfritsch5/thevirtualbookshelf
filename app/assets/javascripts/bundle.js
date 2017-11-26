@@ -15573,6 +15573,10 @@ var _bookCSS = __webpack_require__(283);
 
 var _bookCSS2 = _interopRequireDefault(_bookCSS);
 
+var _book_box = __webpack_require__(295);
+
+var _book_box2 = _interopRequireDefault(_book_box);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -15591,7 +15595,10 @@ var Book = function (_React$Component) {
 
     _this.shortcode = _this.shortcode.bind(_this);
     _this.rotate = _this.rotate.bind(_this);
+    _this.drag = _this.drag.bind(_this);
     _this.start = _this.start.bind(_this);
+    _this.stop = _this.stop.bind(_this);
+
     _this.state = {
       title: "",
       depth: 150,
@@ -15599,39 +15606,36 @@ var Book = function (_React$Component) {
       lastX: 0,
       book: _this.props.book,
       node: null,
-      draggable: _this.props.draggable
+      draggable: _this.props.draggable,
+      img: null
     };
     return _this;
   }
 
+  // componentWillUpdate(nextProps){
+  //   console.log('nextProps',nextProps);
+  //   if(nextProps.draggable !== this.props.draggable){
+  //     this.state.node.style = `transition: 0.5s ease-in-out; transform: rotateY(${0}deg);`;
+  //   }
+  // }
+
   _createClass(Book, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      this.depth = 150; //px
+      // this.depth = 150; //px
       var node = this.refs[this.state.title];
-      this.setState({ node: node });
-      //
-      // this.book = ReactDOM.findDOMNode(this.refs.book);
-      // this.front = ReactDOM.findDOMNode(this.refs.front);
-      // this.right = ReactDOM.findDOMNode(this.refs.right);
-      // this.left = ReactDOM.findDOMNode(this.refs.left);
-      // this.top = ReactDOM.findDOMNode(this.refs.top);
-      // this.bottom = ReactDOM.findDOMNode(this.refs.bottom);
-      // this.back = ReactDOM.findDOMNode(this.refs.back);
-      // console.log('right',this.right.getBoundingClientRect());
-      // console.log('front',this.front.getBoundingClientRect());
-      // refs get Bounding Client allows me to find out what the actual display
-      // widths are
-      // console.log(this);
-      // this.getDisplayWidth(this);
-      // this.test = "TESTING";
-      var title = this.shortcode();
-      this.setState({ title: title });
+      // this.setState({ node: node});
+      // console.log(node.getBoundingClientRect());
+      var img = new Image();
+      img.src = "assets/rotate.png";
+      // this.setState({ img });
+
+      this.setState({ title: this.shortcode(), img: img, node: node });
     }
   }, {
     key: 'shortcode',
     value: function shortcode() {
-      // TODO: make shortcode util that will ensure uniqeness
+      // - todo later - make shortcode util that will ensure uniqeness
       var title = this.props.book.title;
       title = title.replace(/the|of|and|in|to|on|by/gi, '');
       title = title.match(/\b\w/gi).join("");
@@ -15641,58 +15645,53 @@ var Book = function (_React$Component) {
     key: 'start',
     value: function start(e) {
       this.setState({ lastX: e.clientX });
+
+      e.dataTransfer.setDragImage(this.state.img, 25, 15);
+    }
+  }, {
+    key: 'stop',
+    value: function stop(e) {
+      this.setState({ angle: this.rotate(e) });
+    }
+  }, {
+    key: 'drag',
+    value: function drag(e) {
+      this.rotate(e);
     }
   }, {
     key: 'rotate',
     value: function rotate(e) {
-      // console.log('drag',e.clientX);
       var delta = e.clientX - this.state.lastX;
-      var angle = 2 * Math.asin(delta / this.state.depth) * 180 / Math.PI;
-      // console.log("delta, pi, angle",delta, Math.asin(delta/this.state.depth)*180/Math.PI,this.state.angle);
-      //
-      // console.log(angle,delta);
-      if (isNaN(angle)) {
-        angle = 0;
-      }
-      // this.book = this.refs[this.state.title];
-      // console.log(this.state.node.style);
-      this.state.node.style = 'transform: rotateY(' + angle + 'deg);';
+      var angle = Math.asin(delta / this.state.depth) * (180 / Math.PI);
 
-      // this.setState({angle: angle});
+      if (isNaN(angle)) angle = 0;
+      if (angle > 90) angle = 90;
+      if (angle < -90) angle = -90;
+
+      this.state.node.style = 'transform: rotateY(' + angle + 'deg);';
+      return angle;
     }
   }, {
     key: 'render',
     value: function render() {
-      console.log("render book");
-      console.log("draggable-book", this.props.draggable);
-      var depth = this.state.depth; //px
-      var height = this.props.book.height || 200; //px
-      var width = 35; //px
+      var depth = this.state.depth;
+      var height = this.props.book.height || 200;
+      var width = 35;
       var title = this.state.title;
-      // <div className={`book ${title}`} ref={`${title}`}>
+      var propsCSS = { title: title, width: width, height: height, depth: depth };
+      // these properties should eventually be defined on the book objects
+      // and then can be passed and pulled out more easily
+      // let {title,height,width,depth} = this.props.book
       return _react2.default.createElement(
         'div',
-        { className: 'book ' + title,
-          ref: '' + title,
+        { className: 'book ' + title, ref: '' + title,
           draggable: this.props.draggable,
           onDragStart: this.start,
-          onDrag: this.rotate
+          onDrag: this.drag,
+          onDragEnd: this.stop
         },
-        _react2.default.createElement(_bookCSS2.default, { title: title, width: width, height: height, depth: depth, angle: this.state.angle }),
-        _react2.default.createElement(
-          'div',
-          { className: 'container ' + title + '-container' },
-          _react2.default.createElement(
-            'div',
-            { className: 'box ' + title + '-box' },
-            _react2.default.createElement('figure', { ref: 'front', className: 'side front' }),
-            _react2.default.createElement('figure', { ref: 'right', className: 'side right' }),
-            _react2.default.createElement('figure', { ref: 'left', className: 'side left' }),
-            _react2.default.createElement('figure', { ref: 'top', className: 'side top' }),
-            _react2.default.createElement('figure', { ref: 'bottom', className: 'side bottom' }),
-            _react2.default.createElement('figure', { ref: 'back', className: 'side back' })
-          )
-        )
+        _react2.default.createElement(_bookCSS2.default, { props: propsCSS }),
+        _react2.default.createElement(_book_box2.default, { title: title })
       );
     }
   }]);
@@ -49553,15 +49552,11 @@ var _react2 = _interopRequireDefault(_react);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var BookCSS = function BookCSS(_ref) {
-  var title = _ref.title,
-      width = _ref.width,
-      height = _ref.height,
-      depth = _ref.depth,
-      angle = _ref.angle;
+  var props = _ref.props;
   return _react2.default.createElement(
     "style",
     { type: "text/css", scoped: true },
-    "\n    ." + title + " {\n      width: " + width + "px;\n      height: " + height + "px;\n      transform: rotateY(" + angle + "deg);\n    }\n\n    ." + title + "-container {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n\n    ." + title + "-box .front {\n      width: " + width + "px;\n      height: " + height + "px;\n    }\n\n    ." + title + "-box .back {\n      width: " + width + "px;\n      height: " + (height - 5) + "px;\n    }\n\n    ." + title + "-box .front {\n      background-image: url('/assets/TheHobbit_spine.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + title + "-box .right,\n    ." + title + "-box .left {\n      width: " + depth + "px;\n      height: " + height + "px;\n    }\n\n    ." + title + "-box .right {\n      background-image: url('/assets/TheHobbit_cover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + title + "-box .left {\n      background-image: url('/assets/TheHobbit_backcover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + title + "-box .top,\n    ." + title + "-box .bottom {\n      width: " + width + "px;\n      height: " + depth + "px;\n    }\n\n    ." + title + "-box .front  { transform: rotateY(   0deg ) translateZ(  " + depth / 2 + "px ); }\n    ." + title + "-box .back   { transform: rotateX( 180deg ) translateZ(  " + (depth / 2 - 5) + "px ) rotateZ(180deg);}\n    ." + title + "-box .right  { transform: rotateY(  90deg ) translateZ( " + width / 2 + "px  ); }\n    ." + title + "-box .left   { transform: rotateY( -90deg ) translateZ( " + width / 2 + "px ); }\n    ." + title + "-box .top    { transform: rotateX(  90deg ) translateZ( " + (height / 2 - 5) + "px ); }\n    ." + title + "-box .bottom { transform: rotateX( -90deg ) translateZ( " + (height / 2 - 5) + "px ); }\n    "
+    "\n    ." + props.title + " {\n      width: " + props.width + "px;\n      height: " + props.height + "px;\n    }\n\n    ." + props.title + "-container {\n      width: " + props.width + "px;\n      height: " + props.height + "px;\n    }\n\n    ." + props.title + "-box .front {\n      width: " + props.width + "px;\n      height: " + props.height + "px;\n    }\n\n    ." + props.title + "-box .back {\n      width: " + props.width + "px;\n      height: " + (props.height - 5) + "px;\n    }\n\n    ." + props.title + "-box .front {\n      background-image: url('/assets/TheHobbit_spine.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + props.title + "-box .right,\n    ." + props.title + "-box .left {\n      width: " + props.depth + "px;\n      height: " + props.height + "px;\n    }\n\n    ." + props.title + "-box .right {\n      background-image: url('/assets/TheHobbit_cover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + props.title + "-box .left {\n      background-image: url('/assets/TheHobbit_backcover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + props.title + "-box .top,\n    ." + props.title + "-box .bottom {\n      width: " + props.width + "px;\n      height: " + props.depth + "px;\n    }\n\n    ." + props.title + "-box .front  {\n      transform: rotateY(   0deg ) translateZ( " + props.depth / 2 + "px );\n    }\n    ." + props.title + "-box .back   {\n      transform: rotateX( 180deg ) translateZ( " + (props.depth / 2 - 5) + "px );\n    }\n    ." + props.title + "-box .right  {\n      transform: rotateY(  90deg ) translateZ( " + props.width / 2 + "px  );\n    }\n    ." + props.title + "-box .left   {\n      transform: rotateY( -90deg ) translateZ( " + props.width / 2 + "px );\n    }\n    ." + props.title + "-box .top    {\n      transform: rotateX(  90deg ) translateZ( " + (props.height / 2 - 5) + "px );\n    }\n    ." + props.title + "-box .bottom {\n      transform: rotateX( -90deg ) translateZ( " + (props.height / 2 - 5) + "px );\n    }\n    "
   );
 };
 
@@ -49696,46 +49691,37 @@ var Shelf = function (_React$Component) {
     _this.onStart = _this.onStart.bind(_this);
     _this.onDrag = _this.onDrag.bind(_this);
     _this.onStop = _this.onStop.bind(_this);
-    // this.state = {
-    //   books: [],
-    // };
+    _this.state = {
+      books: [],
+      positions: []
+    };
     return _this;
   }
 
   _createClass(Shelf, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
-      console.log(this.props);
       var books = [];
       this.props.fetchbooks();
-      // .then((b)=>{
-      //   let i = 0;
-      //   b.books.forEach((book)=>{
-      //     // extra div is used by draggable inside shelf class
-      //     books.push(
-      //         <div key={i}>
-      //           <Book book={book} key={i} draggable={this.props.draggable}/>
-      //         </div>
-      //     );
-      //     i = i + 1;
-      //   });
-      //   this.setState({books: books});
-      // });
     }
   }, {
     key: 'onStart',
     value: function onStart(e) {
-      console.log("start drag");
+      var bookdiv = e.currentTarget.children[0];
+      // console.log("start drag",e.currentTarget);
+      // let node = e.currentTarget;
+      // console.log(e.currentTarget.children[0].style.transform.match(/\d/));
+      var rotation = bookdiv.style.transform.match(/\d+.?\d+/);
     }
   }, {
     key: 'onDrag',
     value: function onDrag(e) {
-      // console.log(e);
+      // console.log('ondrag',e.target);
     }
   }, {
     key: 'onStop',
     value: function onStop(e) {
-      console.log("stop drag");
+      // console.log("stop drag",e.target);
     }
   }, {
     key: 'setdraggable',
@@ -49761,15 +49747,14 @@ var Shelf = function (_React$Component) {
     value: function render() {
       var _this3 = this;
 
-      console.log('rendershelf');
       var books = this.setdraggable(this.props.draggable);
       return _react2.default.createElement(
         'div',
         { className: 'shelf' },
-        books.map(function (book) {
+        books.map(function (book, i) {
           return _react2.default.createElement(
             'div',
-            { className: 'bookPosition' },
+            { className: 'bookPosition', key: i },
             _react2.default.createElement(
               _reactDraggable2.default,
               {
@@ -50230,6 +50215,78 @@ var BookReducer = function BookReducer() {
 };
 
 exports.default = BookReducer;
+
+/***/ }),
+/* 295 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(5);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDraggable = __webpack_require__(72);
+
+var _reactDraggable2 = _interopRequireDefault(_reactDraggable);
+
+var _reactDom = __webpack_require__(27);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _bookCSS = __webpack_require__(283);
+
+var _bookCSS2 = _interopRequireDefault(_bookCSS);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BookBox = function (_React$PureComponent) {
+  _inherits(BookBox, _React$PureComponent);
+
+  function BookBox() {
+    _classCallCheck(this, BookBox);
+
+    return _possibleConstructorReturn(this, (BookBox.__proto__ || Object.getPrototypeOf(BookBox)).apply(this, arguments));
+  }
+
+  _createClass(BookBox, [{
+    key: 'render',
+    value: function render() {
+      var title = this.props.title;
+      return _react2.default.createElement(
+        'div',
+        { className: 'container ' + title + '-container' },
+        _react2.default.createElement(
+          'div',
+          { className: 'box ' + title + '-box' },
+          _react2.default.createElement('figure', { ref: 'front', className: 'side front' }),
+          _react2.default.createElement('figure', { ref: 'right', className: 'side right' }),
+          _react2.default.createElement('figure', { ref: 'left', className: 'side left' }),
+          _react2.default.createElement('figure', { ref: 'top', className: 'side top' }),
+          _react2.default.createElement('figure', { ref: 'bottom', className: 'side bottom' }),
+          _react2.default.createElement('figure', { ref: 'back', className: 'side back' })
+        )
+      );
+    }
+  }]);
+
+  return BookBox;
+}(_react2.default.PureComponent);
+
+exports.default = BookBox;
 
 /***/ })
 /******/ ]);

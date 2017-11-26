@@ -10,40 +10,31 @@ class Shelf extends React.Component {
     this.onStart = this.onStart.bind(this);
     this.onDrag = this.onDrag.bind(this);
     this.onStop = this.onStop.bind(this);
-    // this.state = {
-    //   books: [],
-    // };
+    this.state = {
+      books: [],
+      positions: [],
+    };
   }
 
   componentWillMount(){
-    console.log(this.props);
     let books = [];
     this.props.fetchbooks();
-    // .then((b)=>{
-    //   let i = 0;
-    //   b.books.forEach((book)=>{
-    //     // extra div is used by draggable inside shelf class
-    //     books.push(
-    //         <div key={i}>
-    //           <Book book={book} key={i} draggable={this.props.draggable}/>
-    //         </div>
-    //     );
-    //     i = i + 1;
-    //   });
-    //   this.setState({books: books});
-    // });
   }
 
   onStart(e){
-    console.log("start drag");
+    let bookdiv = e.currentTarget.children[0];
+    // console.log("start drag",e.currentTarget);
+    // let node = e.currentTarget;
+    // console.log(e.currentTarget.children[0].style.transform.match(/\d/));
+    let rotation = bookdiv.style.transform.match(/\d+.?\d+/);
   }
 
   onDrag(e){
-    // console.log(e);
+    // console.log('ondrag',e.target);
   }
 
   onStop(e){
-    console.log("stop drag");
+    // console.log("stop drag",e.target);
   }
 
   setdraggable(draggable){
@@ -63,12 +54,11 @@ class Shelf extends React.Component {
   }
 
   render(){
-    console.log('rendershelf');
     let books = this.setdraggable(this.props.draggable);
     return (
       <div className="shelf">
-        {books.map( (book)=> (
-          <div className="bookPosition">
+        {books.map( (book,i)=> (
+          <div className="bookPosition" key={i}>
             <Draggable
               disabled={this.props.draggable}
               onStart={this.onStart}

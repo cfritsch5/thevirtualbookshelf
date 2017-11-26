@@ -53,6 +53,9 @@ t   |___|/ d
   justify-content: center;
   align-items: center;
   transform-style: preserve-3d;
+  cursor: pointer;
+  transform-origin: center center -100px;
+  // transition: 0.25s ease-in-out;
 }
 
 .container {

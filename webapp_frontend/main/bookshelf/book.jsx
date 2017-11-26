@@ -2,6 +2,7 @@ import React from 'react';
 import Draggable from 'react-draggable';
 import ReactDOM from 'react-dom';
 import BookCSS from './bookCSS';
+import BookBox from './book_box';
 
 class Book extends React.Component {
   constructor(props){
@@ -9,7 +10,10 @@ class Book extends React.Component {
 
     this.shortcode = this.shortcode.bind(this);
     this.rotate = this.rotate.bind(this);
+    this.drag = this.drag.bind(this);
     this.start = this.start.bind(this);
+    this.stop = this.stop.bind(this);
+
     this.state = {
       title: "",
       depth: 150,
@@ -18,34 +22,31 @@ class Book extends React.Component {
       book: this.props.book,
       node: null,
       draggable: this.props.draggable,
+      img: null,
     };
   }
 
-  componentDidMount(){
-    this.depth = 150; //px
-    let node = this.refs[this.state.title];
-    this.setState({ node: node});
-    //
-    // this.book = ReactDOM.findDOMNode(this.refs.book);
-    // this.front = ReactDOM.findDOMNode(this.refs.front);
-    // this.right = ReactDOM.findDOMNode(this.refs.right);
-    // this.left = ReactDOM.findDOMNode(this.refs.left);
-    // this.top = ReactDOM.findDOMNode(this.refs.top);
-    // this.bottom = ReactDOM.findDOMNode(this.refs.bottom);
-    // this.back = ReactDOM.findDOMNode(this.refs.back);
-    // console.log('right',this.right.getBoundingClientRect());
-    // console.log('front',this.front.getBoundingClientRect());
-    // refs get Bounding Client allows me to find out what the actual display
-    // widths are
-    // console.log(this);
-    // this.getDisplayWidth(this);
-    // this.test = "TESTING";
-    let title = this.shortcode();
-    this.setState({ title: title});
+  // componentWillUpdate(nextProps){
+  //   console.log('nextProps',nextProps);
+  //   if(nextProps.draggable !== this.props.draggable){
+  //     this.state.node.style = `transition: 0.5s ease-in-out; transform: rotateY(${0}deg);`;
+  //   }
+  // }
 
+  componentDidMount(){
+    // this.depth = 150; //px
+    let node = this.refs[this.state.title];
+    // this.setState({ node: node});
+    // console.log(node.getBoundingClientRect());
+    let img = new Image();
+    img.src = "assets/rotate.png";
+    // this.setState({ img });
+
+    this.setState({ title: this.shortcode(), img, node});
   }
+
   shortcode(){
-    // TODO: make shortcode util that will ensure uniqeness
+    // - todo later - make shortcode util that will ensure uniqeness
     let title = this.props.book.title;
     title = title.replace(/the|of|and|in|to|on|by/gi, '');
     title = title.match(/\b\w/gi).join("");
@@ -54,50 +55,48 @@ class Book extends React.Component {
 
   start(e){
     this.setState({ lastX: e.clientX});
+
+    e.dataTransfer.setDragImage(this.state.img, 25, 15);
+  }
+
+  stop(e){
+    this.setState({angle: this.rotate(e)});
+  }
+
+  drag(e){
+    this.rotate(e);
   }
 
   rotate(e){
-    // console.log('drag',e.clientX);
     let delta = e.clientX - this.state.lastX;
-    let angle = 2 * Math.asin(delta/this.state.depth)*180/Math.PI;
-    // console.log("delta, pi, angle",delta, Math.asin(delta/this.state.depth)*180/Math.PI,this.state.angle);
-     //
-    // console.log(angle,delta);
-    if(isNaN(angle)){
-      angle = 0;
-    }
-    // this.book = this.refs[this.state.title];
-    // console.log(this.state.node.style);
-    this.state.node.style = `transform: rotateY(${angle}deg);`;
+    let angle = Math.asin((delta/this.state.depth))*(180/Math.PI);
 
-    // this.setState({angle: angle});
+    if( isNaN(angle) ) angle = 0;
+    if( angle > 90 ) angle = 90;
+    if( angle < -90 ) angle = -90;
+
+    this.state.node.style = `transform: rotateY(${angle}deg);`;
+    return angle;
   }
+
   render(){
-    console.log("render book");
-    console.log("draggable-book", this.props.draggable);
-    let depth = this.state.depth; //px
-    let height = this.props.book.height || 200; //px
-    let width = 35; //px
+    let depth = this.state.depth;
+    let height = this.props.book.height || 200;
+    let width = 35;
     let title = this.state.title;
-    // <div className={`book ${title}`} ref={`${title}`}>
+    let propsCSS = {title,width,height,depth};
+    // these properties should eventually be defined on the book objects
+    // and then can be passed and pulled out more easily
+    // let {title,height,width,depth} = this.props.book
     return (
-      <div className={`book ${title}`}
-        ref={`${title}`}
+      <div className={`book ${title}`} ref={`${title}`}
         draggable={this.props.draggable}
         onDragStart={this.start}
-        onDrag={this.rotate}
+        onDrag={this.drag}
+        onDragEnd={this.stop}
         >
-        <BookCSS title={title} width={width} height={height} depth={depth} angle={this.state.angle}/>
-        <div className={`container ${title}-container`}>
-          <div className={`box ${title}-box`}>
-            <figure ref='front' className="side front"></figure>
-            <figure ref='right' className="side right"></figure>
-            <figure ref='left' className="side left"></figure>
-            <figure ref='top' className="side top"></figure>
-            <figure ref='bottom' className="side bottom"></figure>
-            <figure ref='back' className="side back"></figure>
-          </div>
-        </div>
+        <BookCSS props={propsCSS}/>
+        <BookBox title={title} />
       </div>
     );
   }

@@ -25,10 +25,10 @@
   transform-style: preserve-3d;
 }
 
-.react-draggable-dragging .book {
+.react-draggable-dragging .book .container{
   // transform: translateZ(150px) rotate(-90deg);
   transform: translateZ(150px);
-  // translateZ to simulate pulling the book out of the shelf 
+  // translateZ to simulate pulling the book out of the shelf
   // translated to default depth of book currently
   // ideally would be programatically set - either by max depth or per book
   transform-style: preserve-3d;
