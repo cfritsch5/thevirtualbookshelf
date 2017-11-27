@@ -1,11 +1,9 @@
 import React from 'react';
-import Draggable from 'react-draggable';
-import ReactDOM from 'react-dom';
-import BookCSS from './bookCSS';
 
 class BookBox extends React.PureComponent {
 
   render(){
+    console.log('render box');
     let title = this.props.title;
     return (
         <div className={`container ${title}-container`}>

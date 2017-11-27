@@ -15602,13 +15602,21 @@ var Book = function (_React$Component) {
     _this.state = {
       title: "",
       depth: 150,
-      angle: 0,
-      lastX: 0,
-      book: _this.props.book,
+      width: 35,
+      height: 200,
       node: null,
-      draggable: _this.props.draggable,
       img: null
     };
+    // this.state = {
+    //   title: "",
+    //   depth: 150,
+    //   width: 35,
+    //   height: 200,
+    //   angle: 0,
+    //   lastX: 0,
+    //   node: null,
+    //   img: null,
+    // };
     return _this;
   }
 
@@ -15644,14 +15652,29 @@ var Book = function (_React$Component) {
   }, {
     key: 'start',
     value: function start(e) {
-      this.setState({ lastX: e.clientX });
-
+      // console.log('------------------------- START DRAG ------------------------');
+      // this.setState({ lastX: e.clientX});
+      // this.angle = this.angle || {};
+      // this.x = this.x || {};
+      // console.log('anle?', this.angle);
+      this.x = e.clientX;
+      if (typeof this.angle === 'undefined') {
+        // console.log('angle undef');
+        // this.angle = {};
+        this.angle = 0;
+      } else {
+        // console.log('angle def');
+        // this.angle.second = null;
+        // this.angle.current = null;
+        // this.angle.total = 0;
+      }
       e.dataTransfer.setDragImage(this.state.img, 25, 15);
     }
   }, {
     key: 'stop',
     value: function stop(e) {
-      this.setState({ angle: this.rotate(e) });
+      // console.log('------------------------- STOP DRAG ------------------------');
+      // this.setState({angle: this.rotate(e)});
     }
   }, {
     key: 'drag',
@@ -15661,24 +15684,42 @@ var Book = function (_React$Component) {
   }, {
     key: 'rotate',
     value: function rotate(e) {
-      var delta = e.clientX - this.state.lastX;
-      var angle = Math.asin(delta / this.state.depth) * (180 / Math.PI);
+      // console.log(e.target);
+      // console.log(e.currentTarget);
+      // console.log('clientX, x, delta',e.clientX,this.x,delta);
+      var deltaX = e.clientX - this.x;
+      // console.log('delta',delta);
+      this.x = e.clientX;
+      var angleDelta = Math.asin(deltaX / this.state.depth) * (180 / Math.PI);
+      // console.log(angle);
+      // console.log('this angle:',this.angle);
+      // this.angle.last = this.angle.second;
+      // this.angle.second = this.angle.current;
+      // this.angle.current = angle;
 
-      if (isNaN(angle)) angle = 0;
-      if (angle > 90) angle = 90;
-      if (angle < -90) angle = -90;
+      if (!isNaN(angleDelta)) {
+        this.angle = this.angle + angleDelta;
+        if (this.angle > 90) this.angle = 90;
+        if (this.angle < -90) this.angle = -90;
+        // console.log('this angle:',this.angle);
+        // if( isNaN(this.angle.second)) {
+        //   angle = this.angle.last;
+        //   this.angle.current = angle;
+        // }else{
+        // }
 
-      this.state.node.style = 'transform: rotateY(' + angle + 'deg);';
-      return angle;
+        this.state.node.style = 'transform: rotateY(' + this.angle + 'deg);';
+      }
+      // this.setState({angle});
+      // return angle;
     }
   }, {
     key: 'render',
     value: function render() {
       var depth = this.state.depth;
-      var height = this.props.book.height || 200;
-      var width = 35;
+      var height = this.props.height;
+      var width = this.state.width;
       var title = this.state.title;
-      var propsCSS = { title: title, width: width, height: height, depth: depth };
       // these properties should eventually be defined on the book objects
       // and then can be passed and pulled out more easily
       // let {title,height,width,depth} = this.props.book
@@ -15690,7 +15731,7 @@ var Book = function (_React$Component) {
           onDrag: this.drag,
           onDragEnd: this.stop
         },
-        _react2.default.createElement(_bookCSS2.default, { props: propsCSS }),
+        _react2.default.createElement(_bookCSS2.default, { title: title, width: width, height: height, depth: depth }),
         _react2.default.createElement(_book_box2.default, { title: title })
       );
     }
@@ -49545,20 +49586,126 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var BookCSS = function BookCSS(_ref) {
-  var props = _ref.props;
-  return _react2.default.createElement(
-    "style",
-    { type: "text/css", scoped: true },
-    "\n    ." + props.title + " {\n      width: " + props.width + "px;\n      height: " + props.height + "px;\n    }\n\n    ." + props.title + "-container {\n      width: " + props.width + "px;\n      height: " + props.height + "px;\n    }\n\n    ." + props.title + "-box .front {\n      width: " + props.width + "px;\n      height: " + props.height + "px;\n    }\n\n    ." + props.title + "-box .back {\n      width: " + props.width + "px;\n      height: " + (props.height - 5) + "px;\n    }\n\n    ." + props.title + "-box .front {\n      background-image: url('/assets/TheHobbit_spine.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + props.title + "-box .right,\n    ." + props.title + "-box .left {\n      width: " + props.depth + "px;\n      height: " + props.height + "px;\n    }\n\n    ." + props.title + "-box .right {\n      background-image: url('/assets/TheHobbit_cover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + props.title + "-box .left {\n      background-image: url('/assets/TheHobbit_backcover.jpg');\n      background-position: center;\n      background-repeat: no-repeat;\n      background-size: cover;\n    }\n\n    ." + props.title + "-box .top,\n    ." + props.title + "-box .bottom {\n      width: " + props.width + "px;\n      height: " + props.depth + "px;\n    }\n\n    ." + props.title + "-box .front  {\n      transform: rotateY(   0deg ) translateZ( " + props.depth / 2 + "px );\n    }\n    ." + props.title + "-box .back   {\n      transform: rotateX( 180deg ) translateZ( " + (props.depth / 2 - 5) + "px );\n    }\n    ." + props.title + "-box .right  {\n      transform: rotateY(  90deg ) translateZ( " + props.width / 2 + "px  );\n    }\n    ." + props.title + "-box .left   {\n      transform: rotateY( -90deg ) translateZ( " + props.width / 2 + "px );\n    }\n    ." + props.title + "-box .top    {\n      transform: rotateX(  90deg ) translateZ( " + (props.height / 2 - 5) + "px );\n    }\n    ." + props.title + "-box .bottom {\n      transform: rotateX( -90deg ) translateZ( " + (props.height / 2 - 5) + "px );\n    }\n    "
-  );
-};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BookCSS = function (_React$PureComponent) {
+  _inherits(BookCSS, _React$PureComponent);
+
+  function BookCSS() {
+    _classCallCheck(this, BookCSS);
+
+    return _possibleConstructorReturn(this, (BookCSS.__proto__ || Object.getPrototypeOf(BookCSS)).apply(this, arguments));
+  }
+
+  _createClass(BookCSS, [{
+    key: 'render',
+    value: function render() {
+      console.log('render css');
+      var _props = this.props,
+          title = _props.title,
+          width = _props.width,
+          height = _props.height,
+          depth = _props.depth;
+
+      return _react2.default.createElement(
+        'style',
+        { type: 'text/css', scoped: true },
+        '\n        .' + title + ' {\n          width: ' + width + 'px;\n          height: ' + height + 'px;\n        }\n\n        .' + title + '-container {\n          width: ' + width + 'px;\n          height: ' + height + 'px;\n        }\n\n        .' + title + '-box .front {\n          width: ' + width + 'px;\n          height: ' + height + 'px;\n        }\n\n        .' + title + '-box .back {\n          width: ' + width + 'px;\n          height: ' + (height - 5) + 'px;\n        }\n\n        .' + title + '-box .front {\n          background-image: url(\'/assets/TheHobbit_spine.jpg\');\n          background-position: center;\n          background-repeat: no-repeat;\n          background-size: cover;\n        }\n\n        .' + title + '-box .right,\n        .' + title + '-box .left {\n          width: ' + depth + 'px;\n          height: ' + height + 'px;\n        }\n\n        .' + title + '-box .right {\n          background-image: url(\'/assets/TheHobbit_cover.jpg\');\n          background-position: center;\n          background-repeat: no-repeat;\n          background-size: cover;\n        }\n\n        .' + title + '-box .left {\n          background-image: url(\'/assets/TheHobbit_backcover.jpg\');\n          background-position: center;\n          background-repeat: no-repeat;\n          background-size: cover;\n        }\n\n        .' + title + '-box .top,\n        .' + title + '-box .bottom {\n          width: ' + width + 'px;\n          height: ' + depth + 'px;\n        }\n\n        .' + title + '-box .front  {\n          transform: rotateY(   0deg ) translateZ( ' + depth / 2 + 'px );\n        }\n        .' + title + '-box .back   {\n          transform: rotateX( 180deg ) translateZ( ' + (depth / 2 - 5) + 'px );\n        }\n        .' + title + '-box .right  {\n          transform: rotateY(  90deg ) translateZ( ' + width / 2 + 'px  );\n        }\n        .' + title + '-box .left   {\n          transform: rotateY( -90deg ) translateZ( ' + width / 2 + 'px );\n        }\n        .' + title + '-box .top    {\n          transform: rotateX(  90deg ) translateZ( ' + (height / 2 - 5) + 'px );\n        }\n        .' + title + '-box .bottom {\n          transform: rotateX( -90deg ) translateZ( ' + (height / 2 - 5) + 'px );\n        }\n        '
+      );
+    }
+  }]);
+
+  return BookCSS;
+}(_react2.default.PureComponent);
+// const BookCSS = ({props}) => (
+//   <style type="text/css" scoped>
+//     { `
+//     .${props.title} {
+//       width: ${props.width}px;
+//       height: ${props.height}px;
+//     }
+//
+//     .${props.title}-container {
+//       width: ${props.width}px;
+//       height: ${props.height}px;
+//     }
+//
+//     .${props.title}-box .front {
+//       width: ${props.width}px;
+//       height: ${props.height}px;
+//     }
+//
+//     .${props.title}-box .back {
+//       width: ${props.width}px;
+//       height: ${props.height - 5}px;
+//     }
+//
+//     .${props.title}-box .front {
+//       background-image: url('/assets/TheHobbit_spine.jpg');
+//       background-position: center;
+//       background-repeat: no-repeat;
+//       background-size: cover;
+//     }
+//
+//     .${props.title}-box .right,
+//     .${props.title}-box .left {
+//       width: ${props.depth}px;
+//       height: ${props.height}px;
+//     }
+//
+//     .${props.title}-box .right {
+//       background-image: url('/assets/TheHobbit_cover.jpg');
+//       background-position: center;
+//       background-repeat: no-repeat;
+//       background-size: cover;
+//     }
+//
+//     .${props.title}-box .left {
+//       background-image: url('/assets/TheHobbit_backcover.jpg');
+//       background-position: center;
+//       background-repeat: no-repeat;
+//       background-size: cover;
+//     }
+//
+//     .${props.title}-box .top,
+//     .${props.title}-box .bottom {
+//       width: ${props.width}px;
+//       height: ${props.depth}px;
+//     }
+//
+//     .${props.title}-box .front  {
+//       transform: rotateY(   0deg ) translateZ( ${props.depth/2}px );
+//     }
+//     .${props.title}-box .back   {
+//       transform: rotateX( 180deg ) translateZ( ${props.depth/2 - 5}px );
+//     }
+//     .${props.title}-box .right  {
+//       transform: rotateY(  90deg ) translateZ( ${props.width/2}px  );
+//     }
+//     .${props.title}-box .left   {
+//       transform: rotateY( -90deg ) translateZ( ${props.width/2}px );
+//     }
+//     .${props.title}-box .top    {
+//       transform: rotateX(  90deg ) translateZ( ${props.height/2 - 5}px );
+//     }
+//     .${props.title}-box .bottom {
+//       transform: rotateX( -90deg ) translateZ( ${props.height/2 - 5}px );
+//     }
+//     `}
+//   </style>
+// );
 
 exports.default = BookCSS;
 
@@ -50233,18 +50380,6 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDraggable = __webpack_require__(72);
-
-var _reactDraggable2 = _interopRequireDefault(_reactDraggable);
-
-var _reactDom = __webpack_require__(27);
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _bookCSS = __webpack_require__(283);
-
-var _bookCSS2 = _interopRequireDefault(_bookCSS);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -50265,6 +50400,7 @@ var BookBox = function (_React$PureComponent) {
   _createClass(BookBox, [{
     key: 'render',
     value: function render() {
+      console.log('render box');
       var title = this.props.title;
       return _react2.default.createElement(
         'div',

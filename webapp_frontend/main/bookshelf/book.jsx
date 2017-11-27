@@ -17,13 +17,21 @@ class Book extends React.Component {
     this.state = {
       title: "",
       depth: 150,
-      angle: 0,
-      lastX: 0,
-      book: this.props.book,
+      width: 35,
+      height: 200,
       node: null,
-      draggable: this.props.draggable,
       img: null,
     };
+    // this.state = {
+    //   title: "",
+    //   depth: 150,
+    //   width: 35,
+    //   height: 200,
+    //   angle: 0,
+    //   lastX: 0,
+    //   node: null,
+    //   img: null,
+    // };
   }
 
   // componentWillUpdate(nextProps){
@@ -54,13 +62,28 @@ class Book extends React.Component {
   }
 
   start(e){
-    this.setState({ lastX: e.clientX});
-
+    // console.log('------------------------- START DRAG ------------------------');
+    // this.setState({ lastX: e.clientX});
+    // this.angle = this.angle || {};
+    // this.x = this.x || {};
+    // console.log('anle?', this.angle);
+    this.x = e.clientX;
+    if(typeof this.angle === 'undefined'){
+      // console.log('angle undef');
+      // this.angle = {};
+      this.angle = 0;
+    } else {
+      // console.log('angle def');
+      // this.angle.second = null;
+      // this.angle.current = null;
+      // this.angle.total = 0;
+    }
     e.dataTransfer.setDragImage(this.state.img, 25, 15);
   }
 
   stop(e){
-    this.setState({angle: this.rotate(e)});
+    // console.log('------------------------- STOP DRAG ------------------------');
+    // this.setState({angle: this.rotate(e)});
   }
 
   drag(e){
@@ -68,23 +91,41 @@ class Book extends React.Component {
   }
 
   rotate(e){
-    let delta = e.clientX - this.state.lastX;
-    let angle = Math.asin((delta/this.state.depth))*(180/Math.PI);
+    // console.log(e.target);
+    // console.log(e.currentTarget);
+    // console.log('clientX, x, delta',e.clientX,this.x,delta);
+    let deltaX = e.clientX - this.x;
+    // console.log('delta',delta);
+    this.x = e.clientX;
+    let angleDelta = Math.asin((deltaX/this.state.depth))*(180/Math.PI);
+    // console.log(angle);
+    // console.log('this angle:',this.angle);
+    // this.angle.last = this.angle.second;
+    // this.angle.second = this.angle.current;
+    // this.angle.current = angle;
 
-    if( isNaN(angle) ) angle = 0;
-    if( angle > 90 ) angle = 90;
-    if( angle < -90 ) angle = -90;
+    if(!isNaN(angleDelta)){
+      this.angle = this.angle + angleDelta;
+      if( this.angle > 90 ) this.angle = 90;
+      if( this.angle < -90 ) this.angle = -90;
+    // console.log('this angle:',this.angle);
+    // if( isNaN(this.angle.second)) {
+    //   angle = this.angle.last;
+    //   this.angle.current = angle;
+    // }else{
+    // }
 
-    this.state.node.style = `transform: rotateY(${angle}deg);`;
-    return angle;
+      this.state.node.style = `transform: rotateY(${this.angle}deg);`;
+    }
+    // this.setState({angle});
+    // return angle;
   }
 
   render(){
     let depth = this.state.depth;
-    let height = this.props.book.height || 200;
-    let width = 35;
+    let height = this.props.height;
+    let width = this.state.width;
     let title = this.state.title;
-    let propsCSS = {title,width,height,depth};
     // these properties should eventually be defined on the book objects
     // and then can be passed and pulled out more easily
     // let {title,height,width,depth} = this.props.book
@@ -95,7 +136,7 @@ class Book extends React.Component {
         onDrag={this.drag}
         onDragEnd={this.stop}
         >
-        <BookCSS props={propsCSS}/>
+        <BookCSS title={title} width={width} height={height} depth={depth}/>
         <BookBox title={title} />
       </div>
     );
