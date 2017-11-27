@@ -1,7 +1,6 @@
 import React from 'react';
 import Draggable from 'react-draggable';
-import ReactDOM from 'react-dom';
-import Book from './book';
+import Book from './book/book';
 
 class Shelf extends React.Component {
   constructor(props){
@@ -33,7 +32,6 @@ class Shelf extends React.Component {
   }
 
   setdraggable(draggable){
-    // let i = 0;
     let books = [];
     Object.keys(this.props.books).forEach((i)=>{
       // extra div is used by draggable to insert style classes
@@ -45,7 +43,6 @@ class Shelf extends React.Component {
       i = i + 1;
     });
     return books;
-    // this.setState({books: books});
   }
 
   render(){

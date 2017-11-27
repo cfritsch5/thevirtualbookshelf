@@ -5,8 +5,8 @@ import configureStore from './main/store';
 
 // Testing __________________
 // import * as SessionUtil from './session_api_util';
-import * as BookUtil from './main/bookshelf/books_api_util';
-import * as BookActions from './main/bookshelf/book_actions';
+// import * as BookUtil from './main/bookshelf/books_api_util';
+// import * as BookActions from './main/bookshelf/book_actions';
 // import * as LessonUtil from "./util/lessons_util";
 // Testing __________________
 
@@ -25,9 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(<Root store={store} />, root);
 
   // Testing __________________
-  window.store = store;
-  window.BookUtil = BookUtil;
-  window.BookActions = BookActions;
+  // window.store = store;
+  // window.BookUtil = BookUtil;
+  // window.BookActions = BookActions;
   // window.LessonUtil = LessonUtil;
   // window.LessonActions = LessonActions;
   // Testing __________________

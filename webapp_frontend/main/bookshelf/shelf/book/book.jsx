@@ -1,5 +1,5 @@
 import React from 'react';
-import {DraggableCore} from 'react-draggable';
+import { DraggableCore } from 'react-draggable';
 import BookCSS from './bookCSS';
 import BookBox from './book_box';
 
@@ -9,7 +9,6 @@ class Book extends React.Component {
 
     this.shortcode = this.shortcode.bind(this);
     this.rotate = this.rotate.bind(this);
-    this.drag = this.drag.bind(this);
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
 

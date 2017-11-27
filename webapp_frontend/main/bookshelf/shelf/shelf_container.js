@@ -1,8 +1,6 @@
 import { connect } from 'react-redux';
-import { Route, Redirect, withRouter } from 'react-router-dom';
 import Shelf from './shelf';
-import {logout } from '../session/session_actions';
-import {fetchbooks} from './book_actions';
+import {fetchbooks} from '../bookshelf_actions';
 
 const mapStateToProps = ({session, books},{draggable}) => {
   return {

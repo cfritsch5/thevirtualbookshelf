@@ -1,9 +1,5 @@
 import React from 'react';
-import Book from './book';
-import BookContainer from './book_container';
-import Draggable from 'react-draggable';
-import ReactDOM from 'react-dom';
-import ShelfContainer from './shelf_container';
+import ShelfContainer from './shelf/shelf_container';
 
 class BookShelf extends React.Component {
   constructor(props){

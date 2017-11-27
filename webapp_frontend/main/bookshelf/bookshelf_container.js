@@ -1,8 +1,6 @@
 import { connect } from 'react-redux';
-import { Route, Redirect, withRouter } from 'react-router-dom';
 import BookShelf from './bookshelf';
 import {logout } from '../session/session_actions';
-import {fetchbooks} from './book_actions';
 
 const mapStateToProps = ({ session, books }) => ({
   currentUser: session.currentUser,
