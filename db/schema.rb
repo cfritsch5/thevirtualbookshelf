@@ -46,8 +46,8 @@ ActiveRecord::Schema.define(version: 20171127193509) do
     t.integer  "back_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["book_id"], name: "index_bookshelves_on_book_id", using: :btree
-    t.index ["user_id"], name: "index_bookshelves_on_user_id", using: :btree
+    t.index ["book_id"], name: "index_bookshelf_items_on_book_id", using: :btree
+    t.index ["user_id"], name: "index_bookshelf_items_on_user_id", using: :btree
   end
 
   create_table "covers", force: :cascade do |t|

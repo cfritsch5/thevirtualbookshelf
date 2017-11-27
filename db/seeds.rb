@@ -5,13 +5,18 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+User.destroy_all
+Book.destroy_all
+Cover.destroy_all
+Spine.destroy_all
+Back.destroy_all
 
 user1 = User.create!(username: "user1", email: "user1@example.com", password: "password")
 user2 = User.create!(username: "user2", email: "user2@example.com", password: "password")
 user3 = User.create!(username: "user3", email: "user3@example.com", password: "password")
 
 book1 = Book.create!(title: "Hobbit, The", author_lastname: "Tolkien",
-  author_firstname: "JRR", isbn: "9780007887705")
+  author_firstname: "JRR", isbn: "9780007887705", height:275,width:50,depth:200)
 book2 = Book.create!(title: "Harry Potter and the Chamber of Secrets",
   author_lastname: "Rowling", author_firstname: "JK", isbn: "0439064872")
 book3 = Book.create!(title: "Harry Potter and the Philosophers Stone",

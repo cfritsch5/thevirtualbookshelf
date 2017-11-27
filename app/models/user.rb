@@ -15,7 +15,7 @@ class User < ApplicationRecord
   attr_reader :password
 
   def add_book(book)
-    Bookshelf_Item.create!(user_id: self.id, book_id: book.id,
+    BookshelfItem.create!(user_id: self.id, book_id: book.id,
     cover_id: book.covers[0].id, spine_id: book.spines[0].id, back_id: book.backs[0].id)
   end
 
