@@ -49824,7 +49824,6 @@ var Shelf = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Shelf.__proto__ || Object.getPrototypeOf(Shelf)).call(this, props));
 
     _this.onStart = _this.onStart.bind(_this);
-    _this.onDrag = _this.onDrag.bind(_this);
     _this.onStop = _this.onStop.bind(_this);
     _this.state = {
       books: [],
@@ -49840,21 +49839,44 @@ var Shelf = function (_React$Component) {
       this.props.fetchbooks();
     }
   }, {
-    key: 'onStart',
-    value: function onStart(e, ui) {
-      var bookdiv = e.currentTarget.children[0];
-      var rotation = bookdiv.style.transform.match(/\d+.?\d+/);
+    key: 'style',
+    value: function style(sec, forward, angle) {
+      return '\n    transition: ' + sec + 's ease-in-out;\n    transform: translateZ(' + forward + 'px) rotateY(' + angle + 'deg);\n    ';
     }
   }, {
-    key: 'onDrag',
-    value: function onDrag(e, ui) {}
+    key: 'setStyleDelay',
+    value: function setStyleDelay(node, sec, forward, angle) {
+      var _this2 = this;
+
+      setTimeout(function () {
+        node.style = _this2.style(sec, forward, angle);
+      }, 500);
+    }
+  }, {
+    key: 'findDeg',
+    value: function findDeg(node) {
+      return node.style.transform.match(/\d+.?\d+(?=deg)/)[0];
+    }
+  }, {
+    key: 'onStart',
+    value: function onStart(e, ui) {
+      var node = ui.node.children[0];
+      var angle = this.findDeg(node);
+      node.style = this.style(0.25, 150, angle);
+      this.setStyleDelay(node, 0, 150, angle);
+    }
   }, {
     key: 'onStop',
-    value: function onStop(e, ui) {}
+    value: function onStop(e, ui) {
+      var node = ui.node.children[0];
+      var angle = this.findDeg(node);
+      node.style = this.style(0.25, 0, angle);
+      this.setStyleDelay(node, 0, 0, angle);
+    }
   }, {
     key: 'setdraggable',
     value: function setdraggable(draggable) {
-      var _this2 = this;
+      var _this3 = this;
 
       var books = [];
       Object.keys(this.props.books).forEach(function (i) {
@@ -49862,7 +49884,7 @@ var Shelf = function (_React$Component) {
         books.push(_react2.default.createElement(
           'div',
           { key: i },
-          _react2.default.createElement(_book2.default, { book: _this2.props.books[i], key: i, draggable: draggable })
+          _react2.default.createElement(_book2.default, { book: _this3.props.books[i], key: i, draggable: draggable })
         ));
         i = i + 1;
       });
@@ -49871,7 +49893,7 @@ var Shelf = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       var books = this.setdraggable(this.props.draggable);
       return _react2.default.createElement(
@@ -49884,10 +49906,10 @@ var Shelf = function (_React$Component) {
             _react2.default.createElement(
               _reactDraggable2.default,
               {
-                disabled: _this3.props.draggable,
-                onStart: _this3.onStart,
-                onDrag: _this3.onDrag,
-                onStop: _this3.onStop
+                disabled: _this4.props.draggable,
+                onStart: _this4.onStart,
+                onDrag: _this4.onDrag,
+                onStop: _this4.onStop
               },
               book
             )
@@ -50242,11 +50264,24 @@ var receiveBooks = exports.receiveBooks = function receiveBooks(books) {
   };
 };
 
+var newPos = exports.newPos = function newPos(pos) {
+  return {
+    type: "NEW_POS",
+    pos: pos
+  };
+};
+
 var fetchbooks = exports.fetchbooks = function fetchbooks() {
   return function (dispatch) {
     return fillShelf().then(function (books) {
       return dispatch(receiveBooks(books));
     });
+  };
+};
+
+var updatePosition = exports.updatePosition = function updatePosition(pos) {
+  return function (dispatch) {
+    return dispatch(newPos(pos));
   };
 };
 

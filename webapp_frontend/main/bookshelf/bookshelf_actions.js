@@ -4,10 +4,19 @@ export const receiveBooks = books => ({
   books
 });
 
+export const newPos = pos => ({
+  type: "NEW_POS",
+  pos
+});
+
 export const fetchbooks = () => dispatch => (
   fillShelf().then(books => (
     dispatch(receiveBooks(books))
   ))
+);
+
+export const updatePosition = (pos) => dispatch => (
+    dispatch(newPos(pos))
 );
 
 export const fillShelf = () => (

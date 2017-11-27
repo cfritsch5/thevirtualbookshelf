@@ -7,7 +7,6 @@ class Shelf extends React.Component {
     super(props);
 
     this.onStart = this.onStart.bind(this);
-    this.onDrag = this.onDrag.bind(this);
     this.onStop = this.onStop.bind(this);
     this.state = {
       books: [],
@@ -20,15 +19,36 @@ class Shelf extends React.Component {
     this.props.fetchbooks();
   }
 
-  onStart(e,ui){
-    let bookdiv = e.currentTarget.children[0];
-    let rotation = bookdiv.style.transform.match(/\d+.?\d+/);
+  style(sec, forward, angle){
+    return `
+    transition: ${sec}s ease-in-out;
+    transform: translateZ(${forward}px) rotateY(${angle}deg);
+    `;
   }
 
-  onDrag(e,ui){
+  setStyleDelay(node,sec,forward,angle){
+    setTimeout(()=>{
+      node.style = this.style(sec,forward,angle);
+    },500);
+  }
+
+  findDeg(node){
+    return node.style.transform.match(/\d+.?\d+(?=deg)/)[0];
+  }
+
+  onStart(e,ui){
+    let node = ui.node.children[0];
+    let angle = this.findDeg(node);
+    node.style = this.style(0.25, 150, angle);
+    this.setStyleDelay(node,0,150,angle);
   }
 
   onStop(e,ui){
+    let node = ui.node.children[0];
+    let angle = this.findDeg(node);
+    node.style = this.style(0.25, 0, angle);
+    this.setStyleDelay(node,0,0,angle);
+    
   }
 
   setdraggable(draggable){
