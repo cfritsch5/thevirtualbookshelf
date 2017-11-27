@@ -15563,12 +15563,6 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactDraggable = __webpack_require__(72);
 
-var _reactDraggable2 = _interopRequireDefault(_reactDraggable);
-
-var _reactDom = __webpack_require__(27);
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
 var _bookCSS = __webpack_require__(283);
 
 var _bookCSS2 = _interopRequireDefault(_bookCSS);
@@ -15605,38 +15599,12 @@ var Book = function (_React$Component) {
       width: 35,
       height: 200
     };
-    // this.state = {
-    //   title: "",
-    //   depth: 150,
-    //   width: 35,
-    //   height: 200,
-    //   angle: 0,
-    //   lastX: 0,
-    //   node: null,
-    //   img: null,
-    // };
     return _this;
   }
-
-  // componentWillUpdate(nextProps){
-  //   console.log('nextProps',nextProps);
-  //   if(nextProps.draggable !== this.props.draggable){
-  //     this.state.node.style = `transition: 0.5s ease-in-out; transform: rotateY(${0}deg);`;
-  //   }
-  // }
 
   _createClass(Book, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      // this.depth = 150; //px
-      // let node = this.refs[this.state.title];
-      // this.setState({ node: node});
-      // console.log(node.getBoundingClientRect());
-      // let img = new Image();
-      // img.src = "assets/rotate.png";
-      // this.setState({ img });
-
-      // this.setState({ title: this.shortcode(), img, node});
       this.setState({ title: this.shortcode() });
     }
   }, {
@@ -15650,70 +15618,22 @@ var Book = function (_React$Component) {
     }
   }, {
     key: 'start',
-    value: function start(e, x, y, z) {
-      console.log(e, x, y, z);
-      // console.log('------------------------- START DRAG ------------------------');
-      // this.setState({ lastX: e.clientX});
-      // this.angle = this.angle || {};
-      // this.x = this.x || {};
-      // console.log('anle?', this.angle);
-      this.x = e.clientX;
-      if (typeof this.angle === 'undefined') {
-        //   // console.log('angle undef');
-        //   // this.angle = {};
-        this.angle = 0;
-      } else {}
-      //   // console.log('angle def');
-      //   // this.angle.second = null;
-      //   // this.angle.current = null;
-      //   // this.angle.total = 0;
-
-      // e.dataTransfer.setDragImage(this.state.img, 25, 15);
+    value: function start(e, ui) {
+      if (typeof this.angle === 'undefined') this.angle = 0;
     }
   }, {
     key: 'stop',
-    value: function stop(e, ui) {
-      // console.log('------------------------- STOP DRAG ------------------------');
-      // console.log(e,x,y,z);
-      // this.setState({angle: this.rotate(e)});
-    }
-  }, {
-    key: 'drag',
-    value: function drag(e, ui) {
-      // console.log('ondrag',e,ui);
-      this.rotate(e, ui);
-    }
+    value: function stop(e, ui) {}
   }, {
     key: 'rotate',
     value: function rotate(e, ui) {
-      // console.log("rotate!");
-      // console.log(e.currentTarget);
-      // console.log('clientX, x, delta',e.clientX,this.x,delta);
-      // let deltaX = e.clientX - this.x;
-      // console.log('delta',deltaX);
-      // this.x = e.clientX;
       var angleDelta = Math.asin(ui.deltaX / this.state.depth) * (180 / Math.PI);
-      // console.log(angle);
-      // console.log('this angle:',this.angle);
-      // this.angle.last = this.angle.second;
-      // this.angle.second = this.angle.current;
-      // this.angle.current = angle;
-
       if (!isNaN(angleDelta)) {
         this.angle = this.angle + angleDelta;
         if (this.angle > 90) this.angle = 90;
         if (this.angle < -90) this.angle = -90;
-        // console.log('this angle:',this.angle);
-        // if( isNaN(this.angle.second)) {
-        //   angle = this.angle.last;
-        //   this.angle.current = angle;
-        // }else{
-        // }
-
         ui.node.style = 'transform: rotateY(' + this.angle + 'deg);';
       }
-      // this.setState({angle});
-      // return angle;
     }
   }, {
     key: 'render',
@@ -15730,7 +15650,7 @@ var Book = function (_React$Component) {
         {
           disabled: !this.props.draggable,
           onStart: this.start,
-          onDrag: this.drag,
+          onDrag: this.rotate,
           onStop: this.stop
         },
         _react2.default.createElement(
@@ -49859,23 +49779,16 @@ var Shelf = function (_React$Component) {
     }
   }, {
     key: 'onStart',
-    value: function onStart(e) {
+    value: function onStart(e, ui) {
       var bookdiv = e.currentTarget.children[0];
-      // console.log("start drag",e.currentTarget);
-      // let node = e.currentTarget;
-      // console.log(e.currentTarget.children[0].style.transform.match(/\d/));
       var rotation = bookdiv.style.transform.match(/\d+.?\d+/);
     }
   }, {
     key: 'onDrag',
-    value: function onDrag(e) {
-      // console.log('ondrag',e.target);
-    }
+    value: function onDrag(e, ui) {}
   }, {
     key: 'onStop',
-    value: function onStop(e) {
-      // console.log("stop drag",e.target);
-    }
+    value: function onStop(e, ui) {}
   }, {
     key: 'setdraggable',
     value: function setdraggable(draggable) {

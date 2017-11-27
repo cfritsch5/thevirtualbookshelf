@@ -21,20 +21,15 @@ class Shelf extends React.Component {
     this.props.fetchbooks();
   }
 
-  onStart(e){
+  onStart(e,ui){
     let bookdiv = e.currentTarget.children[0];
-    // console.log("start drag",e.currentTarget);
-    // let node = e.currentTarget;
-    // console.log(e.currentTarget.children[0].style.transform.match(/\d/));
     let rotation = bookdiv.style.transform.match(/\d+.?\d+/);
   }
 
-  onDrag(e){
-    // console.log('ondrag',e.target);
+  onDrag(e,ui){
   }
 
-  onStop(e){
-    // console.log("stop drag",e.target);
+  onStop(e,ui){
   }
 
   setdraggable(draggable){
