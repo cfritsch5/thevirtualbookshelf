@@ -49799,13 +49799,9 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDraggable = __webpack_require__(72);
+var _shelf_item = __webpack_require__(302);
 
-var _reactDraggable2 = _interopRequireDefault(_reactDraggable);
-
-var _book = __webpack_require__(298);
-
-var _book2 = _interopRequireDefault(_book);
+var _shelf_item2 = _interopRequireDefault(_shelf_item);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -49814,6 +49810,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+// import Draggable from 'react-draggable';
+// import Book from './book/book';
+
 
 var Shelf = function (_React$Component) {
   _inherits(Shelf, _React$Component);
@@ -49821,10 +49820,10 @@ var Shelf = function (_React$Component) {
   function Shelf(props) {
     _classCallCheck(this, Shelf);
 
+    // this.onStart = this.onStart.bind(this);
+    // this.onStop = this.onStop.bind(this);
     var _this = _possibleConstructorReturn(this, (Shelf.__proto__ || Object.getPrototypeOf(Shelf)).call(this, props));
 
-    _this.onStart = _this.onStart.bind(_this);
-    _this.onStop = _this.onStop.bind(_this);
     _this.state = {
       books: [],
       positions: []
@@ -49838,81 +49837,67 @@ var Shelf = function (_React$Component) {
       var books = [];
       this.props.fetchbooks();
     }
-  }, {
-    key: 'style',
-    value: function style(sec, forward, angle) {
-      return '\n    transition: ' + sec + 's ease-in-out;\n    transform: translateZ(' + forward + 'px) rotateY(' + angle + 'deg);\n    ';
-    }
-  }, {
-    key: 'setStyleDelay',
-    value: function setStyleDelay(node, sec, forward, angle) {
-      var _this2 = this;
+    //
+    // style(sec, forward, angle){
+    //   return `
+    //   transition: ${sec}s ease-in-out;
+    //   transform: translateZ(${forward}px) rotateY(${angle}deg);
+    //   `;
+    // }
+    //
+    // setStyleDelay(node,sec,forward,angle){
+    //   setTimeout(()=>{
+    //     node.style = this.style(sec,forward,angle);
+    //   },500);
+    // }
+    //
+    // findDeg(node){
+    //   return node.style.transform.match(/\d+.?\d+(?=deg)/)[0];
+    // }
+    //
+    // onStart(e,ui){
+    //   let node = ui.node.children[0];
+    //   let angle = this.findDeg(node);
+    //   node.style = this.style(0.25, 150, angle);
+    //   this.setStyleDelay(node,0,150,angle);
+    // }
+    //
+    // onStop(e,ui){
+    //   let node = ui.node.children[0];
+    //   let angle = this.findDeg(node);
+    //   node.style = this.style(0.25, 0, angle);
+    //   this.setStyleDelay(node,0,0,angle);
+    //   console.log(ui);
+    // }
+    //
+    // setdraggable(draggable){
+    //   let books = [];
+    //   Object.keys(this.props.books).forEach((i)=>{
+    //     // extra div is used by draggable to insert style classes
+    //     books.push(
+    //         <div key={i}>
+    //           <Book book={this.props.books[i]} key={i} draggable={draggable}/>
+    //         </div>
+    //     );
+    //     i = i + 1;
+    //   });
+    //   return books;
+    // }
 
-      setTimeout(function () {
-        node.style = _this2.style(sec, forward, angle);
-      }, 500);
-    }
-  }, {
-    key: 'findDeg',
-    value: function findDeg(node) {
-      return node.style.transform.match(/\d+.?\d+(?=deg)/)[0];
-    }
-  }, {
-    key: 'onStart',
-    value: function onStart(e, ui) {
-      var node = ui.node.children[0];
-      var angle = this.findDeg(node);
-      node.style = this.style(0.25, 150, angle);
-      this.setStyleDelay(node, 0, 150, angle);
-    }
-  }, {
-    key: 'onStop',
-    value: function onStop(e, ui) {
-      var node = ui.node.children[0];
-      var angle = this.findDeg(node);
-      node.style = this.style(0.25, 0, angle);
-      this.setStyleDelay(node, 0, 0, angle);
-    }
-  }, {
-    key: 'setdraggable',
-    value: function setdraggable(draggable) {
-      var _this3 = this;
-
-      var books = [];
-      Object.keys(this.props.books).forEach(function (i) {
-        // extra div is used by draggable to insert style classes
-        books.push(_react2.default.createElement(
-          'div',
-          { key: i },
-          _react2.default.createElement(_book2.default, { book: _this3.props.books[i], key: i, draggable: draggable })
-        ));
-        i = i + 1;
-      });
-      return books;
-    }
   }, {
     key: 'render',
     value: function render() {
-      var _this4 = this;
+      var _this2 = this;
 
-      var books = this.setdraggable(this.props.draggable);
+      // let books = this.setdraggable(this.props.draggable);
       return _react2.default.createElement(
         'div',
         { className: 'shelf' },
-        books.map(function (book, i) {
+        Object.keys(this.props.books).map(function (i) {
           return _react2.default.createElement(
             'div',
             { className: 'bookPosition', key: i },
-            _react2.default.createElement(
-              _reactDraggable2.default,
-              {
-                disabled: _this4.props.draggable,
-                onStart: _this4.onStart,
-                onDrag: _this4.onDrag,
-                onStop: _this4.onStop
-              },
-              book
-            )
+            _react2.default.createElement(_shelf_item2.default, { book: _this2.props.books[i], draggable: _this2.props.draggable })
           );
         })
       );
@@ -50299,6 +50284,133 @@ var fillShelf = exports.fillShelf = function fillShelf() {
 //     book: book
 //   })
 // );
+
+/***/ }),
+/* 302 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(5);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDraggable = __webpack_require__(72);
+
+var _reactDraggable2 = _interopRequireDefault(_reactDraggable);
+
+var _book = __webpack_require__(298);
+
+var _book2 = _interopRequireDefault(_book);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ShelfItem = function (_React$Component) {
+  _inherits(ShelfItem, _React$Component);
+
+  function ShelfItem(props) {
+    _classCallCheck(this, ShelfItem);
+
+    var _this = _possibleConstructorReturn(this, (ShelfItem.__proto__ || Object.getPrototypeOf(ShelfItem)).call(this, props));
+
+    _this.onStart = _this.onStart.bind(_this);
+    _this.onStop = _this.onStop.bind(_this);
+    _this.state = {
+      position: { x: 0, y: 0 }
+    };
+    return _this;
+  }
+
+  _createClass(ShelfItem, [{
+    key: 'style',
+    value: function style(sec, forward, angle) {
+      return '\n    transition: ' + sec + 's ease-in-out;\n    transform: translateZ(' + forward + 'px) rotateY(' + angle + 'deg);\n    ';
+    }
+  }, {
+    key: 'setStyleDelay',
+    value: function setStyleDelay(node, sec, forward, angle) {
+      var _this2 = this;
+
+      setTimeout(function () {
+        node.style = _this2.style(sec, forward, angle);
+      }, 500);
+    }
+  }, {
+    key: 'findDeg',
+    value: function findDeg(node) {
+      var angle = node.style.transform.match(/-?\d+.?\d+(?=deg)/);
+      // console.log('angle',angle, angle? angle[0] : 0);
+      // match returns null if not found and so if null it means the book has not
+      // been rotated yet so just set the angle to zero
+      return angle ? angle[0] : 0;
+    }
+  }, {
+    key: 'onStart',
+    value: function onStart(e, ui) {
+      var node = ui.node.children[0];
+      var angle = this.findDeg(node);
+      node.style = this.style(0.25, 150, angle);
+      this.setStyleDelay(node, 0, 150, angle);
+      console.log(ui, e.clientY);
+    }
+  }, {
+    key: 'onDrag',
+    value: function onDrag(e, ui) {
+      console.log(ui);
+    }
+  }, {
+    key: 'onStop',
+    value: function onStop(e, ui) {
+      var node = ui.node.children[0];
+      var angle = this.findDeg(node);
+      node.style = this.style(0.33, 0, angle);
+      this.setStyleDelay(node, 0, 0, angle);
+      console.log(ui, e.clientY);
+      var newY = ui.y - ui.y % 200;
+      // let newX = ui.x - ui.x % 35;
+      this.setState({ position: { x: ui.x, y: newY } });
+    }
+
+    // extra div is used by draggable to insert style classes
+
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        _reactDraggable2.default,
+        {
+          disabled: this.props.draggable,
+          onStart: this.onStart,
+          onDrag: this.onDrag,
+          onStop: this.onStop,
+          position: this.state.position
+        },
+        _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(_book2.default, { book: this.props.book, draggable: this.props.draggable })
+        )
+      );
+    }
+  }]);
+
+  return ShelfItem;
+}(_react2.default.Component);
+
+exports.default = ShelfItem;
 
 /***/ })
 /******/ ]);
