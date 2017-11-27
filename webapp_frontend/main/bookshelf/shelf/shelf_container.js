@@ -1,18 +1,19 @@
 import { connect } from 'react-redux';
 import Shelf from './shelf';
-import {fetchbooks} from '../bookshelf_actions';
 
-const mapStateToProps = ({session, books},{draggable}) => {
+const mapStateToProps = (state, props) => {
+  let {session, books} = state;
+  let {draggable, id} = props;
   return {
     currentUser: session.currentUser,
     draggable,
     books,
+    shelf: state.shelves[id],
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return ({
-    fetchbooks: () => dispatch(fetchbooks())
   });
 };
 

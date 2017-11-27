@@ -8,16 +8,12 @@ class ShelfItem extends React.Component {
 
     this.onStart = this.onStart.bind(this);
     this.onStop = this.onStop.bind(this);
-    this.state = {
-      position: {x: 0, y: 0}
-    };
+    this.state = { position: {x: 0, y: 0} };
   }
 
   style(sec, forward, angle){
-    return `
-    transition: ${sec}s ease-in-out;
-    transform: translateZ(${forward}px) rotateY(${angle}deg);
-    `;
+    return `transition: ${sec}s ease-in-out;
+      transform: translateZ(${forward}px) rotateY(${angle}deg);`;
   }
 
   setStyleDelay(node,sec,forward,angle){
@@ -39,12 +35,12 @@ class ShelfItem extends React.Component {
     let angle = this.findDeg(node);
     node.style = this.style(0.25, 150, angle);
     this.setStyleDelay(node,0,150,angle);
-    console.log(ui,e.clientY);
+    // console.log(ui,e.clientY);
 
   }
 
   onDrag(e,ui){
-    console.log(ui);
+    // console.log(ui);
   }
 
   onStop(e,ui){
@@ -52,9 +48,19 @@ class ShelfItem extends React.Component {
     let angle = this.findDeg(node);
     node.style = this.style(0.33, 0, angle);
     this.setStyleDelay(node,0,0,angle);
-    console.log(ui,e.clientY);
+    console.log('rect',node.getBoundingClientRect());
+    let rect = node.getBoundingClientRect();
+    let coordinates = {
+      x: rect.x,
+      y: rect.y,
+      angle: angle,
+    };
     let newY = ui.y - ui.y % 200;
-    // let newX = ui.x - ui.x % 35;
+    if(newY >= 200){
+      // throw action to move to new shelf
+      // this ofcourse would rely on vertical shelving
+    }
+    let newX = ui.x - ui.x % 35;
     this.setState({position: { x: ui.x, y: newY}});
   }
 

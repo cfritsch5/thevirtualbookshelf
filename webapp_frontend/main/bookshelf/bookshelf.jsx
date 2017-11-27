@@ -5,7 +5,6 @@ class BookShelf extends React.Component {
   constructor(props){
     super(props);
     this.state ={
-      books: [],
       draggable: true
     };
 
@@ -19,6 +18,9 @@ class BookShelf extends React.Component {
   //   let id = books.length;
   //   this.setState({books: books.concat([<Book key={id}/>])});
   // }
+  componentWillMount(){
+    this.props.fetchbooks();
+  }
 
   toggleMode(){
     this.setState({draggable: !this.state.draggable});
@@ -33,7 +35,11 @@ class BookShelf extends React.Component {
           Reorganize Books
           <input type="checkbox" name="draggable" onChange={this.toggleMode}/>
         </label>
-          <ShelfContainer draggable={this.state.draggable}/>
+        {
+          Object.keys(this.props.shelves).map((id)=>(
+            <ShelfContainer key={id} id={id} draggable={this.state.draggable}/>
+          ))
+        }
       </div>
     );
   }

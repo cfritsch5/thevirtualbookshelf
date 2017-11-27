@@ -59,8 +59,8 @@ t   |___|/ d
 }
 
 .container {
-  width: $width;
-  height: $height;
+  // width: $width;
+  // height: $height;
   position: relative;
   transform-style: preserve-3d;
 }
@@ -89,8 +89,8 @@ t   |___|/ d
 
 .box .front,
 .box .back {
-  width: $width;
-  height: $height;
+  // width: $width;
+  // height: $height;
   // background-image: url('/assets/TheHobbit_spine.jpg');
   // background-position: center;
   // background-repeat: no-repeat;
@@ -99,8 +99,8 @@ t   |___|/ d
 
 .box .right,
 .box .left {
-  width: $depth;
-  height: $height;
+  // width: $depth;
+  // height: $height;
   // left: $depth/2;
 }
 //
@@ -124,16 +124,16 @@ t   |___|/ d
 
 .box .top,
 .box .bottom {
-  width: $width;
-  height: $depth;
+  // width: $width;
+  // height: $depth;
 }
 
-.box .front  { transform: rotateY(   0deg ) translateZ(  $depth/2 ); }
-.box .back   { transform: rotateX( 180deg ) translateZ(  $depth/2 ) rotateZ(180deg);}
-.box .right  { transform: rotateY(  90deg ) translateZ( $width/2  ); }
-.box .left   { transform: rotateY( -90deg ) translateZ( $width/2 ); }
-.box .top    { transform: rotateX(  90deg ) translateZ( $height/2 - 5); }
-.box .bottom { transform: rotateX( -90deg ) translateZ( $height/2 - 5); }
+// .box .front  { transform: rotateY(   0deg ) translateZ(  $depth/2 ); }
+// .box .back   { transform: rotateX( 180deg ) translateZ(  $depth/2 ) rotateZ(180deg);}
+// .box .right  { transform: rotateY(  90deg ) translateZ( $width/2  ); }
+// .box .left   { transform: rotateY( -90deg ) translateZ( $width/2 ); }
+// .box .top    { transform: rotateX(  90deg ) translateZ( $height/2 - 5); }
+// .box .bottom { transform: rotateX( -90deg ) translateZ( $height/2 - 5); }
 
 
 

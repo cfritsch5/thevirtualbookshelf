@@ -14,9 +14,6 @@ class Book extends React.Component {
 
     this.state = {
       title: "",
-      depth: 150,
-      width: 35,
-      height: 200,
       angle: 0,
     };
   }
@@ -42,12 +39,13 @@ class Book extends React.Component {
 
   rotate(e,ui){
     let angle = this.state.angle;
-    let angleDelta = Math.asin((ui.deltaX/this.state.depth))*(180/Math.PI);
+    let radtoDeg = (180/Math.PI);
+    let oppositeOverhyp = (ui.deltaX/parseInt(this.props.book.depth));
+    let angleDelta = Math.asin(oppositeOverhyp)*radtoDeg;
     if(!isNaN(angleDelta)){
       angle = angle + angleDelta;
       if( angle > 90 ) angle = 90;
       if( angle < -90 ) angle = -90;
-      // ui.node.style = `transform: rotateY(${angle}deg);`;
       this.setState({angle: angle});
     } else {
       console.log("NAN!!!!!!!!!!!");
@@ -55,13 +53,8 @@ class Book extends React.Component {
   }
 
   render(){
-    let depth = this.state.depth;
-    let height = this.props.height;
-    let width = this.state.width;
     let title = this.state.title;
-    // these properties should eventually be defined on the book objects
-    // and then can be passed and pulled out more easily
-    // let {title,height,width,depth} = this.props.book
+    let {height,width,depth} = this.props.book;
     return (
       <DraggableCore
         disabled={ !this.props.draggable }

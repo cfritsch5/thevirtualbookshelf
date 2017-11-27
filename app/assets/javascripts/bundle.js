@@ -15511,14 +15511,18 @@ var _bookshelf2 = _interopRequireDefault(_bookshelf);
 
 var _session_actions = __webpack_require__(34);
 
+var _bookshelf_actions = __webpack_require__(301);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mapStateToProps = function mapStateToProps(_ref) {
   var session = _ref.session,
-      books = _ref.books;
+      books = _ref.books,
+      shelves = _ref.shelves;
   return {
     currentUser: session.currentUser,
-    books: books
+    books: books,
+    shelves: shelves
   };
 };
 
@@ -15526,6 +15530,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
     logout: function logout(user) {
       return dispatch((0, _session_actions.logout)(user));
+    },
+    fetchbooks: function fetchbooks() {
+      return dispatch((0, _bookshelf_actions.fetchbooks)());
     }
   };
 };
@@ -49273,7 +49280,6 @@ var BookShelf = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (BookShelf.__proto__ || Object.getPrototypeOf(BookShelf)).call(this, props));
 
     _this.state = {
-      books: [],
       draggable: true
     };
 
@@ -49289,7 +49295,13 @@ var BookShelf = function (_React$Component) {
   //   this.setState({books: books.concat([<Book key={id}/>])});
   // }
 
+
   _createClass(BookShelf, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      this.props.fetchbooks();
+    }
+  }, {
     key: 'toggleMode',
     value: function toggleMode() {
       this.setState({ draggable: !this.state.draggable });
@@ -49297,6 +49309,8 @@ var BookShelf = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       console.log('render BookShelf');
       // <button onClick={this.addBook}>Add Book</button>
       return _react2.default.createElement(
@@ -49308,7 +49322,9 @@ var BookShelf = function (_React$Component) {
           'Reorganize Books',
           _react2.default.createElement('input', { type: 'checkbox', name: 'draggable', onChange: this.toggleMode })
         ),
-        _react2.default.createElement(_shelf_container2.default, { draggable: this.state.draggable })
+        Object.keys(this.props.shelves).map(function (id) {
+          return _react2.default.createElement(_shelf_container2.default, { key: id, id: id, draggable: _this2.state.draggable });
+        })
       );
     }
   }]);
@@ -49645,15 +49661,20 @@ var _session_reducer = __webpack_require__(293);
 
 var _session_reducer2 = _interopRequireDefault(_session_reducer);
 
-var _book_reducer = __webpack_require__(294);
+var _bookshelf_reducer = __webpack_require__(304);
 
-var _book_reducer2 = _interopRequireDefault(_book_reducer);
+var _bookshelf_reducer2 = _interopRequireDefault(_bookshelf_reducer);
+
+var _shelf_reducer = __webpack_require__(303);
+
+var _shelf_reducer2 = _interopRequireDefault(_shelf_reducer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var RootReducer = (0, _redux.combineReducers)({
   session: _session_reducer2.default,
-  books: _book_reducer2.default
+  books: _bookshelf_reducer2.default,
+  shelves: _shelf_reducer2.default
 });
 
 exports.default = RootReducer;
@@ -49709,36 +49730,7 @@ var SessionReducer = function SessionReducer() {
 exports.default = SessionReducer;
 
 /***/ }),
-/* 294 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _lodash = __webpack_require__(126);
-
-var BookReducer = function BookReducer() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var action = arguments[1];
-
-  switch (action.type) {
-    case 'RECEIVE_BOOKS':
-      // console.log(" in reducer:",action.books);
-      return (0, _lodash.merge)({}, action.books);
-    case 'SET_POSITIONS':
-      return state;
-    default:
-      return state;
-  }
-};
-
-exports.default = BookReducer;
-
-/***/ }),
+/* 294 */,
 /* 295 */,
 /* 296 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -49756,28 +49748,24 @@ var _shelf = __webpack_require__(297);
 
 var _shelf2 = _interopRequireDefault(_shelf);
 
-var _bookshelf_actions = __webpack_require__(301);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var mapStateToProps = function mapStateToProps(_ref, _ref2) {
-  var session = _ref.session,
-      books = _ref.books;
-  var draggable = _ref2.draggable;
+var mapStateToProps = function mapStateToProps(state, props) {
+  var session = state.session,
+      books = state.books;
+  var draggable = props.draggable,
+      id = props.id;
 
   return {
     currentUser: session.currentUser,
     draggable: draggable,
-    books: books
+    books: books,
+    shelf: state.shelves[id]
   };
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return {
-    fetchbooks: function fetchbooks() {
-      return dispatch((0, _bookshelf_actions.fetchbooks)());
-    }
-  };
+  return {};
 };
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_shelf2.default);
@@ -49820,80 +49808,33 @@ var Shelf = function (_React$Component) {
   function Shelf(props) {
     _classCallCheck(this, Shelf);
 
-    // this.onStart = this.onStart.bind(this);
-    // this.onStop = this.onStop.bind(this);
     var _this = _possibleConstructorReturn(this, (Shelf.__proto__ || Object.getPrototypeOf(Shelf)).call(this, props));
 
     _this.state = {
       books: [],
-      positions: []
+      dimensions: {
+        topLeftCorner: { x: 0, y: 0 },
+        height: 200,
+        width: null,
+        depth: 150
+      }
     };
     return _this;
   }
 
-  _createClass(Shelf, [{
-    key: 'componentWillMount',
-    value: function componentWillMount() {
-      var books = [];
-      this.props.fetchbooks();
-    }
-    //
-    // style(sec, forward, angle){
-    //   return `
-    //   transition: ${sec}s ease-in-out;
-    //   transform: translateZ(${forward}px) rotateY(${angle}deg);
-    //   `;
-    // }
-    //
-    // setStyleDelay(node,sec,forward,angle){
-    //   setTimeout(()=>{
-    //     node.style = this.style(sec,forward,angle);
-    //   },500);
-    // }
-    //
-    // findDeg(node){
-    //   return node.style.transform.match(/\d+.?\d+(?=deg)/)[0];
-    // }
-    //
-    // onStart(e,ui){
-    //   let node = ui.node.children[0];
-    //   let angle = this.findDeg(node);
-    //   node.style = this.style(0.25, 150, angle);
-    //   this.setStyleDelay(node,0,150,angle);
-    // }
-    //
-    // onStop(e,ui){
-    //   let node = ui.node.children[0];
-    //   let angle = this.findDeg(node);
-    //   node.style = this.style(0.25, 0, angle);
-    //   this.setStyleDelay(node,0,0,angle);
-    //   console.log(ui);
-    // }
-    //
-    // setdraggable(draggable){
-    //   let books = [];
-    //   Object.keys(this.props.books).forEach((i)=>{
-    //     // extra div is used by draggable to insert style classes
-    //     books.push(
-    //         <div key={i}>
-    //           <Book book={this.props.books[i]} key={i} draggable={draggable}/>
-    //         </div>
-    //     );
-    //     i = i + 1;
-    //   });
-    //   return books;
-    // }
+  // on render should go to reducer and update position of shelf
 
-  }, {
+
+  _createClass(Shelf, [{
     key: 'render',
     value: function render() {
       var _this2 = this;
 
-      // let books = this.setdraggable(this.props.draggable);
       return _react2.default.createElement(
         'div',
         { className: 'shelf' },
-        Object.keys(this.props.books).map(function (i) {
+        this.props.shelf.map(function (i) {
+          // console.log("shelfitem",i);
           return _react2.default.createElement(
             'div',
             { className: 'bookPosition', key: i },
@@ -49959,9 +49900,6 @@ var Book = function (_React$Component) {
 
     _this.state = {
       title: "",
-      depth: 150,
-      width: 35,
-      height: 200,
       angle: 0
     };
     return _this;
@@ -49993,12 +49931,13 @@ var Book = function (_React$Component) {
     key: 'rotate',
     value: function rotate(e, ui) {
       var angle = this.state.angle;
-      var angleDelta = Math.asin(ui.deltaX / this.state.depth) * (180 / Math.PI);
+      var radtoDeg = 180 / Math.PI;
+      var oppositeOverhyp = ui.deltaX / parseInt(this.props.book.depth);
+      var angleDelta = Math.asin(oppositeOverhyp) * radtoDeg;
       if (!isNaN(angleDelta)) {
         angle = angle + angleDelta;
         if (angle > 90) angle = 90;
         if (angle < -90) angle = -90;
-        // ui.node.style = `transform: rotateY(${angle}deg);`;
         this.setState({ angle: angle });
       } else {
         console.log("NAN!!!!!!!!!!!");
@@ -50007,13 +49946,12 @@ var Book = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var depth = this.state.depth;
-      var height = this.props.height;
-      var width = this.state.width;
       var title = this.state.title;
-      // these properties should eventually be defined on the book objects
-      // and then can be passed and pulled out more easily
-      // let {title,height,width,depth} = this.props.book
+      var _props$book = this.props.book,
+          height = _props$book.height,
+          width = _props$book.width,
+          depth = _props$book.depth;
+
       return _react2.default.createElement(
         _reactDraggable.DraggableCore,
         {
@@ -50242,6 +50180,13 @@ exports.default = BookBox;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+// export const receiveBooks = books => {
+//   console.log("receivebooks",books);
+//   return {
+//   type: "RECEIVE_BOOKS",
+//   books
+// };};
 var receiveBooks = exports.receiveBooks = function receiveBooks(books) {
   return {
     type: "RECEIVE_BOOKS",
@@ -50249,12 +50194,10 @@ var receiveBooks = exports.receiveBooks = function receiveBooks(books) {
   };
 };
 
-var newPos = exports.newPos = function newPos(pos) {
-  return {
-    type: "NEW_POS",
-    pos: pos
-  };
-};
+// export const newPos = pos => ({
+//   type: "NEW_POS",
+//   pos
+// });
 
 var fetchbooks = exports.fetchbooks = function fetchbooks() {
   return function (dispatch) {
@@ -50264,12 +50207,18 @@ var fetchbooks = exports.fetchbooks = function fetchbooks() {
   };
 };
 
-var updatePosition = exports.updatePosition = function updatePosition(pos) {
-  return function (dispatch) {
-    return dispatch(newPos(pos));
-  };
-};
+// export const updatePosition = (pos) => dispatch => (
+//     dispatch(newPos(pos))
+// );
 
+// export const fillShelf = () => {
+//   let response =  $.ajax({
+//     method: 'GET',
+//     url: '/api/bookshelf_items',
+//   });
+//   console.log("response",response);
+//   return response;
+// };
 var fillShelf = exports.fillShelf = function fillShelf() {
   return $.ajax({
     method: 'GET',
@@ -50328,16 +50277,14 @@ var ShelfItem = function (_React$Component) {
 
     _this.onStart = _this.onStart.bind(_this);
     _this.onStop = _this.onStop.bind(_this);
-    _this.state = {
-      position: { x: 0, y: 0 }
-    };
+    _this.state = { position: { x: 0, y: 0 } };
     return _this;
   }
 
   _createClass(ShelfItem, [{
     key: 'style',
     value: function style(sec, forward, angle) {
-      return '\n    transition: ' + sec + 's ease-in-out;\n    transform: translateZ(' + forward + 'px) rotateY(' + angle + 'deg);\n    ';
+      return 'transition: ' + sec + 's ease-in-out;\n      transform: translateZ(' + forward + 'px) rotateY(' + angle + 'deg);';
     }
   }, {
     key: 'setStyleDelay',
@@ -50364,12 +50311,12 @@ var ShelfItem = function (_React$Component) {
       var angle = this.findDeg(node);
       node.style = this.style(0.25, 150, angle);
       this.setStyleDelay(node, 0, 150, angle);
-      console.log(ui, e.clientY);
+      // console.log(ui,e.clientY);
     }
   }, {
     key: 'onDrag',
     value: function onDrag(e, ui) {
-      console.log(ui);
+      // console.log(ui);
     }
   }, {
     key: 'onStop',
@@ -50378,9 +50325,19 @@ var ShelfItem = function (_React$Component) {
       var angle = this.findDeg(node);
       node.style = this.style(0.33, 0, angle);
       this.setStyleDelay(node, 0, 0, angle);
-      console.log(ui, e.clientY);
+      console.log('rect', node.getBoundingClientRect());
+      var rect = node.getBoundingClientRect();
+      var coordinates = {
+        x: rect.x,
+        y: rect.y,
+        angle: angle
+      };
       var newY = ui.y - ui.y % 200;
-      // let newX = ui.x - ui.x % 35;
+      if (newY >= 200) {
+        // throw action to move to new shelf
+        // this ofcourse would rely on vertical shelving
+      }
+      var newX = ui.x - ui.x % 35;
       this.setState({ position: { x: ui.x, y: newY } });
     }
 
@@ -50411,6 +50368,70 @@ var ShelfItem = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = ShelfItem;
+
+/***/ }),
+/* 303 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _lodash = __webpack_require__(126);
+
+var ShelfReducer = function ShelfReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var action = arguments[1];
+
+  switch (action.type) {
+    // case 'FILL_SHELF':
+    //   return merge({}, action.books);
+    case 'RECEIVE_BOOKS':
+      var shelves = [[]];
+      Object.keys(action.books).map(function (id) {
+        shelves[0].push(id);
+      });
+      console.log("in shelf reducer action, state", action, state);
+      return (0, _lodash.merge)({}, shelves);
+    default:
+      return state;
+  }
+};
+
+exports.default = ShelfReducer;
+
+/***/ }),
+/* 304 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _lodash = __webpack_require__(126);
+
+var BookReducer = function BookReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var action = arguments[1];
+
+  switch (action.type) {
+    case 'RECEIVE_BOOKS':
+      // console.log(" in book reducer action, state:",action,state);
+      return (0, _lodash.merge)({}, action.books);
+    case 'SET_POSITIONS':
+      return state;
+    default:
+      return state;
+  }
+};
+
+exports.default = BookReducer;
 
 /***/ })
 /******/ ]);
