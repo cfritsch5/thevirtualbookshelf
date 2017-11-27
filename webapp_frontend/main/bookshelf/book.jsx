@@ -1,5 +1,5 @@
 import React from 'react';
-import Draggable from 'react-draggable';
+import Draggable,{DraggableCore} from 'react-draggable';
 import ReactDOM from 'react-dom';
 import BookCSS from './bookCSS';
 import BookBox from './book_box';
@@ -19,8 +19,6 @@ class Book extends React.Component {
       depth: 150,
       width: 35,
       height: 200,
-      node: null,
-      img: null,
     };
     // this.state = {
     //   title: "",
@@ -43,14 +41,15 @@ class Book extends React.Component {
 
   componentDidMount(){
     // this.depth = 150; //px
-    let node = this.refs[this.state.title];
+    // let node = this.refs[this.state.title];
     // this.setState({ node: node});
     // console.log(node.getBoundingClientRect());
-    let img = new Image();
-    img.src = "assets/rotate.png";
+    // let img = new Image();
+    // img.src = "assets/rotate.png";
     // this.setState({ img });
 
-    this.setState({ title: this.shortcode(), img, node});
+    // this.setState({ title: this.shortcode(), img, node});
+    this.setState({ title: this.shortcode()});
   }
 
   shortcode(){
@@ -61,7 +60,8 @@ class Book extends React.Component {
     return title;
   }
 
-  start(e){
+  start(e,x,y,z){
+    console.log(e,x,y,z);
     // console.log('------------------------- START DRAG ------------------------');
     // this.setState({ lastX: e.clientX});
     // this.angle = this.angle || {};
@@ -69,35 +69,37 @@ class Book extends React.Component {
     // console.log('anle?', this.angle);
     this.x = e.clientX;
     if(typeof this.angle === 'undefined'){
-      // console.log('angle undef');
-      // this.angle = {};
+    //   // console.log('angle undef');
+    //   // this.angle = {};
       this.angle = 0;
     } else {
-      // console.log('angle def');
-      // this.angle.second = null;
-      // this.angle.current = null;
-      // this.angle.total = 0;
+    //   // console.log('angle def');
+    //   // this.angle.second = null;
+    //   // this.angle.current = null;
+    //   // this.angle.total = 0;
     }
-    e.dataTransfer.setDragImage(this.state.img, 25, 15);
+    // e.dataTransfer.setDragImage(this.state.img, 25, 15);
   }
 
-  stop(e){
+  stop(e,ui){
     // console.log('------------------------- STOP DRAG ------------------------');
+    // console.log(e,x,y,z);
     // this.setState({angle: this.rotate(e)});
   }
 
-  drag(e){
-    this.rotate(e);
+  drag(e,ui){
+    // console.log('ondrag',e,ui);
+    this.rotate(e,ui);
   }
 
-  rotate(e){
-    // console.log(e.target);
+  rotate(e,ui){
+    // console.log("rotate!");
     // console.log(e.currentTarget);
     // console.log('clientX, x, delta',e.clientX,this.x,delta);
-    let deltaX = e.clientX - this.x;
-    // console.log('delta',delta);
-    this.x = e.clientX;
-    let angleDelta = Math.asin((deltaX/this.state.depth))*(180/Math.PI);
+    // let deltaX = e.clientX - this.x;
+    // console.log('delta',deltaX);
+    // this.x = e.clientX;
+    let angleDelta = Math.asin((ui.deltaX/this.state.depth))*(180/Math.PI);
     // console.log(angle);
     // console.log('this angle:',this.angle);
     // this.angle.last = this.angle.second;
@@ -115,7 +117,7 @@ class Book extends React.Component {
     // }else{
     // }
 
-      this.state.node.style = `transform: rotateY(${this.angle}deg);`;
+      ui.node.style = `transform: rotateY(${this.angle}deg);`;
     }
     // this.setState({angle});
     // return angle;
@@ -130,15 +132,17 @@ class Book extends React.Component {
     // and then can be passed and pulled out more easily
     // let {title,height,width,depth} = this.props.book
     return (
-      <div className={`book ${title}`} ref={`${title}`}
-        draggable={this.props.draggable}
-        onDragStart={this.start}
+      <DraggableCore
+        disabled={!this.props.draggable}
+        onStart={this.start}
         onDrag={this.drag}
-        onDragEnd={this.stop}
+        onStop={this.stop}
         >
-        <BookCSS title={title} width={width} height={height} depth={depth}/>
-        <BookBox title={title} />
-      </div>
+        <div className={`book ${title}`} ref={title}>
+          <BookCSS title={title} width={width} height={height} depth={depth}/>
+          <BookBox title={title} />
+        </div>
+      </DraggableCore>
     );
   }
 }
