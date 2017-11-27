@@ -49954,7 +49954,8 @@ var Book = function (_React$Component) {
       title: "",
       depth: 150,
       width: 35,
-      height: 200
+      height: 200,
+      angle: 0
     };
     return _this;
   }
@@ -49984,12 +49985,16 @@ var Book = function (_React$Component) {
   }, {
     key: 'rotate',
     value: function rotate(e, ui) {
+      var angle = this.state.angle;
       var angleDelta = Math.asin(ui.deltaX / this.state.depth) * (180 / Math.PI);
       if (!isNaN(angleDelta)) {
-        this.angle = this.angle + angleDelta;
-        if (this.angle > 90) this.angle = 90;
-        if (this.angle < -90) this.angle = -90;
-        ui.node.style = 'transform: rotateY(' + this.angle + 'deg);';
+        angle = angle + angleDelta;
+        if (angle > 90) angle = 90;
+        if (angle < -90) angle = -90;
+        // ui.node.style = `transform: rotateY(${angle}deg);`;
+        this.setState({ angle: angle });
+      } else {
+        console.log("NAN!!!!!!!!!!!");
       }
     }
   }, {
@@ -50008,11 +50013,11 @@ var Book = function (_React$Component) {
           disabled: !this.props.draggable,
           onStart: this.start,
           onDrag: this.rotate,
-          onStop: this.stop
-        },
+          onStop: this.stop },
         _react2.default.createElement(
           'div',
-          { className: 'book ' + title, ref: title },
+          { className: 'book ' + title,
+            style: { transform: 'rotateY(' + this.state.angle + 'deg)' } },
           _react2.default.createElement(_bookCSS2.default, { title: title, width: width, height: height, depth: depth }),
           _react2.default.createElement(_book_box2.default, { title: title })
         )

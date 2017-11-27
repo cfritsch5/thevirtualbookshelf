@@ -17,6 +17,7 @@ class Book extends React.Component {
       depth: 150,
       width: 35,
       height: 200,
+      angle: 0,
     };
   }
 
@@ -40,12 +41,16 @@ class Book extends React.Component {
   }
 
   rotate(e,ui){
+    let angle = this.state.angle;
     let angleDelta = Math.asin((ui.deltaX/this.state.depth))*(180/Math.PI);
     if(!isNaN(angleDelta)){
-      this.angle = this.angle + angleDelta;
-      if( this.angle > 90 ) this.angle = 90;
-      if( this.angle < -90 ) this.angle = -90;
-      ui.node.style = `transform: rotateY(${this.angle}deg);`;
+      angle = angle + angleDelta;
+      if( angle > 90 ) angle = 90;
+      if( angle < -90 ) angle = -90;
+      // ui.node.style = `transform: rotateY(${angle}deg);`;
+      this.setState({angle: angle});
+    } else {
+      console.log("NAN!!!!!!!!!!!");
     }
   }
 
@@ -62,9 +67,9 @@ class Book extends React.Component {
         disabled={ !this.props.draggable }
         onStart={ this.start }
         onDrag={ this.rotate }
-        onStop={ this.stop }
-        >
-        <div className={`book ${title}`} ref={title}>
+        onStop={ this.stop } >
+        <div className={`book ${title}`}
+          style={{transform: `rotateY(${this.state.angle}deg)`}}>
           <BookCSS title={ title } width={ width } height={ height } depth={ depth }/>
           <BookBox title={ title } />
         </div>
