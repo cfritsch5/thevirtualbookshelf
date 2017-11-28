@@ -1,6 +1,6 @@
 import React from 'react';
 import Draggable from 'react-draggable';
-import Book from './book/book';
+import BookContainer from './book/book_container';
 
 class ShelfItem extends React.Component {
   constructor(props){
@@ -62,6 +62,7 @@ class ShelfItem extends React.Component {
     }
     let newX = ui.x - ui.x % 35;
     this.setState({position: { x: ui.x, y: newY}});
+    this.props.updatePosition({[this.props.book.id]: {x: ui.x, y: newY}});
   }
 
       // extra div is used by draggable to insert style classes
@@ -75,7 +76,7 @@ class ShelfItem extends React.Component {
         position={this.state.position}
         >
         <div>
-          <Book book={this.props.book} draggable={this.props.draggable}/>
+          <BookContainer book={this.props.book} draggable={this.props.draggable}/>
         </div>
       </Draggable>
     );

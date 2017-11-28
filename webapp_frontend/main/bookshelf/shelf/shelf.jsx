@@ -1,7 +1,7 @@
 import React from 'react';
 // import Draggable from 'react-draggable';
 // import Book from './book/book';
-import ShelfItem from './shelf_item';
+import ShelfItemContainer from './shelf_item_container';
 
 class Shelf extends React.Component {
   constructor(props){
@@ -24,9 +24,13 @@ class Shelf extends React.Component {
       <div className="shelf">
         {this.props.shelf.map((i)=> {
           // console.log("shelfitem",i);
-          return (<div className="bookPosition" key={i}>
-            <ShelfItem book={this.props.books[i]} draggable={this.props.draggable}/>
-          </div>);
+          return (
+            <div className="bookPosition" key={i}>
+              <ShelfItemContainer
+                book={this.props.books[i]}
+                draggable={this.props.draggable}/>
+            </div>
+        );
         })}
       </div>
     );

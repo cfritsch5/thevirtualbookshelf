@@ -35,6 +35,8 @@ class Book extends React.Component {
   }
 
   stop(e,ui){
+    this.props.updatePosition({[this.props.book.id]: {angle: this.state.angle}});
+    // this.props.updatePosition({[this.props.book.id]: {x: ui.x, y: newY}});
   }
 
   rotate(e,ui){
@@ -53,6 +55,7 @@ class Book extends React.Component {
   }
 
   render(){
+    console.log('render book');
     let title = this.state.title;
     let {height,width,depth} = this.props.book;
     return (

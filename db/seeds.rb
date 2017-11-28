@@ -22,9 +22,9 @@ book2 = Book.create!(title: "Harry Potter and the Chamber of Secrets",
 book3 = Book.create!(title: "Harry Potter and the Philosophers Stone",
   author_lastname: "Rowling", author_firstname: "JK", isbn: "0747532699")
 
-Cover.create!(image_url: "dummyurl.book1.coverA", book_id: book1.id)
-Cover.create!(image_url: "dummyurl.book1.coverB", book_id: book1.id)
-Cover.create!(image_url: "dummyurl.book1.coverC", book_id: book1.id)
+Cover.create!(image_url: '/assets/TheHobbit_cover.jpg', book_id: book1.id)
+Cover.create!(image_url: '/assets/TheHobbit_cover.jpg', book_id: book1.id)
+Cover.create!(image_url: '/assets/TheHobbit_cover.jpg', book_id: book1.id)
 Cover.create!(image_url: "dummyurl.book2.coverA", book_id: book2.id)
 Cover.create!(image_url: "dummyurl.book3.coverA", book_id: book3.id)
 Spine.create!(image_url: "dummyurl.book1.spineA", book_id: book1.id)

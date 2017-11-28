@@ -10,10 +10,10 @@ export const receiveBooks = books => ({
   books
 });
 
-// export const newPos = pos => ({
-//   type: "NEW_POS",
-//   pos
-// });
+export const newPos = position => ({
+  type: "NEW_POSITION",
+  position
+});
 
 export const fetchbooks = () => dispatch => (
   fillShelf().then(books => (
@@ -21,9 +21,9 @@ export const fetchbooks = () => dispatch => (
   ))
 );
 
-// export const updatePosition = (pos) => dispatch => (
-//     dispatch(newPos(pos))
-// );
+export const updatePosition = (pos) => dispatch => (
+    dispatch(newPos(pos))
+);
 
 // export const fillShelf = () => {
 //   let response =  $.ajax({
