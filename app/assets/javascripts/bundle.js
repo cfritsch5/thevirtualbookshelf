@@ -49694,11 +49694,7 @@ var Book = function (_React$Component) {
     value: function render() {
       console.log('render book');
       var title = this.state.title;
-      var _props$book = this.props.book,
-          height = _props$book.height,
-          width = _props$book.width,
-          depth = _props$book.depth;
-
+      // let {height,width,depth} = this.props.book;
       return _react2.default.createElement(
         _reactDraggable.DraggableCore,
         {
@@ -49710,7 +49706,7 @@ var Book = function (_React$Component) {
           'div',
           { className: 'book ' + title,
             style: { transform: 'rotateY(' + this.state.angle + 'deg)' } },
-          _react2.default.createElement(_bookCSS2.default, { title: title, width: width, height: height, depth: depth }),
+          _react2.default.createElement(_bookCSS2.default, { title: title, book: this.props.book }),
           _react2.default.createElement(_book_box2.default, { title: title })
         )
       );
@@ -49760,16 +49756,21 @@ var BookCSS = function (_React$PureComponent) {
     key: 'render',
     value: function render() {
       console.log('render css');
-      var _props = this.props,
-          title = _props.title,
-          width = _props.width,
-          height = _props.height,
-          depth = _props.depth;
+      var title = this.props.title;
+      var _props$book = this.props.book,
+          width = _props$book.width,
+          height = _props$book.height,
+          depth = _props$book.depth;
+      var _props$book2 = this.props.book,
+          cover = _props$book2.cover,
+          spine = _props$book2.spine,
+          back = _props$book2.back;
 
+      console.log(cover, spine, back);
       return _react2.default.createElement(
         'style',
         { type: 'text/css', scoped: true },
-        '\n        .' + title + ' {\n          width: ' + width + 'px;\n          height: ' + height + 'px;\n        }\n\n        .' + title + '-container {\n          width: ' + width + 'px;\n          height: ' + height + 'px;\n        }\n\n        .' + title + '-box .front {\n          width: ' + width + 'px;\n          height: ' + height + 'px;\n        }\n\n        .' + title + '-box .back {\n          width: ' + width + 'px;\n          height: ' + (height - 5) + 'px;\n        }\n\n        .' + title + '-box .front {\n          background-image: url(\'/assets/TheHobbit_spine.jpg\');\n          background-position: center;\n          background-repeat: no-repeat;\n          background-size: cover;\n        }\n\n        .' + title + '-box .right,\n        .' + title + '-box .left {\n          width: ' + depth + 'px;\n          height: ' + height + 'px;\n        }\n\n        .' + title + '-box .right {\n          background-image: url(\'/assets/TheHobbit_cover.jpg\');\n          background-position: center;\n          background-repeat: no-repeat;\n          background-size: cover;\n        }\n\n        .' + title + '-box .left {\n          background-image: url(\'/assets/TheHobbit_backcover.jpg\');\n          background-position: center;\n          background-repeat: no-repeat;\n          background-size: cover;\n        }\n\n        .' + title + '-box .top,\n        .' + title + '-box .bottom {\n          width: ' + width + 'px;\n          height: ' + depth + 'px;\n        }\n\n        .' + title + '-box .front  {\n          transform: rotateY(   0deg ) translateZ( ' + depth / 2 + 'px );\n        }\n        .' + title + '-box .back   {\n          transform: rotateX( 180deg ) translateZ( ' + (depth / 2 - 5) + 'px );\n        }\n        .' + title + '-box .right  {\n          transform: rotateY(  90deg ) translateZ( ' + width / 2 + 'px  );\n        }\n        .' + title + '-box .left   {\n          transform: rotateY( -90deg ) translateZ( ' + width / 2 + 'px );\n        }\n        .' + title + '-box .top    {\n          transform: rotateX(  90deg ) translateZ( ' + (height / 2 - 5) + 'px );\n        }\n        .' + title + '-box .bottom {\n          transform: rotateX( -90deg ) translateZ( ' + (height / 2 - 5) + 'px );\n        }\n        '
+        '\n        .' + title + ' {\n          width: ' + width + 'px;\n          height: ' + height + 'px;\n        }\n\n        .' + title + '-container {\n          width: ' + width + 'px;\n          height: ' + height + 'px;\n        }\n\n        .' + title + '-box .front {\n          width: ' + width + 'px;\n          height: ' + height + 'px;\n        }\n\n        .' + title + '-box .back {\n          width: ' + width + 'px;\n          height: ' + (height - 5) + 'px;\n        }\n\n        .' + title + '-box .front {\n          background-image: url(' + spine + ');\n          background-position: center;\n          background-repeat: no-repeat;\n          background-size: cover;\n        }\n\n        .' + title + '-box .right,\n        .' + title + '-box .left {\n          width: ' + depth + 'px;\n          height: ' + height + 'px;\n        }\n\n        .' + title + '-box .right {\n          background-image: url(' + cover + ');\n          background-position: center;\n          background-repeat: no-repeat;\n          background-size: cover;\n        }\n\n        .' + title + '-box .left {\n          background-image: url(' + back + ');\n          background-position: center;\n          background-repeat: no-repeat;\n          background-size: cover;\n        }\n\n        .' + title + '-box .top,\n        .' + title + '-box .bottom {\n          width: ' + width + 'px;\n          height: ' + depth + 'px;\n        }\n\n        .' + title + '-box .front  {\n          transform: rotateY(   0deg ) translateZ( ' + depth / 2 + 'px );\n        }\n        .' + title + '-box .back   {\n          transform: rotateX( 180deg ) translateZ( ' + (depth / 2 - 5) + 'px );\n        }\n        .' + title + '-box .right  {\n          transform: rotateY(  90deg ) translateZ( ' + width / 2 + 'px  );\n        }\n        .' + title + '-box .left   {\n          transform: rotateY( -90deg ) translateZ( ' + width / 2 + 'px );\n        }\n        .' + title + '-box .top    {\n          transform: rotateX(  90deg ) translateZ( ' + (height / 2 - 5) + 'px );\n        }\n        .' + title + '-box .bottom {\n          transform: rotateX( -90deg ) translateZ( ' + (height / 2 - 5) + 'px );\n        }\n        '
       );
     }
   }]);

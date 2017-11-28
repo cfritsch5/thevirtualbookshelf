@@ -1,25 +1,12 @@
 // Place all the styles related to the api/books controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-
-$height: 200px; //200px
-$width: 35px; //300px
-$depth: 150px; //100px
 //
-// $height: 150px; //200px
-// $width: 50px; //300px
-// $depth: 100px; //100px
-// h   _____
-// e  /    /|   p
-// i /____/ |  e
-// g |    | / e
-// h |____|/ d
-// t  width
-//box
+// $height: 200px; //200px
+// $width: 35px; //300px
+// $depth: 150px; //100px
 /*
-front(spine),back(page edge) 50 x 200
-top, bottom 50 x 150
-right(cover), left(backcover) 150 x 200
+
       ____
 ^    /   /|
 h   /___/ |
@@ -32,20 +19,15 @@ t   |___|/ d
 
 */
 .bookshelf {
-  // width: $width;
-  // height: $height;
   perspective: 600px;
   margin: 50px;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
 }
 
 .shelf {
   transform-style: preserve-3d;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .book {
@@ -53,21 +35,13 @@ t   |___|/ d
   justify-content: center;
   align-items: center;
   transform-style: preserve-3d;
-  cursor: pointer;
   transform-origin: center center -100px;
-  // transition: 0.25s ease-in-out;
 }
 
 .container {
-  // width: $width;
-  // height: $height;
   position: relative;
   transform-style: preserve-3d;
 }
-//
-// .react-grid-layout, .react-grid-item {
-//   transform-style: preserve-3d;
-// }
 
 .box {
   width: 100%;
@@ -83,80 +57,10 @@ t   |___|/ d
   margin: 0;
   display: block;
   position: absolute;
-  // border: 2px solid black;
   background: white;
+  border-style: none;
 }
-
-.box .front,
-.box .back {
-  // width: $width;
-  // height: $height;
-  // background-image: url('/assets/TheHobbit_spine.jpg');
-  // background-position: center;
-  // background-repeat: no-repeat;
-  // background-size: cover;
-}
-
-.box .right,
-.box .left {
-  // width: $depth;
-  // height: $height;
-  // left: $depth/2;
-}
-//
-// .box .right {
-//   background-image: url('/assets/TheHobbit_cover.jpg');
-//   background-position: center;
-//   background-repeat: no-repeat;
-//   background-size: cover;
-// }
-//
-// .box .left {
-//   background-image: url('/assets/TheHobbit_backcover.jpg');
-//   background-position: center;
-//   background-repeat: no-repeat;
-//   background-size: cover;
-// }
 
 .box .top, .box .bottom, .box .back {
   background: lightgrey;
 }
-
-.box .top,
-.box .bottom {
-  // width: $width;
-  // height: $depth;
-}
-
-// .box .front  { transform: rotateY(   0deg ) translateZ(  $depth/2 ); }
-// .box .back   { transform: rotateX( 180deg ) translateZ(  $depth/2 ) rotateZ(180deg);}
-// .box .right  { transform: rotateY(  90deg ) translateZ( $width/2  ); }
-// .box .left   { transform: rotateY( -90deg ) translateZ( $width/2 ); }
-// .box .top    { transform: rotateX(  90deg ) translateZ( $height/2 - 5); }
-// .box .bottom { transform: rotateX( -90deg ) translateZ( $height/2 - 5); }
-
-
-
-// .slider {
-//   padding: 0;
-//   margin: 0;
-//   z-index: 50;
-//   width: 325px;
-//   height: 200px;
-//   position: absolute;
-//   color: transparent;
-//   background: transparent;
-//   -webkit-appearance: none;
-//   appearance: none;
-//   border: none;
-// }
-//
-// .slider::-webkit-slider-thumb {
-//   -webkit-appearance: none;
-//   appearance: none;
-//   width: 1px;
-//   height: 1px;
-//   border: 0;
-//   background: transparent;
-//   cursor: pointer;
-// }

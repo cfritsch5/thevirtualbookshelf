@@ -57,7 +57,7 @@ class Book extends React.Component {
   render(){
     console.log('render book');
     let title = this.state.title;
-    let {height,width,depth} = this.props.book;
+    // let {height,width,depth} = this.props.book;
     return (
       <DraggableCore
         disabled={ !this.props.draggable }
@@ -66,7 +66,7 @@ class Book extends React.Component {
         onStop={ this.stop } >
         <div className={`book ${title}`}
           style={{transform: `rotateY(${this.state.angle}deg)`}}>
-          <BookCSS title={ title } width={ width } height={ height } depth={ depth }/>
+          <BookCSS title={ title } book={this.props.book}/>
           <BookBox title={ title } />
         </div>
       </DraggableCore>

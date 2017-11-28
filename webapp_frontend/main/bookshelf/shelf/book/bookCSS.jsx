@@ -4,7 +4,10 @@ class BookCSS extends React.PureComponent {
 
   render(){
     console.log('render css');
-    let {title, width, height, depth} = this.props;
+    let title = this.props.title;
+    let {width, height, depth} = this.props.book;
+    let {cover, spine, back } = this.props.book;
+    console.log(cover,spine,back);
     return (
       <style type="text/css" scoped>
         { `
@@ -29,7 +32,7 @@ class BookCSS extends React.PureComponent {
         }
 
         .${title}-box .front {
-          background-image: url('/assets/TheHobbit_spine.jpg');
+          background-image: url(${spine});
           background-position: center;
           background-repeat: no-repeat;
           background-size: cover;
@@ -42,14 +45,14 @@ class BookCSS extends React.PureComponent {
         }
 
         .${title}-box .right {
-          background-image: url('/assets/TheHobbit_cover.jpg');
+          background-image: url(${cover});
           background-position: center;
           background-repeat: no-repeat;
           background-size: cover;
         }
 
         .${title}-box .left {
-          background-image: url('/assets/TheHobbit_backcover.jpg');
+          background-image: url(${back});
           background-position: center;
           background-repeat: no-repeat;
           background-size: cover;
