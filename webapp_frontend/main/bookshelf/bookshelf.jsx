@@ -4,14 +4,21 @@ import ShelfContainer from './shelf/shelf_container';
 class BookShelf extends React.Component {
   constructor(props){
     super(props);
-    this.state ={
-      draggable: true
-    };
+    // this.state ={
+    //   draggable: true
+    // };
 
     // this.addBook = this.addBook.bind(this);
-    this.toggleMode = this.toggleMode.bind(this);
+    // this.toggleMode = this.toggleMode.bind(this);
+    this.shortcut = this.shortcut.bind(this);
     // this.gofetchbooks = this.gofetchbooks.bind(this);
   }
+
+  shortcut(e){
+    console.log('shortcut',e.key.toUpperCase());
+    this.props.appShortcut(e.key.toUpperCase());
+  }
+
   //
   // addBook(book){
   //   let books = this.state.books;
@@ -27,17 +34,26 @@ class BookShelf extends React.Component {
   }
 
   render() {
-    console.log('render BookShelf');
+    // console.log('render BookShelf');
     // <button onClick={this.addBook}>Add Book</button>
+    // <label style={{visibility: 'hidden'}}>
+    // console.log(this.props);
+    let movementTypeToggle = this.props.shortcuts.movementTypeToggle;
     return (
-      <div className="bookshelf">
-        <label>
-          Reorganize Books
-          <input type="checkbox" name="draggable" onChange={this.toggleMode}/>
-        </label>
+      <div className="bookshelf"
+        ref={input => input && input.focus()}
+        tabIndex={0}
+        autoFocus={true}
+        onKeyDown={this.shortcut}
+        onKeyUp={this.shortcut}
+        >
+        <p>
+          Hold shift to move books <br/>
+          Movement Type = {movementTypeToggle ? 'Rotate' : 'Move'}
+        </p>
         {
           Object.keys(this.props.shelves).map((id)=>(
-            <ShelfContainer key={id} id={id} draggable={this.state.draggable}/>
+            <ShelfContainer key={id} id={id} draggable={movementTypeToggle}/>
           ))
         }
       </div>

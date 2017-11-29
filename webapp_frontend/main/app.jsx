@@ -25,3 +25,34 @@ const App = () => (
 );
 
 export default App;
+
+// import {appShortcut} from './shortcut_actions';
+//
+// class App extends React.Component {
+//   // componentDidMount(){
+//   //   this.nameInput.focus();
+//   // }
+//   shortcut(e){
+//     console.log('shortcut',e.key.toUpperCase());
+//     appShortcut(e.key.toUpperCase());
+//   }
+//
+//   render(){
+//     return(
+//       <div className='app'
+//         ref={input => input && input.focus()}
+//         tabIndex={0}
+//         autoFocus={true}
+//         onKeyDown={this.shortcut}
+//         onKeyUp={this.shortcut}>
+//         <HeaderContainer/>
+//         <div className="content">
+//           <Switch>
+//             <Route path="/" component={HomeContainer} />
+//             <Route exact path="/login" component={SessionFormContainer} />
+//           </Switch>
+//         </div>
+//       </div>
+//     );
+//   }
+// }

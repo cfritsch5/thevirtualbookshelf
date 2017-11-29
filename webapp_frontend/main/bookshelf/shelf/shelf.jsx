@@ -4,19 +4,6 @@ import React from 'react';
 import ShelfItemContainer from './shelf_item_container';
 
 class Shelf extends React.Component {
-  constructor(props){
-    super(props);
-
-    this.state = {
-      books: [],
-      dimensions: {
-        topLeftCorner: {x: 0, y:0},
-        height: 200,
-        width: null,
-        depth: 150,
-      },
-    };
-  }
 
 // on render should go to reducer and update position of shelf
   render(){

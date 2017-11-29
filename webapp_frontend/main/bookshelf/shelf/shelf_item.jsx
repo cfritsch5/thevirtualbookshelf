@@ -48,7 +48,7 @@ class ShelfItem extends React.Component {
     let angle = this.findDeg(node);
     node.style = this.style(0.33, 0, angle);
     this.setStyleDelay(node,0,0,angle);
-    console.log('rect',node.getBoundingClientRect());
+    // console.log('rect',node.getBoundingClientRect());
     let rect = node.getBoundingClientRect();
     let coordinates = {
       x: rect.x,

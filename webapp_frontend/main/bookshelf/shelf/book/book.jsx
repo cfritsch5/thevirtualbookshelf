@@ -55,7 +55,7 @@ class Book extends React.Component {
   }
 
   render(){
-    console.log('render book');
+    // console.log('render book');
     let title = this.state.title;
     // let {height,width,depth} = this.props.book;
     return (

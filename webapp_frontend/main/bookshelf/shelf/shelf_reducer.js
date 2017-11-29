@@ -9,7 +9,7 @@ const ShelfReducer = (state = {}, action) => {
       Object.keys(action.books).map((id)=>{
         shelves[0].push(id);
       });
-      console.log("in shelf reducer action, state", action, state);
+      // console.log("in shelf reducer action, state", action, state);
       return merge({}, shelves);
     default:
       return state;

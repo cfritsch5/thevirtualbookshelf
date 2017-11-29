@@ -6,6 +6,7 @@ const PositionReducer = (state = {}, action) => {
     case "NEW_POSITION":
       console.log("position action", action,state);
       // let newPos = {[action.position.id]: {angle: action.pos.angle}};
+      
       return merge({}, state, action.position);
     default:
       return state;

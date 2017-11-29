@@ -3,7 +3,7 @@ import React from 'react';
 class BookBox extends React.PureComponent {
 
   render(){
-    console.log('render box');
+    // console.log('render box');
     let title = this.props.title;
     return (
         <div className={`container ${title}-container`}>
