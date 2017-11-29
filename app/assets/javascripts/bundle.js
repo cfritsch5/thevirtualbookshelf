@@ -49701,7 +49701,7 @@ var ShelfItem = function (_React$Component) {
       var angle = this.findDeg(node);
       node.style = this.style(0.33, 0, angle);
       this.setStyleDelay(node, 0, 0, angle);
-      // console.log('rect',node.getBoundingClientRect());
+      console.log('rect', node.getBoundingClientRect());
       var rect = node.getBoundingClientRect();
       var coordinates = {
         x: rect.x,
@@ -50523,7 +50523,6 @@ var PositionReducer = function PositionReducer() {
     case "NEW_POSITION":
       console.log("position action", action, state);
       // let newPos = {[action.position.id]: {angle: action.pos.angle}};
-
       return (0, _lodash.merge)({}, state, action.position);
     default:
       return state;
