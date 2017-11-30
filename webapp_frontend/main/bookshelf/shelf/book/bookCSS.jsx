@@ -11,9 +11,10 @@ class BookCSS extends React.PureComponent {
     return (
       <style type="text/css" scoped>
         { `
-        .${title} {
+        .${/*book*/ title} {
           width: ${width}px;
           height: ${height}px;
+          transform-origin: center center ${0}px;
         }
 
         .${title}-container {
@@ -65,22 +66,22 @@ class BookCSS extends React.PureComponent {
         }
 
         .${title}-box .front  {
-          transform: rotateY(   0deg ) translateZ( ${depth/2}px );
+          transform: rotateY( 0deg ) translateZ( ${depth}px );
         }
         .${title}-box .back   {
-          transform: rotateX( 180deg ) translateZ( ${depth/2 - 5}px );
+          transform: rotateX( 180deg ) translateZ( ${0 - 5}px );
         }
         .${title}-box .right  {
-          transform: rotateY(  90deg ) translateZ( ${width/2}px  );
+          transform: rotateY(  90deg ) translateZ( ${width/2}px ) translateX(${-depth/2}px);
         }
         .${title}-box .left   {
-          transform: rotateY( -90deg ) translateZ( ${width/2}px );
+          transform: rotateY( -90deg ) translateZ( ${width/2}px ) translateX(${depth/2}px);
         }
         .${title}-box .top    {
-          transform: rotateX(  90deg ) translateZ( ${height/2 - 5}px );
+          transform: rotateX(  90deg ) translateZ( ${height/2 - 5}px ) translateY(${depth/2}px);
         }
         .${title}-box .bottom {
-          transform: rotateX( -90deg ) translateZ( ${height/2 - 5}px );
+          transform: rotateX( -90deg ) translateZ( ${height/2 - 5}px ) translateY(${-depth/2}px);
         }
         `}
       </style>

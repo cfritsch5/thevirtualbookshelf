@@ -36,3 +36,7 @@ http://www.pagecolumn.com/tool/regtest.htm
 https://medium.learnreact.com/the-style-tag-and-react-24d6dd3ca974
 https://stackoverflow.com/questions/2830296/using-style-tags-in-the-body-with-other-html
 https://stackoverflow.com/questions/20913288/react-js-how-to-pass-properties-object-to-child-component
+
+
+### Future Features???
+- option to transform origin that allows rotation anchored on spine or back of book
