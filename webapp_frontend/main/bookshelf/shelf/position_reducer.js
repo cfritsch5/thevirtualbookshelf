@@ -37,13 +37,13 @@ const PositionReducer = (state = {}, action) => {
         // };
         // console.log( position);
         newPos.A.x = x;
-        newPos.A.z = 0;
         newPos.B.x = Math.round(width*Math.cos(angle*Math.PI/180));
-        newPos.B.z = Math.round((width/2)*Math.sin(angle*Math.PI/180));
+        newPos.B.z = Math.round((width/2)*Math.sin( -angle*Math.PI/180));
         newPos.C.x = Math.round(depth*Math.sin(angle*Math.PI/180));
         newPos.C.z = Math.round(depth*Math.cos(angle*Math.PI/180));
         newPos.D.x = Math.round(newPos.C.x + newPos.B.x);
         newPos.D.z = Math.round(newPos.C.z + newPos.B.z);
+        newPos.A.z = -newPos.B.z;
 
         newPos.C.z = newPos.C.z  - newPos.B.z;
         newPos.B.x = newPos.B.x + x;
