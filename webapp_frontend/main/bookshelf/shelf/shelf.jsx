@@ -7,16 +7,20 @@ class Shelf extends React.Component {
 
 // on render should go to reducer and update position of shelf
   render(){
+    let position = 0, book;
     return (
       <div className="shelf">
         {this.props.shelf.map((i)=> {
-          // console.log("shelfitem",i);
+          console.log("shelfitem",this.props.books[i]);
+          book = this.props.books[i-1];
+          position = book ? position + book.width : 0;
+          console.log(position);
           return (
-            <div className="bookPosition" key={i}>
               <ShelfItemContainer
+                key={i}
+                xPosition={position}
                 book={this.props.books[i]}
                 draggable={this.props.draggable}/>
-            </div>
         );
         })}
       </div>

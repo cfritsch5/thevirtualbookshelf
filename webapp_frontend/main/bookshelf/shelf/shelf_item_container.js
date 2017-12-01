@@ -3,10 +3,11 @@ import ShelfItem from './shelf_item';
 import {updatePosition} from '../bookshelf_actions';
 
 const mapStateToProps = (state, props) => {
-  let {draggable, book} = props;
+  let {draggable, book, xPosition} = props;
   return {
     draggable,
     book,
+    xPosition,
   };
 };
 

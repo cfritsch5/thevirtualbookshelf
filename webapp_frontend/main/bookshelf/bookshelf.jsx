@@ -29,9 +29,9 @@ class BookShelf extends React.Component {
     this.props.fetchbooks();
   }
 
-  toggleMode(){
-    this.setState({draggable: !this.state.draggable});
-  }
+  // toggleMode(){
+    // this.setState({draggable: !this.state.draggable});
+  // }
 
   render() {
     // console.log('render BookShelf');

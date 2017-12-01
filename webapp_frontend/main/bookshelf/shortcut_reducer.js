@@ -1,6 +1,6 @@
 import {merge} from 'lodash';
 
-let defaultState = {movementTypeToggle: true};
+let defaultState = {movementTypeToggle: false};
 //  true means rotate
 //  false means move
 //  for manipulating books

@@ -17,9 +17,12 @@ class Book extends React.Component {
       angle: 0,
     };
   }
-
-  componentDidMount(){
+  componentWillMount(){
     this.setState({ title: this.shortcode()});
+    this.props.updatePosition({[this.props.book.id]: {angle: this.state.angle}});
+  }
+  componentDidMount(){
+    // console.log(this.refs[this.state.title].getBoundingClientRect());
   }
 
   shortcode(){
@@ -43,12 +46,14 @@ class Book extends React.Component {
     let angle = this.state.angle;
     let radtoDeg = (180/Math.PI);
     let oppositeOverhyp = (ui.deltaX/parseInt(this.props.book.depth));
-    let angleDelta = Math.asin(oppositeOverhyp)*radtoDeg;
+    let angleDelta = Math.floor(Math.asin(oppositeOverhyp)*radtoDeg);
     if(!isNaN(angleDelta)){
       angle = angle + angleDelta;
       if( angle > 90 ) angle = 90;
       if( angle < -90 ) angle = -90;
+      console.log(this.props.book.depth * Math.sin(angle*(Math.PI/180)));
       this.setState({angle: angle});
+      this.props.updatePosition({[this.props.book.id]: {angle: this.state.angle}});
     } else {
       console.log("NAN!!!!!!!!!!!");
     }
@@ -64,7 +69,7 @@ class Book extends React.Component {
         onStart={ this.start }
         onDrag={ this.rotate }
         onStop={ this.stop } >
-        <div className={`book ${title}`}
+        <div className={`book ${title}`} ref={`${title}`}
           style={{transform: `rotateY(${this.state.angle}deg)`}}>
           <BookCSS title={ title } book={this.props.book}/>
           <BookBox title={ title } />

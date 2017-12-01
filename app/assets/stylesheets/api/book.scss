@@ -19,8 +19,8 @@ t   |___|/ d
 
 */
 .bookshelf {
-  perspective: 600px;
-  margin: 50px;
+  perspective: 1000px;
+  margin-left: 200px;
 }
 
 .shelf {
@@ -35,7 +35,6 @@ t   |___|/ d
   justify-content: center;
   align-items: center;
   transform-style: preserve-3d;
-  transform-origin: center center -100px;
 }
 
 .container {

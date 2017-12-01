@@ -7,8 +7,21 @@ class ShelfItem extends React.Component {
     super(props);
 
     this.onStart = this.onStart.bind(this);
+    this.onDrag = this.onDrag.bind(this);
     this.onStop = this.onStop.bind(this);
-    this.state = { position: {x: 0, y: 0} };
+    this.state = { position: {x: 0, y: 0 }};
+  }
+
+  componentWillMount(){
+    this.props.updatePosition({
+      [this.props.book.id]: {
+        x:this.props.xPosition,
+        y: this.state.y,
+        depth: this.props.book.depth,
+        width: this.props.book.width,
+      }
+    });
+    this.setState({position: {x:this.props.xPosition, y:0}});
   }
 
   style(sec, forward, angle){
@@ -41,6 +54,7 @@ class ShelfItem extends React.Component {
 
   onDrag(e,ui){
     // console.log(ui);
+    this.props.updatePosition({[this.props.book.id]: {x: ui.x, y: ui.y}});
   }
 
   onStop(e,ui){
@@ -48,25 +62,25 @@ class ShelfItem extends React.Component {
     let angle = this.findDeg(node);
     node.style = this.style(0.33, 0, angle);
     this.setStyleDelay(node,0,0,angle);
-    console.log('rect',node.getBoundingClientRect());
-    let rect = node.getBoundingClientRect();
-    let coordinates = {
-      x: rect.x,
-      y: rect.y,
-      angle: angle,
-    };
-    let newY = ui.y - ui.y % 200;
-    if(newY >= 200){
-      // throw action to move to new shelf
-      // this ofcourse would rely on vertical shelving
-    }
+    // console.log('rect',node.getBoundingClientRect());
+    // let rect = node.getBoundingClientRect();
+    // let coordinates = {
+    //   x: rect.x,
+    //   y: rect.y,
+    //   angle: angle,
+    // };
+    // let newY = ui.y - ui.y % 200;
+    // if(newY >= 200){
+    //   // throw action to move to new shelf
+    //   // this ofcourse would rely on vertical shelving
+    // }
     let newX = ui.x - ui.x % 35;
-    this.setState({position: { x: ui.x, y: newY}});
-    this.props.updatePosition({[this.props.book.id]: {x: ui.x, y: newY}});
+    this.setState({position: { x: ui.x, y: 0}});
   }
 
       // extra div is used by draggable to insert style classes
   render(){
+    console.log('render shelf item', this.state.position.x);
     return (
       <Draggable
         disabled={this.props.draggable}
@@ -75,7 +89,7 @@ class ShelfItem extends React.Component {
         onStop={this.onStop}
         position={this.state.position}
         >
-        <div>
+        <div style={{position: 'absolute'}}>
           <BookContainer book={this.props.book} draggable={this.props.draggable}/>
         </div>
       </Draggable>
