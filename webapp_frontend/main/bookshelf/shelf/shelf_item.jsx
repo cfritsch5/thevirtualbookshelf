@@ -80,7 +80,7 @@ class ShelfItem extends React.Component {
 
       // extra div is used by draggable to insert style classes
   render(){
-    console.log('render shelf item', this.state.position.x);
+    // console.log('render shelf item', this.state.position.x);
     return (
       <Draggable
         disabled={this.props.draggable}

@@ -1,6 +1,6 @@
 import React from 'react';
 import ShelfContainer from './shelf/shelf_container';
-
+import PositionsCalcContainer from './positions_calc_container';
 class BookShelf extends React.Component {
   constructor(props){
     super(props);
@@ -15,7 +15,7 @@ class BookShelf extends React.Component {
   }
 
   shortcut(e){
-    console.log('shortcut',e.key.toUpperCase());
+    // console.log('shortcut',e.key.toUpperCase());
     this.props.appShortcut(e.key.toUpperCase());
   }
 
@@ -47,6 +47,7 @@ class BookShelf extends React.Component {
         onKeyDown={this.shortcut}
         onKeyUp={this.shortcut}
         >
+        <PositionsCalcContainer/>
         <p>
           Hold shift to move books <br/>
           Movement Type = {movementTypeToggle ? 'Rotate' : 'Move'}

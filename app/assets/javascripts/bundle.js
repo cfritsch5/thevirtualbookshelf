@@ -49367,6 +49367,10 @@ var _shelf_container = __webpack_require__(282);
 
 var _shelf_container2 = _interopRequireDefault(_shelf_container);
 
+var _positions_calc_container = __webpack_require__(301);
+
+var _positions_calc_container2 = _interopRequireDefault(_positions_calc_container);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -49397,7 +49401,7 @@ var BookShelf = function (_React$Component) {
   _createClass(BookShelf, [{
     key: 'shortcut',
     value: function shortcut(e) {
-      console.log('shortcut', e.key.toUpperCase());
+      // console.log('shortcut',e.key.toUpperCase());
       this.props.appShortcut(e.key.toUpperCase());
     }
 
@@ -49437,6 +49441,7 @@ var BookShelf = function (_React$Component) {
           onKeyDown: this.shortcut,
           onKeyUp: this.shortcut
         },
+        _react2.default.createElement(_positions_calc_container2.default, null),
         _react2.default.createElement(
           'p',
           null,
@@ -49551,10 +49556,10 @@ var Shelf = function (_React$Component) {
         'div',
         { className: 'shelf' },
         this.props.shelf.map(function (i) {
-          console.log("shelfitem", _this2.props.books[i]);
+          // console.log("shelfitem",this.props.books[i]);
           book = _this2.props.books[i - 1];
           position = book ? position + book.width : 0;
-          console.log(position);
+          // console.log(position);
           return _react2.default.createElement(_shelf_item_container2.default, {
             key: i,
             xPosition: position,
@@ -49740,7 +49745,7 @@ var ShelfItem = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      console.log('render shelf item', this.state.position.x);
+      // console.log('render shelf item', this.state.position.x);
       return _react2.default.createElement(
         _reactDraggable2.default,
         {
@@ -50621,7 +50626,7 @@ var ShortcutReducer = exports.ShortcutReducer = function ShortcutReducer() {
   switch (action.type) {
     case 'SHIFT':
       var movementTypeToggle = !state.movementTypeToggle;
-      console.log("ShortcutReducer SHIFT", state, movementTypeToggle);
+      // console.log("ShortcutReducer SHIFT", state, movementTypeToggle);
       return (0, _lodash.merge)({}, state, { movementTypeToggle: movementTypeToggle });
     default:
       return state;
@@ -50629,6 +50634,62 @@ var ShortcutReducer = exports.ShortcutReducer = function ShortcutReducer() {
 };
 
 exports.default = ShortcutReducer;
+
+/***/ }),
+/* 301 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _reactRedux = __webpack_require__(17);
+
+var _positions_calc = __webpack_require__(302);
+
+var _positions_calc2 = _interopRequireDefault(_positions_calc);
+
+var _shortcut_actions = __webpack_require__(290);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var mapStateToProps = function mapStateToProps(state, props) {
+  return {
+    fullState: state,
+    props: props
+  };
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  return {
+    updatePosition: function updatePosition(pos) {
+      return dispatch((0, _shortcut_actions.updatePosition)(pos));
+    }
+  };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_positions_calc2.default);
+
+/***/ }),
+/* 302 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var positionsCalc = function positionsCalc(props) {
+  console.log('position calc', props);
+
+  return null;
+};
+
+exports.default = positionsCalc;
 
 /***/ })
 /******/ ]);

@@ -11,10 +11,10 @@ class Shelf extends React.Component {
     return (
       <div className="shelf">
         {this.props.shelf.map((i)=> {
-          console.log("shelfitem",this.props.books[i]);
+          // console.log("shelfitem",this.props.books[i]);
           book = this.props.books[i-1];
           position = book ? position + book.width : 0;
-          console.log(position);
+          // console.log(position);
           return (
               <ShelfItemContainer
                 key={i}

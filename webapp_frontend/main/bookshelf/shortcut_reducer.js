@@ -9,7 +9,7 @@ export const ShortcutReducer = (state = defaultState, action) => {
   switch (action.type) {
     case 'SHIFT':
       let movementTypeToggle = !state.movementTypeToggle;
-    console.log("ShortcutReducer SHIFT", state, movementTypeToggle);
+    // console.log("ShortcutReducer SHIFT", state, movementTypeToggle);
     return merge({},state,{movementTypeToggle});
     default:
     return state;
