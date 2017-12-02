@@ -1,60 +1,101 @@
 import {merge} from 'lodash';
 
+// let position = {
+//   x: 0,
+//   y: 0,
+//   angle: 0,
+//   width: 0,
+//   depth: 0,
+//   Ax: null,
+//   Bx: null,
+//   Cx: null,
+//   Dx: null,
+//   Az: null,
+//   Bz: null,
+//   Cz: null,
+//   Dz: null,
+// };
 let position = {
   x: 0,
   y: 0,
   angle: 0,
   width: 0,
   depth: 0,
-  A: { x: null, z: null },
-  B: { x: null, z: null },
-  C: { x: null, z: null },
-  D: { x: null, z: null },
+  shelf: 0,
 };
+let shelves = [[]];
+let shelfList = {};
+let mapShelvesToBooks = {};
+let mapBooksToShelves = {};
+let positions = {};
+let newPos = {};
 
 const PositionReducer = (state = {}, action) => {
   // console.log("POSITION REDUCER");
   switch (action.type) {
     case "NEW_POSITION":
-      // console.log("position action", action,state);
-      // let positions = {};
-      let _id = action.position.id;
-      let positions = {};
-      // let newPos = {[action.position.id]: {angle: action.pos.angle}};
-      Object.keys(action.position).forEach((id)=>{
-        let newPos = merge({},position, state[id], action.position[id]);
-        let x = newPos.x;
-        let angle = newPos.angle;
-        let {width, depth} = newPos;
-        // let x = action.position[id].x || state.x || 0;
-        // let angle = action.position[id].angle || state.angle || 0;
-        // let {width, depth} = state[id] || action.position[id];
-        // points = {
-        //   A: { x: x,     z: 0 },
-        //   B: { x: width*Math.cos(angle*Math.PI/180), z: width*Math.sin(angle*Math.PI/180) },
-        //   C: { x: depth*Math.cos(angle*Math.PI/180), z: depth*Math.sin(angle*Math.PI/180) },
-        //   D: { x: width, z: depth },
-        // };
-        // console.log( position);
-        newPos.A.x = x;
-        newPos.B.x = Math.round(width*Math.cos(angle*Math.PI/180));
-        newPos.B.z = Math.round((width/2)*Math.sin( -angle*Math.PI/180));
-        newPos.C.x = Math.round(depth*Math.sin(angle*Math.PI/180));
-        newPos.C.z = Math.round(depth*Math.cos(angle*Math.PI/180));
-        newPos.D.x = Math.round(newPos.C.x + newPos.B.x);
-        newPos.D.z = Math.round(newPos.C.z + newPos.B.z);
-        newPos.A.z = -newPos.B.z;
-
-        newPos.C.z = newPos.C.z  - newPos.B.z;
-        newPos.B.x = newPos.B.x + x;
-        newPos.C.x = newPos.C.x + x;
-        newPos.D.x = newPos.D.x + x;
-
-        // console.log(merge(position,points));
-        positions[id] = newPos;
-      });
-      // let new_pos = merge( action.position, points);
+    // positions = {};
+    //   Object.keys(action.position).forEach((id)=>{
+    //     //do shelves of zero for now, but propabaly need to refactor
+    //     // shelves data structure
+    //         newPos = merge({}, position, state[id], action.position[id]);
+    //
+    //         positions[id] = newPos;
+    //     shelves[0].forEach((idx2)=>{
+    //
+    //     });
+    //   });
       return merge({}, state, positions);
+    // case "NEW_POSITION":
+    //   let positions = {};
+    //   Object.keys(action.position).forEach((id)=>{
+    //     let newPos = merge({}, position, state[id], action.position[id]);
+    //     let {x, angle, width, depth} = newPos;
+    //     angle = angle+90;
+    //     newPos.Ax = x;
+    //     newPos.Bx = (width*Math.cos(angle*Math.PI/180)).toFixed(3);
+    //     newPos.Bz = ((width/2)*Math.sin( -angle*Math.PI/180)).toFixed(3);
+    //     newPos.Cx = (depth*Math.sin(angle*Math.PI/180)).toFixed(3);
+    //     newPos.Cz = (depth*Math.cos(angle*Math.PI/180)).toFixed(3);
+    //     newPos.Dx = (+newPos.Cx + +newPos.Bx);
+    //     newPos.Dz = (+newPos.Cz + +newPos.Bz);
+    //     newPos.Az = -newPos.Bz;
+    //
+    //     newPos.Cz = newPos.Cz  - newPos.Bz;
+    //     newPos.Bx = newPos.Bx + x;
+    //     newPos.Cx = newPos.Cx + x;
+    //     newPos.Dx = newPos.Dx + x;
+    //
+    //     positions[id] = newPos;
+    //
+    //   });
+      // return merge({}, state, positions);
+    case 'RECEIVE_BOOKS':
+      let lastBookId = null;
+      positions = {};
+
+      Object.keys(action.books).map((id)=>{
+        // shelfID = action.books.shelfID
+        let shelfID = 0; //temp place holder
+        // shelves[shelfID].push(id);
+
+        newPos = merge({}, position);
+        newPos.width = action.books[id].width;
+        newPos.depth = action.books[id].depth;
+        // newPos.shelfID = action.books[id].shelfID;
+        positions[id] = newPos;
+
+        mapBooksToShelves[id] = shelfID;
+        shelfList[shelfID] = shelfList[shelfID] || {};
+        shelfList[shelfID][id] = {next: null, prev: null};
+        shelfList[shelfID][id].prev = lastBookId || null;
+        if(lastBookId) {
+          shelfList[shelfID][lastBookId].next = id;
+        }
+        lastBookId = id;
+      });
+      // console.log("in shelf reducer action, state", action, state);
+      return merge({}, state, positions, {mapBooksToShelves},{shelfList});
     default:
       return state;
   }
