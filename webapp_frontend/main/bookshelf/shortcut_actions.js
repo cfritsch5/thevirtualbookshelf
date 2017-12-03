@@ -1,6 +1,6 @@
 
 export const shortcut = hotkey => {
-  console.log("shorcut action", hotkey);
+  // console.log("shorcut action", hotkey);
   return {
     type: hotkey,
   };

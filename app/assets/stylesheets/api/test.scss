@@ -1,13 +1,23 @@
 // USEFUL FOR TESTING IN CHROME DEV TOOLS
 
 // for finding divs
-.shelf {border: 2px solid grey;}
-.bookPosition {border: 2px solid red;}
-.react-draggable {border: 2px solid orange;}
-.book {border: 2px solid yellow;}
-.container {border: 2px solid green;}
-.box {border: 2px solid blue;}
-.figure {border: 3px solid purple;}
+// .shelf {border: 2px solid grey;}
+// .bookPosition {border: 2px solid red;}
+// .react-draggable {border: 2px solid orange;}
+// .book {border: 2px solid yellow;}
+// .container {border: 2px solid green;}
+// .box {border: 2px solid blue;}
+// .figure {border: 3px solid purple;}
 
 //for inspecting depth
 .shelf {transform: rotateX(-30deg); height: 200px; justify-content: unset}
+
+.positions_calc {
+  margin: 50px;
+  white-space: pre-wrap;
+  height: 300px;
+  overflow: scroll;
+  // background: grey;
+  display: flex;
+  justify-content: space-around;
+}

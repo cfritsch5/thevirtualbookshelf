@@ -40,23 +40,24 @@ class BookShelf extends React.Component {
     // console.log(this.props);
     let movementTypeToggle = this.props.shortcuts.movementTypeToggle;
     return (
-      <div className="bookshelf"
-        ref={input => input && input.focus()}
-        tabIndex={0}
-        autoFocus={true}
-        onKeyDown={this.shortcut}
-        onKeyUp={this.shortcut}
-        >
-        <PositionsCalcContainer/>
-        <p>
-          Hold shift to move books <br/>
-          Movement Type = {movementTypeToggle ? 'Rotate' : 'Move'}
-        </p>
-        {
-          Object.keys(this.props.shelves).map((id)=>(
-            <ShelfContainer key={id} id={id} draggable={movementTypeToggle}/>
-          ))
-        }
+      <div className="BookShelf-wrapper">
+        <div className="bookshelf"
+          ref={input => input && input.focus()}
+          tabIndex={0}
+          autoFocus={true}
+          onKeyDown={this.shortcut}
+          onKeyUp={this.shortcut}
+          >
+          <p>
+            Hold shift to move books <br/>
+            Movement Type = {movementTypeToggle ? 'Rotate' : 'Move'}
+          </p>
+          {
+            Object.keys(this.props.shelves).map((id)=>(
+              <ShelfContainer key={id} id={id} draggable={movementTypeToggle}/>
+            ))
+          }
+        </div>
       </div>
     );
   }

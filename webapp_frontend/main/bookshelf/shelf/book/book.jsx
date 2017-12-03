@@ -51,7 +51,7 @@ class Book extends React.Component {
       angle = angle + angleDelta;
       if( angle > 90 ) angle = 90;
       if( angle < -90 ) angle = -90;
-      console.log(this.props.book.depth * Math.sin(angle*(Math.PI/180)));
+      // console.log(this.props.book.depth * Math.sin(angle*(Math.PI/180)));
       this.setState({angle: angle});
       this.props.updatePosition({[this.props.book.id]: {angle: this.state.angle}});
     } else {

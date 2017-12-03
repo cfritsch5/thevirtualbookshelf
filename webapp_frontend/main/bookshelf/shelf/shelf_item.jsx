@@ -15,8 +15,8 @@ class ShelfItem extends React.Component {
   componentWillMount(){
     this.props.updatePosition({
       [this.props.book.id]: {
-        x:this.props.xPosition,
-        y: this.state.y,
+        x: this.props.xPosition,
+        y: this.state.position.y,
         depth: this.props.book.depth,
         width: this.props.book.width,
       }
@@ -46,15 +46,15 @@ class ShelfItem extends React.Component {
   onStart(e,ui){
     let node = ui.node.children[0];
     let angle = this.findDeg(node);
-    node.style = this.style(0.25, 150, angle);
-    this.setStyleDelay(node,0,150,angle);
+    node.style = this.style(0.25, 200, angle);
+    this.setStyleDelay(node,0,200,angle);
     // console.log(ui,e.clientY);
-
+    this.props.updatePosition({[this.props.book.id]: {x: ui.x, z: 200, y: ui.y}});
   }
 
   onDrag(e,ui){
     // console.log(ui);
-    this.props.updatePosition({[this.props.book.id]: {x: ui.x, y: ui.y}});
+    this.props.updatePosition({[this.props.book.id]: {x: ui.x, z: 200, y: ui.y}});
   }
 
   onStop(e,ui){
@@ -76,6 +76,7 @@ class ShelfItem extends React.Component {
     // }
     let newX = ui.x - ui.x % 35;
     this.setState({position: { x: ui.x, y: 0}});
+    this.props.updatePosition({[this.props.book.id]: {x: ui.x, z: 200, y: ui.y}});
   }
 
       // extra div is used by draggable to insert style classes
