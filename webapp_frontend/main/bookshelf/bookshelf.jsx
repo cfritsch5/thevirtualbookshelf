@@ -9,7 +9,7 @@ class BookShelf extends React.Component {
     // };
 
     // this.addBook = this.addBook.bind(this);
-    // this.toggleMode = this.toggleMode.bind(this);
+    this.toggleMode = this.toggleMode.bind(this);
     this.shortcut = this.shortcut.bind(this);
     // this.gofetchbooks = this.gofetchbooks.bind(this);
   }
@@ -29,9 +29,9 @@ class BookShelf extends React.Component {
     this.props.fetchbooks();
   }
 
-  // toggleMode(){
-    // this.setState({draggable: !this.state.draggable});
-  // }
+  toggleMode(){
+    this.setState({draggable: !this.state.draggable});
+  }
 
   render() {
     // console.log('render BookShelf');
@@ -51,6 +51,7 @@ class BookShelf extends React.Component {
           <p>
             Hold shift to move books <br/>
             Movement Type = {movementTypeToggle ? 'Rotate' : 'Move'}
+            <input type='checkbox' onChange={this.toggleMode}/>
           </p>
           {
             Object.keys(this.props.shelves).map((id)=>(

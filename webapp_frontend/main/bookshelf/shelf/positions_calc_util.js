@@ -32,30 +32,44 @@ export const calc = (props)=>{
     });
   });
 };
-//
-// export const overlap = (book1, book2) => {
-//   let transform1 = this.transformCoordinates(book1, book2);
-//   let transform2 = this.transformCoordinates(book2, book1);
-//
-//   // let mmTurnBook1 = this.minMax(turnBook1);
-//   // let mmTurnBook2 = this.minMax(turnBook2);
-//   let minMax1 = this.minMax(transform1.p1);
-//   let minMax2 = this.minMax(transform1.p2);
-//   let _overlap = this.compareMINMAX(minMax1, minMax2);
-//   console.log('gap???',_overlap);
-//   minMax1 = this.minMax(transform2.p1);
-//   minMax2 = this.minMax(transform2.p2);
-//   overlap = this.compareMINMAX(minMax1, minMax2);
-//   console.log('gap???',overlap);
-//   // console.log('transform books 2 into book 1 coord');
-//
-//   // this.compareMINMAX(minMax2, book1);
-// };
+
+function CollisionException() {}
+
+export const overlap = (newPos, oldPos, state) => {
+  merge(newPos,getCoords(newPos));
+  merge(newPos,minMaxX(newPos));
+  try {
+    Object.keys(state.shelfList[newPos.shelf]).forEach((id2)=>{
+      if(newPos.id !== id2){
+        if(compareMINMAX(newPos,state[id2])){
+          console.log(true);
+        }else{
+          console.log(false);
+          throw new CollisionException;
+        }
+      }
+    });
+
+  } catch (e){
+    // console.log('catch');
+    if (e instanceof CollisionException) {
+      newPos = oldPos;
+      console.log(newPos);
+    }
+  }
+
+};
 
 export const compareMINMAX = (p1,p2) => {
   // console.log('p1.maxX, p2.minX, p2.maxX, p1.minX');
   // console.log(p1.maxX, p2.minX, p2.maxX, p1.minX);
   // let smallerX = b1T.minX < b2.minX ? b1T : b2;
+  if(p1.maxX <= p2.minX || p2.maxX <= p1.minX) return true;
+  return false;
+};
+export const compareMINMAXvec = (p1,p2) => {
+  // console.log('p1.maxX, p2.minX, p2.maxX, p1.minX');
+  // console.log(p1.maxX, p2.minX, p2.maxX, p1.minX);
   if(p1.maxX <= p2.minX || p2.maxX <= p1.minX) return true;
   return false;
 };
@@ -82,25 +96,25 @@ export const toRad = (angleInDeg) => angleInDeg*Math.PI/180;
 export const getCoords = (position)=>{
   let {x, width, depth, angle} = position;
   let i = x;
-  +x; +width; +depth; //Coerse to numbers
+  +i; +width; +depth; //Coerse to numbers
   // let angle = toRad(+position.angle);
   let newPos = {};
   // console.log(angle);
   // console.log(Math.sin(toRad(angle)));
   // console.log((width/2) * Math.abs(Math.sin(toRad(angle))));
-  newPos.Ai = (width/2) * Math.abs(Math.sin(toRad(angle)));
-  newPos.Bi = (width/2) * Math.abs(Math.cos(toRad(angle)));
-  newPos.Bj = (width/2) * Math.sin(- toRad(angle));
-  newPos.Ci = depth * Math.sin(toRad(angle));
-  newPos.Cj = depth * Math.cos(toRad(angle));
-  newPos.Aj =  -newPos.Bj;
-  newPos.Di = newPos.Ci + newPos.Bi + width/2 + i;
-  newPos.Dj = newPos.Cj + newPos.Bj;
+  newPos.Ax = (width/2) * Math.abs(Math.sin(toRad(angle)));
+  newPos.Bx = (width/2) * Math.abs(Math.cos(toRad(angle)));
+  newPos.Bz = (width/2) * Math.sin(- toRad(angle));
+  newPos.Cx = depth * Math.sin(toRad(angle));
+  newPos.Cz = depth * Math.cos(toRad(angle));
+  newPos.Az =  -newPos.Bz;
+  newPos.Dx = newPos.Cx + newPos.Bx + width/2 + i;
+  newPos.Dz = newPos.Cz + newPos.Bz;
 
-  newPos.Cj = newPos.Cj  - newPos.Bj;
-  newPos.Ai = newPos.Ai + i;
-  newPos.Bi = newPos.Bi + (width/2) + i;
-  newPos.Ci = newPos.Ci + newPos.Ai;
+  newPos.Cz = newPos.Cz  - newPos.Bz;
+  newPos.Ax = newPos.Ax + i;
+  newPos.Bx = newPos.Bx + (width/2) + i;
+  newPos.Cx = newPos.Cx + newPos.Ax;
   // newPos.Dx = newPos.Dx + x;
   // console.log(x, newPos);
 

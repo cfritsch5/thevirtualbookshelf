@@ -4,6 +4,8 @@ import {updatePosition} from '../bookshelf_actions';
 
 const mapStateToProps = (state, props) => {
   let {draggable, book, xPosition} = props;
+  xPosition =  state.positions[book.id].x || xPosition;
+  // console.log(xPosition, state.positions[book.id].x);
   return {
     draggable,
     book,

@@ -19,7 +19,7 @@ class Book extends React.Component {
   }
   componentWillMount(){
     this.setState({ title: this.shortcode()});
-    this.props.updatePosition({[this.props.book.id]: {angle: this.state.angle}});
+    // this.props.updatePosition({[this.props.book.id]: {angle: this.state.angle}});
   }
   componentDidMount(){
     // console.log(this.refs[this.state.title].getBoundingClientRect());
@@ -34,11 +34,11 @@ class Book extends React.Component {
   }
 
   start(e,ui){
-    if(typeof this.angle === 'undefined') this.angle = 0;
+    // if(typeof this.angle === 'undefined') this.angle = 0;
   }
 
   stop(e,ui){
-    this.props.updatePosition({[this.props.book.id]: {angle: this.state.angle}});
+    // this.props.updatePosition({[this.props.book.id]: {angle: this.state.angle}});
     // this.props.updatePosition({[this.props.book.id]: {x: ui.x, y: newY}});
   }
 
@@ -53,6 +53,7 @@ class Book extends React.Component {
       if( angle < -90 ) angle = -90;
       // console.log(this.props.book.depth * Math.sin(angle*(Math.PI/180)));
       this.setState({angle: angle});
+      console.log('update book rotate');
       this.props.updatePosition({[this.props.book.id]: {angle: this.state.angle}});
     } else {
       console.log("NAN!!!!!!!!!!!");

@@ -1457,7 +1457,7 @@ var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
 var CallbackQueue = __webpack_require__(84);
-var PooledClass = __webpack_require__(20);
+var PooledClass = __webpack_require__(21);
 var ReactFeatureFlags = __webpack_require__(85);
 var ReactReconciler = __webpack_require__(24);
 var Transaction = __webpack_require__(36);
@@ -1731,7 +1731,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 var _assign = __webpack_require__(5);
 
-var PooledClass = __webpack_require__(20);
+var PooledClass = __webpack_require__(21);
 
 var emptyFunction = __webpack_require__(11);
 var warning = __webpack_require__(2);
@@ -2201,471 +2201,6 @@ module.exports = DOMProperty;
 
 /***/ }),
 /* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright 2014-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- */
-
-
-
-var _assign = __webpack_require__(5);
-
-var ReactCurrentOwner = __webpack_require__(14);
-
-var warning = __webpack_require__(2);
-var canDefineProperty = __webpack_require__(33);
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-
-var REACT_ELEMENT_TYPE = __webpack_require__(74);
-
-var RESERVED_PROPS = {
-  key: true,
-  ref: true,
-  __self: true,
-  __source: true
-};
-
-var specialPropKeyWarningShown, specialPropRefWarningShown;
-
-function hasValidRef(config) {
-  if (process.env.NODE_ENV !== 'production') {
-    if (hasOwnProperty.call(config, 'ref')) {
-      var getter = Object.getOwnPropertyDescriptor(config, 'ref').get;
-      if (getter && getter.isReactWarning) {
-        return false;
-      }
-    }
-  }
-  return config.ref !== undefined;
-}
-
-function hasValidKey(config) {
-  if (process.env.NODE_ENV !== 'production') {
-    if (hasOwnProperty.call(config, 'key')) {
-      var getter = Object.getOwnPropertyDescriptor(config, 'key').get;
-      if (getter && getter.isReactWarning) {
-        return false;
-      }
-    }
-  }
-  return config.key !== undefined;
-}
-
-function defineKeyPropWarningGetter(props, displayName) {
-  var warnAboutAccessingKey = function () {
-    if (!specialPropKeyWarningShown) {
-      specialPropKeyWarningShown = true;
-      process.env.NODE_ENV !== 'production' ? warning(false, '%s: `key` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://fb.me/react-special-props)', displayName) : void 0;
-    }
-  };
-  warnAboutAccessingKey.isReactWarning = true;
-  Object.defineProperty(props, 'key', {
-    get: warnAboutAccessingKey,
-    configurable: true
-  });
-}
-
-function defineRefPropWarningGetter(props, displayName) {
-  var warnAboutAccessingRef = function () {
-    if (!specialPropRefWarningShown) {
-      specialPropRefWarningShown = true;
-      process.env.NODE_ENV !== 'production' ? warning(false, '%s: `ref` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://fb.me/react-special-props)', displayName) : void 0;
-    }
-  };
-  warnAboutAccessingRef.isReactWarning = true;
-  Object.defineProperty(props, 'ref', {
-    get: warnAboutAccessingRef,
-    configurable: true
-  });
-}
-
-/**
- * Factory method to create a new React element. This no longer adheres to
- * the class pattern, so do not use new to call it. Also, no instanceof check
- * will work. Instead test $$typeof field against Symbol.for('react.element') to check
- * if something is a React Element.
- *
- * @param {*} type
- * @param {*} key
- * @param {string|object} ref
- * @param {*} self A *temporary* helper to detect places where `this` is
- * different from the `owner` when React.createElement is called, so that we
- * can warn. We want to get rid of owner and replace string `ref`s with arrow
- * functions, and as long as `this` and owner are the same, there will be no
- * change in behavior.
- * @param {*} source An annotation object (added by a transpiler or otherwise)
- * indicating filename, line number, and/or other information.
- * @param {*} owner
- * @param {*} props
- * @internal
- */
-var ReactElement = function (type, key, ref, self, source, owner, props) {
-  var element = {
-    // This tag allow us to uniquely identify this as a React Element
-    $$typeof: REACT_ELEMENT_TYPE,
-
-    // Built-in properties that belong on the element
-    type: type,
-    key: key,
-    ref: ref,
-    props: props,
-
-    // Record the component responsible for creating this element.
-    _owner: owner
-  };
-
-  if (process.env.NODE_ENV !== 'production') {
-    // The validation flag is currently mutative. We put it on
-    // an external backing store so that we can freeze the whole object.
-    // This can be replaced with a WeakMap once they are implemented in
-    // commonly used development environments.
-    element._store = {};
-
-    // To make comparing ReactElements easier for testing purposes, we make
-    // the validation flag non-enumerable (where possible, which should
-    // include every environment we run tests in), so the test framework
-    // ignores it.
-    if (canDefineProperty) {
-      Object.defineProperty(element._store, 'validated', {
-        configurable: false,
-        enumerable: false,
-        writable: true,
-        value: false
-      });
-      // self and source are DEV only properties.
-      Object.defineProperty(element, '_self', {
-        configurable: false,
-        enumerable: false,
-        writable: false,
-        value: self
-      });
-      // Two elements created in two different places should be considered
-      // equal for testing purposes and therefore we hide it from enumeration.
-      Object.defineProperty(element, '_source', {
-        configurable: false,
-        enumerable: false,
-        writable: false,
-        value: source
-      });
-    } else {
-      element._store.validated = false;
-      element._self = self;
-      element._source = source;
-    }
-    if (Object.freeze) {
-      Object.freeze(element.props);
-      Object.freeze(element);
-    }
-  }
-
-  return element;
-};
-
-/**
- * Create and return a new ReactElement of the given type.
- * See https://facebook.github.io/react/docs/top-level-api.html#react.createelement
- */
-ReactElement.createElement = function (type, config, children) {
-  var propName;
-
-  // Reserved names are extracted
-  var props = {};
-
-  var key = null;
-  var ref = null;
-  var self = null;
-  var source = null;
-
-  if (config != null) {
-    if (hasValidRef(config)) {
-      ref = config.ref;
-    }
-    if (hasValidKey(config)) {
-      key = '' + config.key;
-    }
-
-    self = config.__self === undefined ? null : config.__self;
-    source = config.__source === undefined ? null : config.__source;
-    // Remaining properties are added to a new props object
-    for (propName in config) {
-      if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
-        props[propName] = config[propName];
-      }
-    }
-  }
-
-  // Children can be more than one argument, and those are transferred onto
-  // the newly allocated props object.
-  var childrenLength = arguments.length - 2;
-  if (childrenLength === 1) {
-    props.children = children;
-  } else if (childrenLength > 1) {
-    var childArray = Array(childrenLength);
-    for (var i = 0; i < childrenLength; i++) {
-      childArray[i] = arguments[i + 2];
-    }
-    if (process.env.NODE_ENV !== 'production') {
-      if (Object.freeze) {
-        Object.freeze(childArray);
-      }
-    }
-    props.children = childArray;
-  }
-
-  // Resolve default props
-  if (type && type.defaultProps) {
-    var defaultProps = type.defaultProps;
-    for (propName in defaultProps) {
-      if (props[propName] === undefined) {
-        props[propName] = defaultProps[propName];
-      }
-    }
-  }
-  if (process.env.NODE_ENV !== 'production') {
-    if (key || ref) {
-      if (typeof props.$$typeof === 'undefined' || props.$$typeof !== REACT_ELEMENT_TYPE) {
-        var displayName = typeof type === 'function' ? type.displayName || type.name || 'Unknown' : type;
-        if (key) {
-          defineKeyPropWarningGetter(props, displayName);
-        }
-        if (ref) {
-          defineRefPropWarningGetter(props, displayName);
-        }
-      }
-    }
-  }
-  return ReactElement(type, key, ref, self, source, ReactCurrentOwner.current, props);
-};
-
-/**
- * Return a function that produces ReactElements of a given type.
- * See https://facebook.github.io/react/docs/top-level-api.html#react.createfactory
- */
-ReactElement.createFactory = function (type) {
-  var factory = ReactElement.createElement.bind(null, type);
-  // Expose the type on the factory and the prototype so that it can be
-  // easily accessed on elements. E.g. `<Foo />.type === Foo`.
-  // This should not be named `constructor` since this may not be the function
-  // that created the element, and it may not even be a constructor.
-  // Legacy hook TODO: Warn if this is accessed
-  factory.type = type;
-  return factory;
-};
-
-ReactElement.cloneAndReplaceKey = function (oldElement, newKey) {
-  var newElement = ReactElement(oldElement.type, newKey, oldElement.ref, oldElement._self, oldElement._source, oldElement._owner, oldElement.props);
-
-  return newElement;
-};
-
-/**
- * Clone and return a new ReactElement using element as the starting point.
- * See https://facebook.github.io/react/docs/top-level-api.html#react.cloneelement
- */
-ReactElement.cloneElement = function (element, config, children) {
-  var propName;
-
-  // Original props are copied
-  var props = _assign({}, element.props);
-
-  // Reserved names are extracted
-  var key = element.key;
-  var ref = element.ref;
-  // Self is preserved since the owner is preserved.
-  var self = element._self;
-  // Source is preserved since cloneElement is unlikely to be targeted by a
-  // transpiler, and the original source is probably a better indicator of the
-  // true owner.
-  var source = element._source;
-
-  // Owner will be preserved, unless ref is overridden
-  var owner = element._owner;
-
-  if (config != null) {
-    if (hasValidRef(config)) {
-      // Silently steal the ref from the parent.
-      ref = config.ref;
-      owner = ReactCurrentOwner.current;
-    }
-    if (hasValidKey(config)) {
-      key = '' + config.key;
-    }
-
-    // Remaining properties override existing props
-    var defaultProps;
-    if (element.type && element.type.defaultProps) {
-      defaultProps = element.type.defaultProps;
-    }
-    for (propName in config) {
-      if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
-        if (config[propName] === undefined && defaultProps !== undefined) {
-          // Resolve default props
-          props[propName] = defaultProps[propName];
-        } else {
-          props[propName] = config[propName];
-        }
-      }
-    }
-  }
-
-  // Children can be more than one argument, and those are transferred onto
-  // the newly allocated props object.
-  var childrenLength = arguments.length - 2;
-  if (childrenLength === 1) {
-    props.children = children;
-  } else if (childrenLength > 1) {
-    var childArray = Array(childrenLength);
-    for (var i = 0; i < childrenLength; i++) {
-      childArray[i] = arguments[i + 2];
-    }
-    props.children = childArray;
-  }
-
-  return ReactElement(element.type, key, ref, self, source, owner, props);
-};
-
-/**
- * Verifies the object is a ReactElement.
- * See https://facebook.github.io/react/docs/top-level-api.html#react.isvalidelement
- * @param {?object} object
- * @return {boolean} True if `object` is a valid component.
- * @final
- */
-ReactElement.isValidElement = function (object) {
-  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-};
-
-module.exports = ReactElement;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright 2013-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * 
- */
-
-
-
-var _prodInvariant = __webpack_require__(3);
-
-var invariant = __webpack_require__(1);
-
-/**
- * Static poolers. Several custom versions for each potential number of
- * arguments. A completely generic pooler is easy to implement, but would
- * require accessing the `arguments` object. In each of these, `this` refers to
- * the Class itself, not an instance. If any others are needed, simply add them
- * here, or in their own files.
- */
-var oneArgumentPooler = function (copyFieldsFrom) {
-  var Klass = this;
-  if (Klass.instancePool.length) {
-    var instance = Klass.instancePool.pop();
-    Klass.call(instance, copyFieldsFrom);
-    return instance;
-  } else {
-    return new Klass(copyFieldsFrom);
-  }
-};
-
-var twoArgumentPooler = function (a1, a2) {
-  var Klass = this;
-  if (Klass.instancePool.length) {
-    var instance = Klass.instancePool.pop();
-    Klass.call(instance, a1, a2);
-    return instance;
-  } else {
-    return new Klass(a1, a2);
-  }
-};
-
-var threeArgumentPooler = function (a1, a2, a3) {
-  var Klass = this;
-  if (Klass.instancePool.length) {
-    var instance = Klass.instancePool.pop();
-    Klass.call(instance, a1, a2, a3);
-    return instance;
-  } else {
-    return new Klass(a1, a2, a3);
-  }
-};
-
-var fourArgumentPooler = function (a1, a2, a3, a4) {
-  var Klass = this;
-  if (Klass.instancePool.length) {
-    var instance = Klass.instancePool.pop();
-    Klass.call(instance, a1, a2, a3, a4);
-    return instance;
-  } else {
-    return new Klass(a1, a2, a3, a4);
-  }
-};
-
-var standardReleaser = function (instance) {
-  var Klass = this;
-  !(instance instanceof Klass) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Trying to release an instance into a pool of a different type.') : _prodInvariant('25') : void 0;
-  instance.destructor();
-  if (Klass.instancePool.length < Klass.poolSize) {
-    Klass.instancePool.push(instance);
-  }
-};
-
-var DEFAULT_POOL_SIZE = 10;
-var DEFAULT_POOLER = oneArgumentPooler;
-
-/**
- * Augments `CopyConstructor` to be a poolable class, augmenting only the class
- * itself (statically) not adding any prototypical fields. Any CopyConstructor
- * you give this may have a `poolSize` property, and will look for a
- * prototypical `destructor` on instances.
- *
- * @param {Function} CopyConstructor Constructor that can be used to reset.
- * @param {Function} pooler Customizable pooler.
- */
-var addPoolingTo = function (CopyConstructor, pooler) {
-  // Casting as any so that flow ignores the actual implementation and trusts
-  // it to match the type we declared
-  var NewKlass = CopyConstructor;
-  NewKlass.instancePool = [];
-  NewKlass.getPooled = pooler || DEFAULT_POOLER;
-  if (!NewKlass.poolSize) {
-    NewKlass.poolSize = DEFAULT_POOL_SIZE;
-  }
-  NewKlass.release = standardReleaser;
-  return NewKlass;
-};
-
-var PooledClass = {
-  addPoolingTo: addPoolingTo,
-  oneArgumentPooler: oneArgumentPooler,
-  twoArgumentPooler: twoArgumentPooler,
-  threeArgumentPooler: threeArgumentPooler,
-  fourArgumentPooler: fourArgumentPooler
-};
-
-module.exports = PooledClass;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -19757,6 +19292,471 @@ module.exports = PooledClass;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(42), __webpack_require__(117)(module)))
 
 /***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright 2014-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ */
+
+
+
+var _assign = __webpack_require__(5);
+
+var ReactCurrentOwner = __webpack_require__(14);
+
+var warning = __webpack_require__(2);
+var canDefineProperty = __webpack_require__(33);
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+var REACT_ELEMENT_TYPE = __webpack_require__(74);
+
+var RESERVED_PROPS = {
+  key: true,
+  ref: true,
+  __self: true,
+  __source: true
+};
+
+var specialPropKeyWarningShown, specialPropRefWarningShown;
+
+function hasValidRef(config) {
+  if (process.env.NODE_ENV !== 'production') {
+    if (hasOwnProperty.call(config, 'ref')) {
+      var getter = Object.getOwnPropertyDescriptor(config, 'ref').get;
+      if (getter && getter.isReactWarning) {
+        return false;
+      }
+    }
+  }
+  return config.ref !== undefined;
+}
+
+function hasValidKey(config) {
+  if (process.env.NODE_ENV !== 'production') {
+    if (hasOwnProperty.call(config, 'key')) {
+      var getter = Object.getOwnPropertyDescriptor(config, 'key').get;
+      if (getter && getter.isReactWarning) {
+        return false;
+      }
+    }
+  }
+  return config.key !== undefined;
+}
+
+function defineKeyPropWarningGetter(props, displayName) {
+  var warnAboutAccessingKey = function () {
+    if (!specialPropKeyWarningShown) {
+      specialPropKeyWarningShown = true;
+      process.env.NODE_ENV !== 'production' ? warning(false, '%s: `key` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://fb.me/react-special-props)', displayName) : void 0;
+    }
+  };
+  warnAboutAccessingKey.isReactWarning = true;
+  Object.defineProperty(props, 'key', {
+    get: warnAboutAccessingKey,
+    configurable: true
+  });
+}
+
+function defineRefPropWarningGetter(props, displayName) {
+  var warnAboutAccessingRef = function () {
+    if (!specialPropRefWarningShown) {
+      specialPropRefWarningShown = true;
+      process.env.NODE_ENV !== 'production' ? warning(false, '%s: `ref` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://fb.me/react-special-props)', displayName) : void 0;
+    }
+  };
+  warnAboutAccessingRef.isReactWarning = true;
+  Object.defineProperty(props, 'ref', {
+    get: warnAboutAccessingRef,
+    configurable: true
+  });
+}
+
+/**
+ * Factory method to create a new React element. This no longer adheres to
+ * the class pattern, so do not use new to call it. Also, no instanceof check
+ * will work. Instead test $$typeof field against Symbol.for('react.element') to check
+ * if something is a React Element.
+ *
+ * @param {*} type
+ * @param {*} key
+ * @param {string|object} ref
+ * @param {*} self A *temporary* helper to detect places where `this` is
+ * different from the `owner` when React.createElement is called, so that we
+ * can warn. We want to get rid of owner and replace string `ref`s with arrow
+ * functions, and as long as `this` and owner are the same, there will be no
+ * change in behavior.
+ * @param {*} source An annotation object (added by a transpiler or otherwise)
+ * indicating filename, line number, and/or other information.
+ * @param {*} owner
+ * @param {*} props
+ * @internal
+ */
+var ReactElement = function (type, key, ref, self, source, owner, props) {
+  var element = {
+    // This tag allow us to uniquely identify this as a React Element
+    $$typeof: REACT_ELEMENT_TYPE,
+
+    // Built-in properties that belong on the element
+    type: type,
+    key: key,
+    ref: ref,
+    props: props,
+
+    // Record the component responsible for creating this element.
+    _owner: owner
+  };
+
+  if (process.env.NODE_ENV !== 'production') {
+    // The validation flag is currently mutative. We put it on
+    // an external backing store so that we can freeze the whole object.
+    // This can be replaced with a WeakMap once they are implemented in
+    // commonly used development environments.
+    element._store = {};
+
+    // To make comparing ReactElements easier for testing purposes, we make
+    // the validation flag non-enumerable (where possible, which should
+    // include every environment we run tests in), so the test framework
+    // ignores it.
+    if (canDefineProperty) {
+      Object.defineProperty(element._store, 'validated', {
+        configurable: false,
+        enumerable: false,
+        writable: true,
+        value: false
+      });
+      // self and source are DEV only properties.
+      Object.defineProperty(element, '_self', {
+        configurable: false,
+        enumerable: false,
+        writable: false,
+        value: self
+      });
+      // Two elements created in two different places should be considered
+      // equal for testing purposes and therefore we hide it from enumeration.
+      Object.defineProperty(element, '_source', {
+        configurable: false,
+        enumerable: false,
+        writable: false,
+        value: source
+      });
+    } else {
+      element._store.validated = false;
+      element._self = self;
+      element._source = source;
+    }
+    if (Object.freeze) {
+      Object.freeze(element.props);
+      Object.freeze(element);
+    }
+  }
+
+  return element;
+};
+
+/**
+ * Create and return a new ReactElement of the given type.
+ * See https://facebook.github.io/react/docs/top-level-api.html#react.createelement
+ */
+ReactElement.createElement = function (type, config, children) {
+  var propName;
+
+  // Reserved names are extracted
+  var props = {};
+
+  var key = null;
+  var ref = null;
+  var self = null;
+  var source = null;
+
+  if (config != null) {
+    if (hasValidRef(config)) {
+      ref = config.ref;
+    }
+    if (hasValidKey(config)) {
+      key = '' + config.key;
+    }
+
+    self = config.__self === undefined ? null : config.__self;
+    source = config.__source === undefined ? null : config.__source;
+    // Remaining properties are added to a new props object
+    for (propName in config) {
+      if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
+        props[propName] = config[propName];
+      }
+    }
+  }
+
+  // Children can be more than one argument, and those are transferred onto
+  // the newly allocated props object.
+  var childrenLength = arguments.length - 2;
+  if (childrenLength === 1) {
+    props.children = children;
+  } else if (childrenLength > 1) {
+    var childArray = Array(childrenLength);
+    for (var i = 0; i < childrenLength; i++) {
+      childArray[i] = arguments[i + 2];
+    }
+    if (process.env.NODE_ENV !== 'production') {
+      if (Object.freeze) {
+        Object.freeze(childArray);
+      }
+    }
+    props.children = childArray;
+  }
+
+  // Resolve default props
+  if (type && type.defaultProps) {
+    var defaultProps = type.defaultProps;
+    for (propName in defaultProps) {
+      if (props[propName] === undefined) {
+        props[propName] = defaultProps[propName];
+      }
+    }
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    if (key || ref) {
+      if (typeof props.$$typeof === 'undefined' || props.$$typeof !== REACT_ELEMENT_TYPE) {
+        var displayName = typeof type === 'function' ? type.displayName || type.name || 'Unknown' : type;
+        if (key) {
+          defineKeyPropWarningGetter(props, displayName);
+        }
+        if (ref) {
+          defineRefPropWarningGetter(props, displayName);
+        }
+      }
+    }
+  }
+  return ReactElement(type, key, ref, self, source, ReactCurrentOwner.current, props);
+};
+
+/**
+ * Return a function that produces ReactElements of a given type.
+ * See https://facebook.github.io/react/docs/top-level-api.html#react.createfactory
+ */
+ReactElement.createFactory = function (type) {
+  var factory = ReactElement.createElement.bind(null, type);
+  // Expose the type on the factory and the prototype so that it can be
+  // easily accessed on elements. E.g. `<Foo />.type === Foo`.
+  // This should not be named `constructor` since this may not be the function
+  // that created the element, and it may not even be a constructor.
+  // Legacy hook TODO: Warn if this is accessed
+  factory.type = type;
+  return factory;
+};
+
+ReactElement.cloneAndReplaceKey = function (oldElement, newKey) {
+  var newElement = ReactElement(oldElement.type, newKey, oldElement.ref, oldElement._self, oldElement._source, oldElement._owner, oldElement.props);
+
+  return newElement;
+};
+
+/**
+ * Clone and return a new ReactElement using element as the starting point.
+ * See https://facebook.github.io/react/docs/top-level-api.html#react.cloneelement
+ */
+ReactElement.cloneElement = function (element, config, children) {
+  var propName;
+
+  // Original props are copied
+  var props = _assign({}, element.props);
+
+  // Reserved names are extracted
+  var key = element.key;
+  var ref = element.ref;
+  // Self is preserved since the owner is preserved.
+  var self = element._self;
+  // Source is preserved since cloneElement is unlikely to be targeted by a
+  // transpiler, and the original source is probably a better indicator of the
+  // true owner.
+  var source = element._source;
+
+  // Owner will be preserved, unless ref is overridden
+  var owner = element._owner;
+
+  if (config != null) {
+    if (hasValidRef(config)) {
+      // Silently steal the ref from the parent.
+      ref = config.ref;
+      owner = ReactCurrentOwner.current;
+    }
+    if (hasValidKey(config)) {
+      key = '' + config.key;
+    }
+
+    // Remaining properties override existing props
+    var defaultProps;
+    if (element.type && element.type.defaultProps) {
+      defaultProps = element.type.defaultProps;
+    }
+    for (propName in config) {
+      if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
+        if (config[propName] === undefined && defaultProps !== undefined) {
+          // Resolve default props
+          props[propName] = defaultProps[propName];
+        } else {
+          props[propName] = config[propName];
+        }
+      }
+    }
+  }
+
+  // Children can be more than one argument, and those are transferred onto
+  // the newly allocated props object.
+  var childrenLength = arguments.length - 2;
+  if (childrenLength === 1) {
+    props.children = children;
+  } else if (childrenLength > 1) {
+    var childArray = Array(childrenLength);
+    for (var i = 0; i < childrenLength; i++) {
+      childArray[i] = arguments[i + 2];
+    }
+    props.children = childArray;
+  }
+
+  return ReactElement(element.type, key, ref, self, source, owner, props);
+};
+
+/**
+ * Verifies the object is a ReactElement.
+ * See https://facebook.github.io/react/docs/top-level-api.html#react.isvalidelement
+ * @param {?object} object
+ * @return {boolean} True if `object` is a valid component.
+ * @final
+ */
+ReactElement.isValidElement = function (object) {
+  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+};
+
+module.exports = ReactElement;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * 
+ */
+
+
+
+var _prodInvariant = __webpack_require__(3);
+
+var invariant = __webpack_require__(1);
+
+/**
+ * Static poolers. Several custom versions for each potential number of
+ * arguments. A completely generic pooler is easy to implement, but would
+ * require accessing the `arguments` object. In each of these, `this` refers to
+ * the Class itself, not an instance. If any others are needed, simply add them
+ * here, or in their own files.
+ */
+var oneArgumentPooler = function (copyFieldsFrom) {
+  var Klass = this;
+  if (Klass.instancePool.length) {
+    var instance = Klass.instancePool.pop();
+    Klass.call(instance, copyFieldsFrom);
+    return instance;
+  } else {
+    return new Klass(copyFieldsFrom);
+  }
+};
+
+var twoArgumentPooler = function (a1, a2) {
+  var Klass = this;
+  if (Klass.instancePool.length) {
+    var instance = Klass.instancePool.pop();
+    Klass.call(instance, a1, a2);
+    return instance;
+  } else {
+    return new Klass(a1, a2);
+  }
+};
+
+var threeArgumentPooler = function (a1, a2, a3) {
+  var Klass = this;
+  if (Klass.instancePool.length) {
+    var instance = Klass.instancePool.pop();
+    Klass.call(instance, a1, a2, a3);
+    return instance;
+  } else {
+    return new Klass(a1, a2, a3);
+  }
+};
+
+var fourArgumentPooler = function (a1, a2, a3, a4) {
+  var Klass = this;
+  if (Klass.instancePool.length) {
+    var instance = Klass.instancePool.pop();
+    Klass.call(instance, a1, a2, a3, a4);
+    return instance;
+  } else {
+    return new Klass(a1, a2, a3, a4);
+  }
+};
+
+var standardReleaser = function (instance) {
+  var Klass = this;
+  !(instance instanceof Klass) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Trying to release an instance into a pool of a different type.') : _prodInvariant('25') : void 0;
+  instance.destructor();
+  if (Klass.instancePool.length < Klass.poolSize) {
+    Klass.instancePool.push(instance);
+  }
+};
+
+var DEFAULT_POOL_SIZE = 10;
+var DEFAULT_POOLER = oneArgumentPooler;
+
+/**
+ * Augments `CopyConstructor` to be a poolable class, augmenting only the class
+ * itself (statically) not adding any prototypical fields. Any CopyConstructor
+ * you give this may have a `poolSize` property, and will look for a
+ * prototypical `destructor` on instances.
+ *
+ * @param {Function} CopyConstructor Constructor that can be used to reset.
+ * @param {Function} pooler Customizable pooler.
+ */
+var addPoolingTo = function (CopyConstructor, pooler) {
+  // Casting as any so that flow ignores the actual implementation and trusts
+  // it to match the type we declared
+  var NewKlass = CopyConstructor;
+  NewKlass.instancePool = [];
+  NewKlass.getPooled = pooler || DEFAULT_POOLER;
+  if (!NewKlass.poolSize) {
+    NewKlass.poolSize = DEFAULT_POOL_SIZE;
+  }
+  NewKlass.release = standardReleaser;
+  return NewKlass;
+};
+
+var PooledClass = {
+  addPoolingTo: addPoolingTo,
+  oneArgumentPooler: oneArgumentPooler,
+  twoArgumentPooler: twoArgumentPooler,
+  threeArgumentPooler: threeArgumentPooler,
+  fourArgumentPooler: fourArgumentPooler
+};
+
+module.exports = PooledClass;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19778,7 +19778,7 @@ var _assign = __webpack_require__(5);
 var ReactBaseClasses = __webpack_require__(72);
 var ReactChildren = __webpack_require__(127);
 var ReactDOMFactories = __webpack_require__(131);
-var ReactElement = __webpack_require__(19);
+var ReactElement = __webpack_require__(20);
 var ReactPropTypes = __webpack_require__(135);
 var ReactVersion = __webpack_require__(137);
 
@@ -25246,7 +25246,7 @@ module.exports = getIteratorFn;
 
 var ReactCurrentOwner = __webpack_require__(14);
 var ReactComponentTreeHook = __webpack_require__(10);
-var ReactElement = __webpack_require__(19);
+var ReactElement = __webpack_require__(20);
 
 var checkReactTypeSpec = __webpack_require__(132);
 
@@ -26222,7 +26222,7 @@ var _prodInvariant = __webpack_require__(3);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var PooledClass = __webpack_require__(20);
+var PooledClass = __webpack_require__(21);
 
 var invariant = __webpack_require__(1);
 
@@ -32806,7 +32806,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 var PooledClass = __webpack_require__(128);
-var ReactElement = __webpack_require__(19);
+var ReactElement = __webpack_require__(20);
 
 var emptyFunction = __webpack_require__(11);
 var traverseAllChildren = __webpack_require__(129);
@@ -33365,7 +33365,7 @@ module.exports = KeyEscapeUtils;
 
 
 
-var ReactElement = __webpack_require__(19);
+var ReactElement = __webpack_require__(20);
 
 /**
  * Create a factory that creates HTML tag elements.
@@ -33686,7 +33686,7 @@ module.exports = ReactPropTypesSecret;
 
 
 
-var _require = __webpack_require__(19),
+var _require = __webpack_require__(20),
     isValidElement = _require.isValidElement;
 
 var factory = __webpack_require__(77);
@@ -33801,7 +33801,7 @@ module.exports = '15.6.1';
 var _require = __webpack_require__(72),
     Component = _require.Component;
 
-var _require2 = __webpack_require__(19),
+var _require2 = __webpack_require__(20),
     isValidElement = _require2.isValidElement;
 
 var ReactNoopUpdateQueue = __webpack_require__(73);
@@ -34707,7 +34707,7 @@ module.exports = factory;
 
 var _prodInvariant = __webpack_require__(23);
 
-var ReactElement = __webpack_require__(19);
+var ReactElement = __webpack_require__(20);
 
 var invariant = __webpack_require__(1);
 
@@ -35428,7 +35428,7 @@ module.exports = BeforeInputEventPlugin;
 
 var _assign = __webpack_require__(5);
 
-var PooledClass = __webpack_require__(20);
+var PooledClass = __webpack_require__(21);
 
 var getTextContentAccessor = __webpack_require__(83);
 
@@ -41590,7 +41590,7 @@ module.exports = flattenChildren;
 
 var _assign = __webpack_require__(5);
 
-var PooledClass = __webpack_require__(20);
+var PooledClass = __webpack_require__(21);
 var Transaction = __webpack_require__(36);
 var ReactInstrumentation = __webpack_require__(12);
 var ReactServerUpdateQueue = __webpack_require__(190);
@@ -42281,7 +42281,7 @@ var _assign = __webpack_require__(5);
 
 var EventListener = __webpack_require__(100);
 var ExecutionEnvironment = __webpack_require__(7);
-var PooledClass = __webpack_require__(20);
+var PooledClass = __webpack_require__(21);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactUpdates = __webpack_require__(15);
 
@@ -42523,7 +42523,7 @@ module.exports = ReactInjection;
 var _assign = __webpack_require__(5);
 
 var CallbackQueue = __webpack_require__(84);
-var PooledClass = __webpack_require__(20);
+var PooledClass = __webpack_require__(21);
 var ReactBrowserEventEmitter = __webpack_require__(40);
 var ReactInputSelection = __webpack_require__(101);
 var ReactInstrumentation = __webpack_require__(12);
@@ -49415,9 +49415,9 @@ var BookShelf = function (_React$Component) {
     // };
 
     // this.addBook = this.addBook.bind(this);
-    // this.toggleMode = this.toggleMode.bind(this);
     var _this = _possibleConstructorReturn(this, (BookShelf.__proto__ || Object.getPrototypeOf(BookShelf)).call(this, props));
 
+    _this.toggleMode = _this.toggleMode.bind(_this);
     _this.shortcut = _this.shortcut.bind(_this);
     // this.gofetchbooks = this.gofetchbooks.bind(this);
     return _this;
@@ -49442,11 +49442,11 @@ var BookShelf = function (_React$Component) {
     value: function componentWillMount() {
       this.props.fetchbooks();
     }
-
-    // toggleMode(){
-    // this.setState({draggable: !this.state.draggable});
-    // }
-
+  }, {
+    key: 'toggleMode',
+    value: function toggleMode() {
+      this.setState({ draggable: !this.state.draggable });
+    }
   }, {
     key: 'render',
     value: function render() {
@@ -49475,7 +49475,8 @@ var BookShelf = function (_React$Component) {
             'Hold shift to move books ',
             _react2.default.createElement('br', null),
             'Movement Type = ',
-            movementTypeToggle ? 'Rotate' : 'Move'
+            movementTypeToggle ? 'Rotate' : 'Move',
+            _react2.default.createElement('input', { type: 'checkbox', onChange: this.toggleMode })
           ),
           Object.keys(this.props.shelves).map(function (id) {
             return _react2.default.createElement(_shelf_container2.default, { key: id, id: id, draggable: movementTypeToggle });
@@ -49629,6 +49630,8 @@ var mapStateToProps = function mapStateToProps(state, props) {
       book = props.book,
       xPosition = props.xPosition;
 
+  xPosition = state.positions[book.id].x || xPosition;
+  // console.log(xPosition, state.positions[book.id].x);
   return {
     draggable: draggable,
     book: book,
@@ -49699,6 +49702,7 @@ var ShelfItem = function (_React$Component) {
   _createClass(ShelfItem, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
+      // console.log('update shelf item mount');
       this.props.updatePosition(_defineProperty({}, this.props.book.id, {
         x: this.props.xPosition,
         y: this.state.position.y,
@@ -49706,6 +49710,12 @@ var ShelfItem = function (_React$Component) {
         width: this.props.book.width
       }));
       this.setState({ position: { x: this.props.xPosition, y: 0 } });
+    }
+  }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextprops) {
+      console.log('updateshelfitem', nextprops);
+      this.setState({ position: { x: this.props.xPosition } });
     }
   }, {
     key: 'style',
@@ -49735,16 +49745,17 @@ var ShelfItem = function (_React$Component) {
     value: function onStart(e, ui) {
       var node = ui.node.children[0];
       var angle = this.findDeg(node);
-      node.style = this.style(0.25, 200, angle);
-      this.setStyleDelay(node, 0, 200, angle);
+      node.style = this.style(0.25, 150, angle);
+      this.setStyleDelay(node, 0, 150, angle);
       // console.log(ui,e.clientY);
-      this.props.updatePosition(_defineProperty({}, this.props.book.id, { x: ui.x, z: 200, y: ui.y }));
     }
   }, {
     key: 'onDrag',
     value: function onDrag(e, ui) {
       // console.log(ui);
-      this.props.updatePosition(_defineProperty({}, this.props.book.id, { x: ui.x, z: 200, y: ui.y }));
+      // this.setState({position: { x: ui.x % 50, y: 0}});
+      this.props.updatePosition(_defineProperty({}, this.props.book.id, { x: ui.x, y: ui.y }));
+      // console.log('shelfitemupdate drag',{[this.props.book.id]: {x: ui.x, y: ui.y}});
     }
   }, {
     key: 'onStop',
@@ -49767,7 +49778,6 @@ var ShelfItem = function (_React$Component) {
       // }
       var newX = ui.x - ui.x % 35;
       this.setState({ position: { x: ui.x, y: 0 } });
-      this.props.updatePosition(_defineProperty({}, this.props.book.id, { x: ui.x, z: 200, y: ui.y }));
     }
 
     // extra div is used by draggable to insert style classes
@@ -49775,7 +49785,7 @@ var ShelfItem = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      // console.log('render shelf item', this.state.position.x);
+      console.log('render shelf item');
       return _react2.default.createElement(
         _reactDraggable2.default,
         {
@@ -49901,7 +49911,7 @@ var Book = function (_React$Component) {
     key: 'componentWillMount',
     value: function componentWillMount() {
       this.setState({ title: this.shortcode() });
-      this.props.updatePosition(_defineProperty({}, this.props.book.id, { angle: this.state.angle }));
+      // this.props.updatePosition({[this.props.book.id]: {angle: this.state.angle}});
     }
   }, {
     key: 'componentDidMount',
@@ -49920,12 +49930,12 @@ var Book = function (_React$Component) {
   }, {
     key: 'start',
     value: function start(e, ui) {
-      if (typeof this.angle === 'undefined') this.angle = 0;
+      // if(typeof this.angle === 'undefined') this.angle = 0;
     }
   }, {
     key: 'stop',
     value: function stop(e, ui) {
-      this.props.updatePosition(_defineProperty({}, this.props.book.id, { angle: this.state.angle }));
+      // this.props.updatePosition({[this.props.book.id]: {angle: this.state.angle}});
       // this.props.updatePosition({[this.props.book.id]: {x: ui.x, y: newY}});
     }
   }, {
@@ -49941,6 +49951,7 @@ var Book = function (_React$Component) {
         if (angle < -90) angle = -90;
         // console.log(this.props.book.depth * Math.sin(angle*(Math.PI/180)));
         this.setState({ angle: angle });
+        console.log('update book rotate');
         this.props.updatePosition(_defineProperty({}, this.props.book.id, { angle: this.state.angle }));
       } else {
         console.log("NAN!!!!!!!!!!!");
@@ -50111,13 +50122,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _reactRedux = __webpack_require__(16);
 
-var _positions_calc = __webpack_require__(303);
+var _positions_calc = __webpack_require__(292);
 
 var _positions_calc2 = _interopRequireDefault(_positions_calc);
 
 var _shortcut_actions = __webpack_require__(124);
 
-var _lodash = __webpack_require__(21);
+var _lodash = __webpack_require__(19);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50140,7 +50151,233 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_positions_calc2.default);
 
 /***/ }),
-/* 292 */,
+/* 292 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(4);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _lodash = __webpack_require__(19);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PositionsCalc = function (_React$Component) {
+  _inherits(PositionsCalc, _React$Component);
+
+  function PositionsCalc(props) {
+    _classCallCheck(this, PositionsCalc);
+
+    var _this = _possibleConstructorReturn(this, (PositionsCalc.__proto__ || Object.getPrototypeOf(PositionsCalc)).call(this, props));
+
+    _this.calc = _this.calc.bind(_this);
+    _this.transformCoordinates = _this.transformCoordinates.bind(_this);
+    return _this;
+  }
+
+  _createClass(PositionsCalc, [{
+    key: 'calc',
+    value: function calc() {
+      var _this2 = this;
+
+      var radtoDeg = 180 / Math.PI;
+      var shelves = this.props.shelves; // {0:[...]}
+      var positions = this.props.positions; // {{10:{x:0, ...}, 11:{...}}}
+      var books = this.props.books;
+      Object.keys(shelves).forEach(function (shelfID) {
+        shelves[shelfID].forEach(function (idx1) {
+          shelves[shelfID].forEach(function (idx2) {
+            // console.log(idx1,idx2);
+            if (idx1 !== idx2) {
+              // console.log(positions[idx1]);
+              // console.log(positions[idx2]);
+              var book1 = positions[idx1];
+              var book2 = positions[idx2];
+              // let relativeAngle = Math.abs(book1.angle - book2.angle);
+              console.log('compare', books[idx1].title, books[idx2].title);
+              // let {Ax, Bx, Bz, Cx, Cz, Dx, Dz, Az} = book1;
+              // console.log(relativeAngle);
+              // console.log('1 max X', Math.max(Ax, Bx, Cx, Dx ));
+              // console.log('1 max Z',Math.max(Az, Bz, Cz, Dz ));
+              // console.log('1 min X', Math.min(Ax, Bx, Cx, Dx ));
+              // console.log('1 min Z', Math.min(Az, Bz, Cz, Dz ));
+              // let minMax1 = this.transformCoordinates(book1, book2.angle);
+              // let minMax2 = this.transformCoordinates(book2, book1.angle);
+              // this.overlap(book1, book2);
+              _this2.overlap(book1, book2);
+            }
+          });
+        });
+      });
+    }
+  }, {
+    key: 'overlap',
+    value: function overlap(book1, book2) {
+      var transform1 = this.transformCoordinates(book1, book2);
+      var transform2 = this.transformCoordinates(book2, book1);
+
+      // let mmTurnBook1 = this.minMax(turnBook1);
+      // let mmTurnBook2 = this.minMax(turnBook2);
+      var minMax1 = this.minMax(transform1.p1);
+      var minMax2 = this.minMax(transform1.p2);
+      var overlap = this.compareMINMAX(minMax1, minMax2);
+      console.log('gap???', overlap);
+      minMax1 = this.minMax(transform2.p1);
+      minMax2 = this.minMax(transform2.p2);
+      overlap = this.compareMINMAX(minMax1, minMax2);
+      console.log('gap???', overlap);
+      // console.log('transform books 2 into book 1 coord');
+
+      // this.compareMINMAX(minMax2, book1);
+    }
+  }, {
+    key: 'compareMINMAX',
+    value: function compareMINMAX(p1, p2) {
+      // console.log(b1T,b2,b2T,b1);
+      // let smallerX = b1T.minX < b2.minX ? b1T : b2;
+      if (p1.maxX < p2.minX || p2.maxX < p1.minX) return true;
+      if (p1.maxZ < p2.minZ || p2.maxZ < p1.minZ) return true;
+      return false;
+    }
+  }, {
+    key: 'minMax',
+    value: function minMax(position) {
+      var Ax = position.Ax,
+          Bx = position.Bx,
+          Bz = position.Bz,
+          Cx = position.Cx,
+          Cz = position.Cz,
+          Dx = position.Dx,
+          Dz = position.Dz,
+          Az = position.Az;
+
+      return {
+        maxX: Math.max(Ax, Bx, Cx, Dx),
+        minX: Math.min(Ax, Bx, Cx, Dx),
+        maxZ: Math.max(Az, Bz, Cz, Dz),
+        minZ: Math.min(Az, Bz, Cz, Dz)
+      };
+    }
+
+    // transformCoordinates(position, angle1,angle2){
+    //   let angle = 90 - (angle1 - angle2);
+    //   console.log(angle);
+    //   let newPos = merge({},position);
+    //   let {x, width, depth} = newPos;
+    //   let toRad = (angleInDeg) => angleInDeg*Math.PI/180;
+    //
+    //   newPos.Ax = Math.round(x*Math.cos(toRad(angle)));
+    //   newPos.Bx = Math.round(width*Math.cos(toRad(angle)));
+    //   newPos.Bz = Math.round((width/2)*Math.sin(- toRad(angle)));
+    //   newPos.Cx = Math.round(depth*Math.sin(toRad(angle)));
+    //   newPos.Cz = Math.round(depth*Math.cos(toRad(angle)));
+    //   newPos.Az = -newPos.Bz;
+    //   newPos.Dx = Math.round(newPos.Cx + newPos.Bx);
+    //   newPos.Dz = Math.round(newPos.Cz + newPos.Bz);
+    //
+    //
+    //   newPos.Cz = newPos.Cz  - newPos.Bz;
+    //   newPos.Bx = newPos.Bx + newPos.Ax;
+    //   newPos.Cx = newPos.Cx + newPos.Ax;
+    //   newPos.Dx = newPos.Dx + newPos.Ax;
+    //
+    //   return newPos;
+    // }
+
+  }, {
+    key: 'transformCoordinates',
+    value: function transformCoordinates(position1, position2) {
+      var p1 = (0, _lodash.merge)({}, position1);
+      var p2 = (0, _lodash.merge)({}, position2);
+      var width = p1.width,
+          depth = p1.depth;
+
+      var toRad = function toRad(angleInDeg) {
+        return angleInDeg * Math.PI / 180.0;
+      };
+      var sin = function sin(x) {
+        return Math.sin(toRad(x));
+      };
+      var cos = function cos(x) {
+        return Math.cos(toRad(x));
+      };
+      var dist = function dist(x1, x2, z1, z2) {
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(z2 - z1, 2));
+      };
+      console.log(dist(0, 0, 5, 1));
+
+      var a = dist(p1.Ax, p2.Ax, p1.Az, p2.Az);
+      var b = dist(p1.Ax, p2.Bx, p1.Az, p2.Bz);
+      var c = dist(p1.Ax, p2.Cx, p1.Az, p2.Cz);
+      var d = dist(p1.Ax, p2.Dx, p1.Az, p2.Dz);
+      var theta = p1.angle + p2.angle;
+      console.log(p1.Ax, p2.Dx, p1.Az, p2.Dz);
+
+      p2.Ax = a * cos(theta).toFixed(3);
+      p2.Az = a * sin(theta).toFixed(3);
+      p2.Bx = b * cos(theta).toFixed(3);
+      p2.Bz = b * sin(theta).toFixed(3);
+      p2.Cx = c * sin(theta).toFixed(3);
+      p2.Cz = c * cos(theta).toFixed(3);
+      p2.Dx = d * sin(theta).toFixed(3);
+      p2.Dz = d * cos(theta).toFixed(3);
+
+      p1.Ax = 0;
+      p1.Az = 0;
+      p1.Bx = width;
+      p1.Bz = 0;
+      p1.Cx = 0;
+      p1.Cz = depth;
+      p1.Dx = width;
+      p1.Dz = depth;
+
+      console.log(p1, p2);
+
+      // newPos.Cz = newPos.Cz  - newPos.Bz;
+      // newPos.Bx = newPos.Bx + newPos.Ax;
+      // newPos.Cx = newPos.Cx + newPos.Ax;
+      // newPos.Dx = newPos.Dx + newPos.Ax;
+
+      return { p1: p1, p2: p2 };
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      // console.log('position calc', this.props);
+      // this.calc();
+      return _react2.default.createElement(
+        'div',
+        { className: 'positions_calc ' },
+        _react2.default.createElement(
+          'p',
+          null,
+          JSON.stringify(this.props.positions, null, 5)
+        )
+      );
+    }
+  }]);
+
+  return PositionsCalc;
+}(_react2.default.Component);
+
+exports.default = PositionsCalc;
+
+/***/ }),
 /* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -50474,7 +50711,7 @@ var _position_reducer = __webpack_require__(301);
 
 var _position_reducer2 = _interopRequireDefault(_position_reducer);
 
-var _shortcut_reducer = __webpack_require__(302);
+var _shortcut_reducer = __webpack_require__(303);
 
 var _shortcut_reducer2 = _interopRequireDefault(_shortcut_reducer);
 
@@ -50501,7 +50738,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _lodash = __webpack_require__(21);
+var _lodash = __webpack_require__(19);
 
 var _session_actions = __webpack_require__(43);
 
@@ -50551,7 +50788,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _lodash = __webpack_require__(21);
+var _lodash = __webpack_require__(19);
 
 var BookReducer = function BookReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -50581,7 +50818,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _lodash = __webpack_require__(21);
+var _lodash = __webpack_require__(19);
 
 var ShelfReducer = function ShelfReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -50615,9 +50852,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _lodash = __webpack_require__(21);
+var _lodash = __webpack_require__(19);
 
-var _positions_calc_util = __webpack_require__(304);
+var _positions_calc_util = __webpack_require__(302);
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -50645,6 +50882,7 @@ var mapShelvesToBooks = {};
 var mapBooksToShelves = {};
 var positions = {};
 var newPos = {};
+function CollisionException() {}
 
 var PositionReducer = function PositionReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -50652,6 +50890,7 @@ var PositionReducer = function PositionReducer() {
 
   switch (action.type) {
     case "NEW_POSITION":
+      // console.log('new position');
       Object.keys(action.position).forEach(function (id) {
         positions = {};
         //do shelves of zero for now, but propabaly need to refactor
@@ -50659,19 +50898,57 @@ var PositionReducer = function PositionReducer() {
         newPos = (0, _lodash.merge)({}, position, state[id], action.position[id]);
         (0, _lodash.merge)(newPos, (0, _positions_calc_util.getCoords)(newPos));
         (0, _lodash.merge)(newPos, (0, _positions_calc_util.minMaxX)(newPos));
-        Object.keys(state.shelfList[newPos.shelf]).forEach(function (id2) {
-          if (newPos.id !== id2) {
-            if (newPos.minX && state[id2].minX) {
-
+        try {
+          var i = 0;
+          var flag = true;
+          var keys = Object.keys(state.shelfList[newPos.shelf]);
+          var id2 = void 0;
+          while (flag && i < keys.length) {
+            id2 = keys[i];
+            i++;
+            if (newPos.id !== id2) {
+              // acts as a skip this loop function
+              // console.log(newPos);
+              // console.log('???');
               if ((0, _positions_calc_util.compareMINMAX)(newPos, state[id2])) {
                 // newPos = state[id];
-                // console.log(true);
+                console.log(true, id2);
               } else {
-                console.log(false);
+                console.log(false, id2);
+                flag = false;
+                throw new CollisionException();
               }
             }
           }
-        });
+        } catch (e) {
+          console.log('catch');
+          if (e instanceof CollisionException) {
+            newPos = state[id];
+            // console.log(newPos);
+          }
+        }
+        // try {
+        //   Object.keys(state.shelfList[newPos.shelf]).forEach((id2)=>{
+        //     if(newPos.id !== id2){
+        //       // console.log(newPos);
+        //       // console.log('???');
+        //       if(compareMINMAX(newPos,state[id2])){
+        //         // newPos = state[id];
+        //         console.log(true,id2);
+        //       }else{
+        //         console.log(false,id2);
+        //         // throw new CollisionException;
+        //       }
+        //     }
+        //   });
+        //
+        // } catch (e){
+        //   // console.log('catch');
+        //   // if (e instanceof CollisionException) {
+        //     // newPos = state[id];
+        //     // console.log(newPos);
+        //   // }
+        // }
 
         positions = (0, _lodash.merge)(positions, _defineProperty({}, id, newPos));
       });
@@ -50730,275 +51007,13 @@ and book 2 is at x:50 y: 200 width: 50 height: 150 depth 150 and angle -45
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ShortcutReducer = undefined;
-
-var _lodash = __webpack_require__(21);
-
-var defaultState = { movementTypeToggle: false };
-//  true means rotate
-//  false means move
-//  for manipulating books
-
-var ShortcutReducer = exports.ShortcutReducer = function ShortcutReducer() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultState;
-  var action = arguments[1];
-
-  switch (action.type) {
-    case 'SHIFT':
-      var movementTypeToggle = !state.movementTypeToggle;
-      // console.log("ShortcutReducer SHIFT", state, movementTypeToggle);
-      return (0, _lodash.merge)({}, state, { movementTypeToggle: movementTypeToggle });
-    default:
-      return state;
-  }
-};
-
-exports.default = ShortcutReducer;
-
-/***/ }),
-/* 303 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+exports.transformCoordinates = exports.getCoords = exports.toRad = exports.minMaxX = exports.compareMINMAXvec = exports.compareMINMAX = exports.overlap = exports.calc = undefined;
 
 var _react = __webpack_require__(4);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _lodash = __webpack_require__(21);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var PositionsCalc = function (_React$Component) {
-  _inherits(PositionsCalc, _React$Component);
-
-  function PositionsCalc(props) {
-    _classCallCheck(this, PositionsCalc);
-
-    var _this = _possibleConstructorReturn(this, (PositionsCalc.__proto__ || Object.getPrototypeOf(PositionsCalc)).call(this, props));
-
-    _this.calc = _this.calc.bind(_this);
-    _this.transformCoordinates = _this.transformCoordinates.bind(_this);
-    return _this;
-  }
-
-  _createClass(PositionsCalc, [{
-    key: 'calc',
-    value: function calc() {
-      var _this2 = this;
-
-      var radtoDeg = 180 / Math.PI;
-      var shelves = this.props.shelves; // {0:[...]}
-      var positions = this.props.positions; // {{10:{x:0, ...}, 11:{...}}}
-      var books = this.props.books;
-      Object.keys(shelves).forEach(function (shelfID) {
-        shelves[shelfID].forEach(function (idx1) {
-          shelves[shelfID].forEach(function (idx2) {
-            // console.log(idx1,idx2);
-            if (idx1 !== idx2) {
-              // console.log(positions[idx1]);
-              // console.log(positions[idx2]);
-              var book1 = positions[idx1];
-              var book2 = positions[idx2];
-              // let relativeAngle = Math.abs(book1.angle - book2.angle);
-              console.log('compare', books[idx1].title, books[idx2].title);
-              // let {Ax, Bx, Bz, Cx, Cz, Dx, Dz, Az} = book1;
-              // console.log(relativeAngle);
-              // console.log('1 max X', Math.max(Ax, Bx, Cx, Dx ));
-              // console.log('1 max Z',Math.max(Az, Bz, Cz, Dz ));
-              // console.log('1 min X', Math.min(Ax, Bx, Cx, Dx ));
-              // console.log('1 min Z', Math.min(Az, Bz, Cz, Dz ));
-              // let minMax1 = this.transformCoordinates(book1, book2.angle);
-              // let minMax2 = this.transformCoordinates(book2, book1.angle);
-              // this.overlap(book1, book2);
-              _this2.overlap(book1, book2);
-            }
-          });
-        });
-      });
-    }
-  }, {
-    key: 'overlap',
-    value: function overlap(book1, book2) {
-      var transform1 = this.transformCoordinates(book1, book2);
-      var transform2 = this.transformCoordinates(book2, book1);
-
-      // let mmTurnBook1 = this.minMax(turnBook1);
-      // let mmTurnBook2 = this.minMax(turnBook2);
-      var minMax1 = this.minMax(transform1.p1);
-      var minMax2 = this.minMax(transform1.p2);
-      var overlap = this.compareMINMAX(minMax1, minMax2);
-      console.log('gap???', overlap);
-      minMax1 = this.minMax(transform2.p1);
-      minMax2 = this.minMax(transform2.p2);
-      overlap = this.compareMINMAX(minMax1, minMax2);
-      console.log('gap???', overlap);
-      // console.log('transform books 2 into book 1 coord');
-
-      // this.compareMINMAX(minMax2, book1);
-    }
-  }, {
-    key: 'compareMINMAX',
-    value: function compareMINMAX(p1, p2) {
-      // console.log(b1T,b2,b2T,b1);
-      // let smallerX = b1T.minX < b2.minX ? b1T : b2;
-      if (p1.maxX < p2.minX || p2.maxX < p1.minX) return true;
-      if (p1.maxZ < p2.minZ || p2.maxZ < p1.minZ) return true;
-      return false;
-    }
-  }, {
-    key: 'minMax',
-    value: function minMax(position) {
-      var Ax = position.Ax,
-          Bx = position.Bx,
-          Bz = position.Bz,
-          Cx = position.Cx,
-          Cz = position.Cz,
-          Dx = position.Dx,
-          Dz = position.Dz,
-          Az = position.Az;
-
-      return {
-        maxX: Math.max(Ax, Bx, Cx, Dx),
-        minX: Math.min(Ax, Bx, Cx, Dx),
-        maxZ: Math.max(Az, Bz, Cz, Dz),
-        minZ: Math.min(Az, Bz, Cz, Dz)
-      };
-    }
-
-    // transformCoordinates(position, angle1,angle2){
-    //   let angle = 90 - (angle1 - angle2);
-    //   console.log(angle);
-    //   let newPos = merge({},position);
-    //   let {x, width, depth} = newPos;
-    //   let toRad = (angleInDeg) => angleInDeg*Math.PI/180;
-    //
-    //   newPos.Ax = Math.round(x*Math.cos(toRad(angle)));
-    //   newPos.Bx = Math.round(width*Math.cos(toRad(angle)));
-    //   newPos.Bz = Math.round((width/2)*Math.sin(- toRad(angle)));
-    //   newPos.Cx = Math.round(depth*Math.sin(toRad(angle)));
-    //   newPos.Cz = Math.round(depth*Math.cos(toRad(angle)));
-    //   newPos.Az = -newPos.Bz;
-    //   newPos.Dx = Math.round(newPos.Cx + newPos.Bx);
-    //   newPos.Dz = Math.round(newPos.Cz + newPos.Bz);
-    //
-    //
-    //   newPos.Cz = newPos.Cz  - newPos.Bz;
-    //   newPos.Bx = newPos.Bx + newPos.Ax;
-    //   newPos.Cx = newPos.Cx + newPos.Ax;
-    //   newPos.Dx = newPos.Dx + newPos.Ax;
-    //
-    //   return newPos;
-    // }
-
-  }, {
-    key: 'transformCoordinates',
-    value: function transformCoordinates(position1, position2) {
-      var p1 = (0, _lodash.merge)({}, position1);
-      var p2 = (0, _lodash.merge)({}, position2);
-      var width = p1.width,
-          depth = p1.depth;
-
-      var toRad = function toRad(angleInDeg) {
-        return angleInDeg * Math.PI / 180.0;
-      };
-      var sin = function sin(x) {
-        return Math.sin(toRad(x));
-      };
-      var cos = function cos(x) {
-        return Math.cos(toRad(x));
-      };
-      var dist = function dist(x1, x2, z1, z2) {
-        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(z2 - z1, 2));
-      };
-      console.log(dist(0, 0, 5, 1));
-
-      var a = dist(p1.Ax, p2.Ax, p1.Az, p2.Az);
-      var b = dist(p1.Ax, p2.Bx, p1.Az, p2.Bz);
-      var c = dist(p1.Ax, p2.Cx, p1.Az, p2.Cz);
-      var d = dist(p1.Ax, p2.Dx, p1.Az, p2.Dz);
-      var theta = p1.angle + p2.angle;
-      console.log(p1.Ax, p2.Dx, p1.Az, p2.Dz);
-
-      p2.Ax = a * cos(theta).toFixed(3);
-      p2.Az = a * sin(theta).toFixed(3);
-      p2.Bx = b * cos(theta).toFixed(3);
-      p2.Bz = b * sin(theta).toFixed(3);
-      p2.Cx = c * sin(theta).toFixed(3);
-      p2.Cz = c * cos(theta).toFixed(3);
-      p2.Dx = d * sin(theta).toFixed(3);
-      p2.Dz = d * cos(theta).toFixed(3);
-
-      p1.Ax = 0;
-      p1.Az = 0;
-      p1.Bx = width;
-      p1.Bz = 0;
-      p1.Cx = 0;
-      p1.Cz = depth;
-      p1.Dx = width;
-      p1.Dz = depth;
-
-      console.log(p1, p2);
-
-      // newPos.Cz = newPos.Cz  - newPos.Bz;
-      // newPos.Bx = newPos.Bx + newPos.Ax;
-      // newPos.Cx = newPos.Cx + newPos.Ax;
-      // newPos.Dx = newPos.Dx + newPos.Ax;
-
-      return { p1: p1, p2: p2 };
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      // console.log('position calc', this.props);
-      // this.calc();
-      return _react2.default.createElement(
-        'div',
-        { className: 'positions_calc ' },
-        _react2.default.createElement(
-          'p',
-          null,
-          JSON.stringify(this.props.positions, null, 5)
-        )
-      );
-    }
-  }]);
-
-  return PositionsCalc;
-}(_react2.default.Component);
-
-exports.default = PositionsCalc;
-
-/***/ }),
-/* 304 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.transformCoordinates = exports.getCoords = exports.toRad = exports.minMaxX = exports.compareMINMAX = exports.calc = undefined;
-
-var _react = __webpack_require__(4);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _lodash = __webpack_require__(21);
+var _lodash = __webpack_require__(19);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51033,30 +51048,42 @@ var calc = exports.calc = function calc(props) {
     });
   });
 };
-//
-// export const overlap = (book1, book2) => {
-//   let transform1 = this.transformCoordinates(book1, book2);
-//   let transform2 = this.transformCoordinates(book2, book1);
-//
-//   // let mmTurnBook1 = this.minMax(turnBook1);
-//   // let mmTurnBook2 = this.minMax(turnBook2);
-//   let minMax1 = this.minMax(transform1.p1);
-//   let minMax2 = this.minMax(transform1.p2);
-//   let _overlap = this.compareMINMAX(minMax1, minMax2);
-//   console.log('gap???',_overlap);
-//   minMax1 = this.minMax(transform2.p1);
-//   minMax2 = this.minMax(transform2.p2);
-//   overlap = this.compareMINMAX(minMax1, minMax2);
-//   console.log('gap???',overlap);
-//   // console.log('transform books 2 into book 1 coord');
-//
-//   // this.compareMINMAX(minMax2, book1);
-// };
+
+function CollisionException() {}
+
+var overlap = exports.overlap = function overlap(newPos, oldPos, state) {
+  (0, _lodash.merge)(newPos, getCoords(newPos));
+  (0, _lodash.merge)(newPos, minMaxX(newPos));
+  try {
+    Object.keys(state.shelfList[newPos.shelf]).forEach(function (id2) {
+      if (newPos.id !== id2) {
+        if (compareMINMAX(newPos, state[id2])) {
+          console.log(true);
+        } else {
+          console.log(false);
+          throw new CollisionException();
+        }
+      }
+    });
+  } catch (e) {
+    // console.log('catch');
+    if (e instanceof CollisionException) {
+      newPos = oldPos;
+      console.log(newPos);
+    }
+  }
+};
 
 var compareMINMAX = exports.compareMINMAX = function compareMINMAX(p1, p2) {
   // console.log('p1.maxX, p2.minX, p2.maxX, p1.minX');
   // console.log(p1.maxX, p2.minX, p2.maxX, p1.minX);
   // let smallerX = b1T.minX < b2.minX ? b1T : b2;
+  if (p1.maxX <= p2.minX || p2.maxX <= p1.minX) return true;
+  return false;
+};
+var compareMINMAXvec = exports.compareMINMAXvec = function compareMINMAXvec(p1, p2) {
+  // console.log('p1.maxX, p2.minX, p2.maxX, p1.minX');
+  // console.log(p1.maxX, p2.minX, p2.maxX, p1.minX);
   if (p1.maxX <= p2.minX || p2.maxX <= p1.minX) return true;
   return false;
 };
@@ -51097,25 +51124,25 @@ var getCoords = exports.getCoords = function getCoords(position) {
       angle = position.angle;
 
   var i = x;
-  +x;+width;+depth; //Coerse to numbers
+  +i;+width;+depth; //Coerse to numbers
   // let angle = toRad(+position.angle);
   var newPos = {};
   // console.log(angle);
   // console.log(Math.sin(toRad(angle)));
   // console.log((width/2) * Math.abs(Math.sin(toRad(angle))));
-  newPos.Ai = width / 2 * Math.abs(Math.sin(toRad(angle)));
-  newPos.Bi = width / 2 * Math.abs(Math.cos(toRad(angle)));
-  newPos.Bj = width / 2 * Math.sin(-toRad(angle));
-  newPos.Ci = depth * Math.sin(toRad(angle));
-  newPos.Cj = depth * Math.cos(toRad(angle));
-  newPos.Aj = -newPos.Bj;
-  newPos.Di = newPos.Ci + newPos.Bi + width / 2 + i;
-  newPos.Dj = newPos.Cj + newPos.Bj;
+  newPos.Ax = width / 2 * Math.abs(Math.sin(toRad(angle)));
+  newPos.Bx = width / 2 * Math.abs(Math.cos(toRad(angle)));
+  newPos.Bz = width / 2 * Math.sin(-toRad(angle));
+  newPos.Cx = depth * Math.sin(toRad(angle));
+  newPos.Cz = depth * Math.cos(toRad(angle));
+  newPos.Az = -newPos.Bz;
+  newPos.Dx = newPos.Cx + newPos.Bx + width / 2 + i;
+  newPos.Dz = newPos.Cz + newPos.Bz;
 
-  newPos.Cj = newPos.Cj - newPos.Bj;
-  newPos.Ai = newPos.Ai + i;
-  newPos.Bi = newPos.Bi + width / 2 + i;
-  newPos.Ci = newPos.Ci + newPos.Ai;
+  newPos.Cz = newPos.Cz - newPos.Bz;
+  newPos.Ax = newPos.Ax + i;
+  newPos.Bx = newPos.Bx + width / 2 + i;
+  newPos.Cx = newPos.Cx + newPos.Ax;
   // newPos.Dx = newPos.Dx + x;
   // console.log(x, newPos);
 
@@ -51188,6 +51215,41 @@ var transformCoordinates = exports.transformCoordinates = function transformCoor
 
   return { p1: p1, p2: p2 };
 };
+
+/***/ }),
+/* 303 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ShortcutReducer = undefined;
+
+var _lodash = __webpack_require__(19);
+
+var defaultState = { movementTypeToggle: false };
+//  true means rotate
+//  false means move
+//  for manipulating books
+
+var ShortcutReducer = exports.ShortcutReducer = function ShortcutReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultState;
+  var action = arguments[1];
+
+  switch (action.type) {
+    case 'SHIFT':
+      var movementTypeToggle = !state.movementTypeToggle;
+      // console.log("ShortcutReducer SHIFT", state, movementTypeToggle);
+      return (0, _lodash.merge)({}, state, { movementTypeToggle: movementTypeToggle });
+    default:
+      return state;
+  }
+};
+
+exports.default = ShortcutReducer;
 
 /***/ })
 /******/ ]);

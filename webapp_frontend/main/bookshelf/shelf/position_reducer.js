@@ -24,10 +24,13 @@ let mapShelvesToBooks = {};
 let mapBooksToShelves = {};
 let positions = {};
 let newPos = {};
+function CollisionException() {}
+
 
 const PositionReducer = (state = {}, action) => {
   switch (action.type) {
     case "NEW_POSITION":
+    // console.log('new position');
       Object.keys(action.position).forEach((id)=>{
         positions = {};
         //do shelves of zero for now, but propabaly need to refactor
@@ -35,19 +38,56 @@ const PositionReducer = (state = {}, action) => {
             newPos = merge({}, position, state[id], action.position[id]);
             merge(newPos,getCoords(newPos));
             merge(newPos,minMaxX(newPos));
-            Object.keys(state.shelfList[newPos.shelf]).forEach((id2)=>{
-                if(newPos.id !== id2){
-                  if(newPos.minX && state[id2].minX){
-
+            try {
+              let i = 0;
+              let flag = true;
+              let keys = Object.keys(state.shelfList[newPos.shelf]);
+                let id2;
+                while (flag && i < keys.length){
+                  id2 = keys[i];
+                  i++;
+                  if(newPos.id !== id2){ // acts as a skip this loop function
+                    // console.log(newPos);
+                    // console.log('???');
                     if(compareMINMAX(newPos,state[id2])){
-                        // newPos = state[id];
-                        // console.log(true);
+                      // newPos = state[id];
+                      console.log(true,id2);
                     }else{
-                      console.log(false);
+                      console.log(false,id2);
+                      flag = false;
+                      throw new CollisionException;
                     }
                   }
                 }
-            });
+            } catch (e){
+              console.log('catch');
+              if (e instanceof CollisionException) {
+                newPos = state[id];
+                // console.log(newPos);
+              }
+            }
+            // try {
+            //   Object.keys(state.shelfList[newPos.shelf]).forEach((id2)=>{
+            //     if(newPos.id !== id2){
+            //       // console.log(newPos);
+            //       // console.log('???');
+            //       if(compareMINMAX(newPos,state[id2])){
+            //         // newPos = state[id];
+            //         console.log(true,id2);
+            //       }else{
+            //         console.log(false,id2);
+            //         // throw new CollisionException;
+            //       }
+            //     }
+            //   });
+            //
+            // } catch (e){
+            //   // console.log('catch');
+            //   // if (e instanceof CollisionException) {
+            //     // newPos = state[id];
+            //     // console.log(newPos);
+            //   // }
+            // }
 
             positions = merge(positions,{[id]: newPos});
       });
